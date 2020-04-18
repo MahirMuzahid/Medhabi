@@ -1,23 +1,21 @@
 ﻿
-@page "/confirmnumber/{phonenumber}"
+@page "/confirmnumber/{phonenumber}/{password}/{mail}/{name}"
+@inject NavigationManager NavigationManager
 
 <div class="limiter">
-    <div class="container-login100">
-        <div class="wrap-login100">
-            <div class="login100-pic js-tilt" data-tilt>
-                <img src="images/img-01.png" alt="IMG">
-            </div>
+    <div class="container-login100cn">
+        <div class="wrap-login100cn">
 
             <form class="login100-form validate-form">
                 <span class="login100-form">
                     We have sent confirmation code in this number
-                    <br> <h2>@phonenumber</h2>
-
                 </span>
+
+                <br> <h2>@phonenumber</h2>
                 <p style="color:red">@ErrorText</p>
 
                 <div class="wrap-input100 validate-input" data-validate="Valid email is required: ex@abc.xyz">
-                    <input class="input100" type="text" name="email" placeholder="Code">
+                    <input class="input100" @bind="textcode" type="text" name="email" placeholder="Code">
                     <span class="focus-input100"></span>
                     <span class="symbol-input100">
                         <i class="fa fa-envelope" aria-hidden="true"></i>
@@ -25,8 +23,8 @@
                 </div>
 
                 <div class="container-login100-form-btn">
-                    <button class="login100-form-btn" @onclick="send">
-                        Confirm
+                    <button class="login100-form-btn" disabled="@IsDisable" type="button" @onclick="send">
+                        @textB
                     </button>
                 </div>
             </form>
@@ -37,11 +35,52 @@
 @code {
     [Parameter]
     public string phonenumber { get; set; }
+    [Parameter]
+    public string password { get; set; }
+    [Parameter]
+    public string mail { get; set; }
+    [Parameter]
+    public string name { get; set; }
 
-    private string ErrorText;
+    private int code;
+    private int textcode;
+    private string ErrorText,textB;
+    private bool IsDisable { get; set; }
 
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        IsDisable = true;
+        textB = "Wait...";
+        Random r = new Random();
+        code = r.Next(1000, 9999);
+        string text = "Medhabi Verification Code: " + code;
+        string url = "https://www.bdgosms.com/send/?req=out&apikey=bdgoHfhn2JaMZuUIqwoA54t3GWeP90QXFb&numb=" + phonenumber + "&sms=" + text;
+        HttpClient client = new HttpClient();
+        HttpResponseMessage response = await client.GetAsync(url);
+        string result = await response.Content.ReadAsStringAsync().ConfigureAwait(true);
+
+        if (result[0] == '{')
+        {
+            IsDisable = false; textB = "Confirm";
+        }
+    }
     public void send()
     {
-        //
+        if (textcode < 1000 || textcode > 9999)
+        {
+            ErrorText = "Enter a valid code";
+        }
+        else if (code != textcode)
+        {
+            ErrorText = "Code doesn't match";
+        }
+        else
+        {
+            ErrorText = "nice";
+            NavigationManager.NavigateTo("");
+        }
+
     }
 }

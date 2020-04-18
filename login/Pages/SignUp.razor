@@ -63,10 +63,13 @@
 </div>
 @code {
     private string ErrorText = null;
-    private string passf, passc, mail, name;
+    private string  passc;
 
     [Parameter]
     public string pnumber { get; set; }
+    public string passf { get; set; }
+    public string mail { get; set; }
+    public string name { get; set; }
 
     private void check()
     {
@@ -88,7 +91,7 @@
         }
         else
         {
-            NavigationManager.NavigateTo("/confirmnumber/" + pnumber);
+            NavigationManager.NavigateTo("/confirmnumber/" + pnumber+"/"+passf + "/" + mail + "/" + name);
         }
     }
 

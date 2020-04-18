@@ -7,5 +7,6 @@ namespace login.Data
 {
     public class SignUp
     {
+        public string phonenumber;
     }
 }
