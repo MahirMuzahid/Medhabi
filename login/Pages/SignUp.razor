@@ -1,0 +1,95 @@
+﻿@page "/signup"
+@inject NavigationManager NavigationManager
+
+<div class="limiter">
+    <div class="container-login100">
+        <div class="wrap-login100">
+            <div class="login100-pic js-tilt" data-tilt>
+                <img src="images/img-01.png" alt="IMG">
+            </div>
+
+            <form class="login100-form validate-form">
+                <span class="login100-form-title">
+                    Student Sign Up
+
+                </span>
+                <p style="color:red">@ErrorText</p>
+
+                <div class="wrap-input100 validate-input" data-validate="Valid email is required: ex@abc.xyz">
+                    <input @bind="mail" class="input100" type="text" name="email" placeholder="Email">
+                    <span class="focus-input100"></span>
+                    <span class="symbol-input100">
+                        <i class="fa fa-envelope" aria-hidden="true"></i>
+                    </span>
+                </div>
+
+                <div class="wrap-input100 validate-input" data-validate="Password is required">
+                    <input @bind="passf" class="input100" type="text" placeholder="Password">
+                    <span class="focus-input100"></span>
+                    <span class="symbol-input100">
+                        <i class="fa fa-lock" aria-hidden="true"></i>
+                    </span>
+                </div>
+                <div class="wrap-input100 validate-input" data-validate="Password is required">
+                    <input class="input100" @bind="passc" type="text" placeholder="Confirm Password">
+                    <span class="focus-input100"></span>
+                    <span class="symbol-input100">
+                        <i class="fa fa-lock" aria-hidden="true"></i>
+                    </span>
+                </div>
+                <div class="wrap-input100 validate-input" data-validate="Password is required">
+                    <input class="input100" @bind="pnumber" type="text" placeholder="Phonenumber">
+                    <span class="focus-input100"></span>
+                    <span class="symbol-input100">
+                        <i class="fa fa-lock" aria-hidden="true"></i>
+                    </span>
+                </div>
+                <div class="wrap-input100 validate-input" data-validate="Password is required">
+                    <input class="input100" @bind="name" type="text" placeholder="Name">
+                    <span class="focus-input100"></span>
+                    <span class="symbol-input100">
+                        <i class="fa fa-lock" aria-hidden="true"></i>
+                    </span>
+                </div>
+
+                <div class="container-login100-form-btn">
+                    <button class="login100-form-btn" type="button" @onclick="check">
+                        Sign Up
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@code {
+    private string ErrorText = null;
+    private string passf, passc, mail, name;
+
+    [Parameter]
+    public string pnumber { get; set; }
+
+    private void check()
+    {
+        if (mail == null || passf == null || passc == null || pnumber == null)
+        {
+            ErrorText = "Fill all boxes";
+        }
+        else if (passf != passc)
+        {
+            ErrorText = "Password Dosen't Match!";
+        }
+        else if (passf.Length < 6)
+        {
+            ErrorText = "Password has to be at least 6 character!";
+        }
+        else if (pnumber.Length < 11)
+        {
+            ErrorText = "Enter a valid number (Exc: 017XXXXXXXX)";
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/confirmnumber/" + pnumber);
+        }
+    }
+
+}

@@ -1,0 +1,47 @@
+﻿
+@page "/confirmnumber/{phonenumber}"
+
+<div class="limiter">
+    <div class="container-login100">
+        <div class="wrap-login100">
+            <div class="login100-pic js-tilt" data-tilt>
+                <img src="images/img-01.png" alt="IMG">
+            </div>
+
+            <form class="login100-form validate-form">
+                <span class="login100-form">
+                    We have sent confirmation code in this number
+                    <br> <h2>@phonenumber</h2>
+
+                </span>
+                <p style="color:red">@ErrorText</p>
+
+                <div class="wrap-input100 validate-input" data-validate="Valid email is required: ex@abc.xyz">
+                    <input class="input100" type="text" name="email" placeholder="Code">
+                    <span class="focus-input100"></span>
+                    <span class="symbol-input100">
+                        <i class="fa fa-envelope" aria-hidden="true"></i>
+                    </span>
+                </div>
+
+                <div class="container-login100-form-btn">
+                    <button class="login100-form-btn" @onclick="send">
+                        Confirm
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string phonenumber { get; set; }
+
+    private string ErrorText;
+
+    public void send()
+    {
+        //
+    }
+}
