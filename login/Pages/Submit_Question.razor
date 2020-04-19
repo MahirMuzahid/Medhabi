@@ -1,0 +1,85 @@
+﻿@page "/SubmitQuestion"
+@using login.Data
+@inject ServerConnection connect
+
+<div class="limiter">
+    <div class="container-login100cn">
+        <div class="wrap-login100cn">
+
+
+            <form class="login100-form validate-form">
+                Total Qustion: @TotalQuestion
+                <span class="login100-form-title">
+                    Question Submittion Panel
+
+                </span>
+                <p style="color:red">@ErrorText</p>
+
+                <div data-validate="Valid email is required: ex@abc.xyz">
+                    Main Question
+                    <textarea cols="100" rows="8" style="background: #e6e6e6; width:100%; height:150px; position:relative; font-size:13px; border-radius: 5px; " @bind="mq" type="text">  </textarea>
+                </div>
+
+                <div data-validate="Password is required">
+                    First Choice
+                    <textarea cols="100" rows="8" style="background: #e6e6e6; width:100%; height:50px; position:relative; font-size:12px; border-radius: 5px; " @bind="f1" type="text">    </textarea>
+
+                </div>
+                <div data-validate="Password is required">
+                    Second Choice
+                    <textarea cols="100" rows="8" style="background: #e6e6e6; width:100%; height:50px; position:relative; font-size:12px; border-radius: 5px; " @bind="f2" type="text">    </textarea>
+
+                </div>
+                <div data-validate="Password is required">
+                    Third Choice
+                    <textarea cols="100" rows="8" style="background: #e6e6e6; width:100%; height:50px; position:relative; font-size:12px; border-radius: 5px; " @bind="f3" type="text">    </textarea>
+
+                </div>
+                <div data-validate="Password is required">
+                    Forth Choice
+                    <textarea cols="100" rows="8" style="background: #e6e6e6; width:100%; height:50px; position:relative; font-size:12px; border-radius: 5px; " @bind="f4" type="text" n>    </textarea>
+
+                </div>
+                <div data-validate="Password is required">
+                    Right Answer Number
+                    <textarea cols="100" rows="8" style="background: #e6e6e6; width:100%; height:50px; position:relative; font-size:12px; border-radius: 5px; " @bind="ra" type="text">    </textarea>
+
+                </div>
+                <div data-validate="Password is required">
+                    Name
+                    <textarea cols="100" rows="8" style="background: #e6e6e6; width:100%; height:50px; position:relative; font-size:12px; border-radius: 5px; " @bind="name" type="text">    </textarea>
+                </div>
+
+                <div class="container-login100-form-btn">
+                    <button class="login100-form-btn" type="button" @onclick="check">
+                        Submite
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@code {
+    private string ErrorText = null;
+    private string passc;
+    public string mq { get; set; }
+    public string f1 { get; set; }
+    public string f2 { get; set; }
+    public string f3 { get; set; }
+    public string f4 { get; set; }
+    public int ra { get; set; }
+    public string name { get; set; }
+    public int TotalQuestion { get; set; }
+    public string Member { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        TotalQuestion = connect.qsNumber;
+    }
+
+    private void check()
+    {
+
+    }
+}
