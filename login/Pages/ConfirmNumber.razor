@@ -1,6 +1,9 @@
 ﻿
 @page "/confirmnumber/{phonenumber}/{password}/{mail}/{name}"
 @inject NavigationManager NavigationManager
+@using login.Data
+@inject ServerConnection connect
+@inject Blazored.LocalStorage.ILocalStorageService oLocalStore
 
 <div class="limiter">
     <div class="container-login100cn">
@@ -44,7 +47,7 @@
 
     private int code;
     private int textcode;
-    private string ErrorText,textB;
+    private string ErrorText, textB, sessionMsg;
     private bool IsDisable { get; set; }
 
 
@@ -79,8 +82,21 @@
         else
         {
             ErrorText = "nice";
-            NavigationManager.NavigateTo("");
+            connect.SignUp(mail, password, name, phonenumber);
+            if(connect.submitted == 0)
+            {
+                SaveSession();
+                NavigationManager.NavigateTo("/student/dashboard");
+            }
+
         }
 
+    }
+
+    public async void SaveSession()
+    {
+        sessionMsg = "saved";
+        await oLocalStore.SetItemAsync("mail", mail);
+        await oLocalStore.SetItemAsync("password", password);
     }
 }

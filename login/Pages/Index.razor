@@ -1,4 +1,8 @@
 ﻿@page "/"
+@using login.Data
+@inject ServerConnection connect
+@inject NavigationManager NavigationManager
+@inject Blazored.LocalStorage.ILocalStorageService oLocalStore 
 
 <div class="limiter">
     <div class="container-login100">
@@ -11,8 +15,8 @@
                 <span class="login100-form-title">
                     Student Sign In
                 </span>
-
-                <div class="wrap-input100 validate-input" data-validate="Valid email is required: ex@abc.xyz">
+                <p style="color:red">@Error</p>
+                <div class="wrap-input100 " data-validate="Valid email is required: ex@abc.xyz">
                     <input class="input100" @bind="mail" type="text" name="email" placeholder="Email">
                     <span class="focus-input100"></span>
                     <span class="symbol-input100">
@@ -20,7 +24,7 @@
                     </span>
                 </div>
 
-                <div class="wrap-input100 validate-input" data-validate="Password is required">
+                <div class="wrap-input100 " data-validate="Password is required">
                     <input class="input100" @bind="pass" type="password" name="pass" placeholder="Password">
                     <span class="focus-input100"></span>
                     <span class="symbol-input100">
@@ -29,8 +33,8 @@
                 </div>
 
                 <div class="container-login100-form-btn">
-                    <button class="login100-form-btn" @onclick="login">
-                        Login
+                    <button class="login100-form-btn" type="button" @onclick="login">
+                        @Logintxt
                     </button>
                 </div>
 
@@ -54,11 +58,63 @@
     </div>
 </div>
 @code{
-    private string mail, pass;
+    private string mail, pass, Error, Logintxt;
 
-    private void login()
+    string sessionMsg = "";
+    string sessionValue = "";
+
+
+    protected override async Task OnInitializedAsync()
     {
+        Student student = new Student();
+        student.mail = await oLocalStore.GetItemAsync<string>("mail");
+        student.password = await oLocalStore.GetItemAsync<string>("password");
+        if(student.mail != null && student.password != null)
+        {
+            NavigationManager.NavigateTo("/dashboard");
+        }
+        else
+        {
+            Logintxt = "Login";
+        }
 
+    }
+
+    public async Task SaveSession(string mail, string password)
+    {
+        await oLocalStore.SetItemAsync("mail", mail);
+        await oLocalStore.SetItemAsync("password", password);
+    }
+
+
+    private async Task login()
+    {
+        Logintxt = "Wait...";
+        if (mail != null && pass != null )
+        {
+            await Task.Run(() => connect.SignIn(mail, pass));
+            nevigate();
+        }
+        else
+        {
+            Error = "Can't use empty box";
+        }
+    }
+
+    public async void nevigate()
+    {
+        Student student = connect.student;
+        if (connect.submitted == 0)
+        {
+
+            await Task.Run(() => SaveSession(student.mail, student.password));
+
+            NavigationManager.NavigateTo("/dashboard");
+        }
+        else
+        {
+            Error = "Wrong Username or Password";
+        }
     }
 
 

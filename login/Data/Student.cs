@@ -17,6 +17,8 @@ namespace login.Data
         public string rank { get; set; }
         public int total_question_answered { get; set; }
         public int total_right_answer { get; set; }
-        
+        public string response { get; set; }
+        public int stetus { get; set; }
+
     }
 }

@@ -1,0 +1,569 @@
+﻿@inject Blazored.LocalStorage.ILocalStorageService oLocalStore
+@inject NavigationManager NavigationManager
+@inject ServerConnection connect
+@page "/dashboard"
+@using login.Data
+
+    <div class="dashboard-main-wrapper">
+        <!-- ============================================================== -->
+        <!-- navbar -->
+        <!-- ============================================================== -->
+        <div class="dashboard-header">
+            <nav class="navbar navbar-expand-lg bg-white fixed-top">
+                <a class="navbar-brand" href="index.html" style="color:blueviolet">Medhabi Dashboard</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse " id="navbarSupportedContent">
+                    <ul class="navbar-nav ml-auto navbar-right-top">
+                        <li class="nav-item">
+
+                        </li>
+                        <li class="nav-item dropdown notification">
+
+                            <ul class="dropdown-menu dropdown-menu-right notification-dropdown">
+                                <li>
+                                    <div class="notification-title"> Notification</div>
+                                    <div class="notification-list">
+                                        <div class="list-group">
+                                            <a href="#" class="list-group-item list-group-item-action active">
+                                                <div class="notification-info">
+                                                    <div class="notification-list-user-img"><img src="assets/images/avatar-2.jpg" alt="" class="user-avatar-md rounded-circle"></div>
+                                                    <div class="notification-list-user-block">
+                                                        <span class="notification-list-user-name">Jeremy Rakestraw</span>accepted your invitation to join the team.
+                                                        <div class="notification-date">2 min ago</div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                            <a href="#" class="list-group-item list-group-item-action">
+                                                <div class="notification-info">
+                                                    <div class="notification-list-user-img"><img src="assets/images/avatar-3.jpg" alt="" class="user-avatar-md rounded-circle"></div>
+                                                    <div class="notification-list-user-block">
+                                                        <span class="notification-list-user-name">John Abraham </span>is now following you
+                                                        <div class="notification-date">2 days ago</div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                            <a href="#" class="list-group-item list-group-item-action">
+                                                <div class="notification-info">
+                                                    <div class="notification-list-user-img"><img src="assets/images/avatar-4.jpg" alt="" class="user-avatar-md rounded-circle"></div>
+                                                    <div class="notification-list-user-block">
+                                                        <span class="notification-list-user-name">Monaan Pechi</span> is watching your main repository
+                                                        <div class="notification-date">2 min ago</div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                            <a href="#" class="list-group-item list-group-item-action">
+                                                <div class="notification-info">
+                                                    <div class="notification-list-user-img"><img src="assets/images/avatar-5.jpg" alt="" class="user-avatar-md rounded-circle"></div>
+                                                    <div class="notification-list-user-block">
+                                                        <span class="notification-list-user-name">Jessica Caruso</span>accepted your invitation to join the team.
+                                                        <div class="notification-date">2 min ago</div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="list-footer"> <a href="#">View all notifications</a></div>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown connection">
+                            <a class="nav-link" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="fas fa-fw fa-th"></i> </a>
+                            <ul class="dropdown-menu dropdown-menu-right connection-dropdown">
+                                <li class="connection-list">
+                                    <div class="row">
+                                        <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12 ">
+                                            <a href="#" class="connection-item"><img src="assets/images/github.png" alt=""> <span>Github</span></a>
+                                        </div>
+                                        <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12 ">
+                                            <a href="#" class="connection-item"><img src="assets/images/dribbble.png" alt=""> <span>Dribbble</span></a>
+                                        </div>
+                                        <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12 ">
+                                            <a href="#" class="connection-item"><img src="assets/images/dropbox.png" alt=""> <span>Dropbox</span></a>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12 ">
+                                            <a href="#" class="connection-item"><img src="assets/images/bitbucket.png" alt=""> <span>Bitbucket</span></a>
+                                        </div>
+                                        <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12 ">
+                                            <a href="#" class="connection-item"><img src="assets/images/mail_chimp.png" alt=""><span>Mail chimp</span></a>
+                                        </div>
+                                        <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12 ">
+                                            <a href="#" class="connection-item"><img src="assets/images/slack.png" alt=""> <span>Slack</span></a>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="conntection-footer"><a href="#">More</a></div>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown nav-user">
+
+                            <div class="dropdown-menu dropdown-menu-right nav-user-dropdown" aria-labelledby="navbarDropdownMenuLink2">
+                                <div class="nav-user-info">
+                                    <h5 class="mb-0 text-white nav-user-name">John Abraham </h5>
+                                    <span class="status"></span><span class="ml-2">Available</span>
+                                </div>
+                                <a class="dropdown-item" href="#"><i class="fas fa-user mr-2"></i>Account</a>
+                                <a class="dropdown-item" href="#"><i class="fas fa-cog mr-2"></i>Setting</a>
+                                <a class="dropdown-item" href="/"><i class="fas fa-power-off mr-2"></i> Logout</a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+        <!-- ============================================================== -->
+        <!-- end navbar -->
+        <!-- ============================================================== -->
+        <!-- ============================================================== -->
+        <!-- left sidebar -->
+        <!-- ============================================================== -->
+        <div class="nav-left-sidebar sidebar-dark">
+            <div class="menu-list">
+                <nav class="navbar navbar-expand-lg navbar-light">
+                    <a class="d-xl-none d-lg-none" href="#">Dashboard</a>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav flex-column">
+                            <li class="nav-divider">
+                                Menu
+                                <a class="nav-link active" href="#" aria-expanded="false" data-target="#submenu-2" aria-controls="submenu-2">Dashboard</a>
+                                <a class="nav-link" href="#" aria-expanded="false" data-target="#submenu-2" aria-controls="submenu-2">Play</a>
+                                <a class="nav-link" href="#" aria-expanded="false" data-target="#submenu-2" aria-controls="submenu-2">Edit Info</a>
+                                <button type="button" @onclick="LogOut" ><a class="nav-link" href="#" aria-expanded="false" data-target="#submenu-2" aria-controls="submenu-2">Log Out</a></button>
+                            </li>
+
+
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+        </div>
+        <!-- ============================================================== -->
+        <!-- end left sidebar -->
+        <!-- ============================================================== -->
+        <!-- ============================================================== -->
+        <!-- wrapper  -->
+        <!-- ============================================================== -->
+        <div class="dashboard-wrapper">
+            <div class="dashboard-ecommerce">
+                <div class="container-fluid dashboard-content ">
+                    <!-- ============================================================== -->
+                    <!-- pageheader  -->
+                    <!-- ============================================================== -->
+                    <div class="row">
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                            <div class="page-header">
+                                <h2 class="pageheader-title">@student.name </h2>
+
+                                <div class="page-breadcrumb">
+                                    <nav aria-label="breadcrumb">
+                                        <ol class="breadcrumb">
+                                            <li class="breadcrumb-item active" aria-current="page">Student ID: @student.studentID</li>
+                                            <li class="breadcrumb-item active" aria-current="page">Phonenumber: @student.phonenumber</li>
+                                        </ol>
+                                    </nav>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- ============================================================== -->
+                    <!-- end pageheader  -->
+                    <!-- ============================================================== -->
+                    <div class="ecommerce-widget">
+
+                        <div class="row">
+                            <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="text-muted">Total Question Answered</h5>
+                                        <div class="metric-value d-inline-block">
+                                            <h1 class="mb-1">@student.total_question_answered</h1>
+                                        </div>
+                                        <div class="metric-label d-inline-block float-right text-success font-weight-bold">
+                                            <span><i class=""></i></span>Accuracy: @accuracy%<span></span>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <!-------------------------------Have to changethis on api call------------------------------->
+                                        <h5 class="text-muted">Position</h5>
+                                        <div class="metric-value d-inline-block">
+                                            <h1 class="mb-1">25</h1>
+                                        </div>
+                                        <div class="metric-label d-inline-block float-right text-success font-weight-bold">
+                                            <span><i class=""></i></span><span>Total: 116</span>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="text-muted">Rank</h5>
+                                        <div class="metric-value d-inline-block">
+                                            <h1 class="mb-1">@student.rank</h1>
+                                        </div>
+                                        <div class="metric-label d-inline-block float-right text-primary font-weight-bold">
+                                            <span>Point: 560</span>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="text-muted">Account</h5>
+                                        <div class="metric-value d-inline-block">
+                                            <h1 class="mb-1">Student</h1>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <!-- ============================================================== -->
+                            <!-- ============================================================== -->
+                            <!-- recent orders  -->
+                            <!-- ============================================================== -->
+                            <div class="col-xl-9 col-lg-12 col-md-6 col-sm-12 col-12">
+                                <div class="card">
+                                    <h5 class="card-header">Top Students</h5>
+                                    <div class="card-body p-0">
+                                        <div class="table-responsive">
+                                            <table class="table">
+                                                <thead class="bg-light">
+                                                    <tr class="border-0">
+                                                        <th class="border-0">Position</th>
+
+                                                        <th class="border-0">ID</th>
+                                                        <th class="border-0">Name</th>
+                                                        <th class="border-0">Total Answered</th>
+                                                        <th class="border-0">Accuracy</th>
+                                                        <th class="border-0">Point</th>
+                                                        <th class="border-0">Rank</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>1</td>
+
+                                                        <td>Product #1 </td>
+                                                        <td>id000001 </td>
+                                                        <td>20</td>
+                                                        <td>$80.00</td>
+                                                        <td>27-08-2018 01:22:12</td>
+                                                        <td>Patricia J. King </td>
+
+                                                    </tr>
+                                                    <tr>
+                                                        <td>2</td>
+
+                                                        <td>Product #2 </td>
+                                                        <td>id000002 </td>
+                                                        <td>12</td>
+                                                        <td>$180.00</td>
+                                                        <td>25-08-2018 21:12:56</td>
+                                                        <td>Rachel J. Wicker </td>
+
+                                                    </tr>
+                                                    <tr>
+                                                        <td>3</td>
+
+                                                        <td>Product #3 </td>
+                                                        <td>id000003 </td>
+                                                        <td>23</td>
+                                                        <td>$820.00</td>
+                                                        <td>24-08-2018 14:12:77</td>
+                                                        <td>Michael K. Ledford </td>
+
+                                                    </tr>
+                                                    <tr>
+                                                        <td>4</td>
+
+                                                        <td>Product #4 </td>
+                                                        <td>id000004 </td>
+                                                        <td>34</td>
+                                                        <td>$340.00</td>
+                                                        <td>23-08-2018 09:12:35</td>
+                                                        <td>Michael K. Ledford </td>
+
+                                                    </tr>
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- ============================================================== -->
+                            <!-- end recent orders  -->
+                            <!-- customer acquistion  -->
+                            <!-- ============================================================== -->
+                            <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12">
+                                <div class="card">
+                                    <h5 class="card-header">Class & Group</h5>
+                                    <div class="card-body">
+
+                                        <div class="text-center">
+                                            <span class="legend-item mr-2">
+                                                <span class="fa-xs text-primary mr-1 legend-tile"><i class="fa fa-fw fa-square-full"></i></span>
+                                                <span class="legend-text">HSC</span>
+                                            </span>
+                                            <span class="legend-item mr-2">
+
+                                                <span class="fa-xs text-secondary mr-1 legend-tile"><i class="fa fa-fw fa-square-full"></i></span>
+                                                <span class="legend-text">Science</span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- ============================================================== -->
+                            <!-- end customer acquistion  -->
+                            <!-- ============================================================== -->
+                            <!-- ============================================================== -->
+                            <div class="col-xl-9 col-lg-12 col-md-6 col-sm-12 col-12">
+                                <div class="card">
+                                    <h5 class="card-header">Top Students</h5>
+                                    <div class="card-body p-0">
+                                        <div class="table-responsive">
+                                            <table class="table">
+                                                <thead class="bg-light">
+                                                    <tr class="border-0">
+                                                        <th class="border-0">Position</th>
+
+                                                        <th class="border-0">ID</th>
+                                                        <th class="border-0">Name</th>
+                                                        <th class="border-0">Total Answered</th>
+                                                        <th class="border-0">Accuracy</th>
+                                                        <th class="border-0">Point</th>
+                                                        <th class="border-0">Rank</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>1</td>
+
+                                                        <td>Product #1 </td>
+                                                        <td>id000001 </td>
+                                                        <td>20</td>
+                                                        <td>$80.00</td>
+                                                        <td>27-08-2018 01:22:12</td>
+                                                        <td>Patricia J. King </td>
+
+                                                    </tr>
+                                                    <tr>
+                                                        <td>2</td>
+
+                                                        <td>Product #2 </td>
+                                                        <td>id000002 </td>
+                                                        <td>12</td>
+                                                        <td>$180.00</td>
+                                                        <td>25-08-2018 21:12:56</td>
+                                                        <td>Rachel J. Wicker </td>
+
+                                                    </tr>
+                                                    <tr>
+                                                        <td>3</td>
+
+                                                        <td>Product #3 </td>
+                                                        <td>id000003 </td>
+                                                        <td>23</td>
+                                                        <td>$820.00</td>
+                                                        <td>24-08-2018 14:12:77</td>
+                                                        <td>Michael K. Ledford </td>
+
+                                                    </tr>
+                                                    <tr>
+                                                        <td>4</td>
+
+                                                        <td>Product #4 </td>
+                                                        <td>id000004 </td>
+                                                        <td>34</td>
+                                                        <td>$340.00</td>
+                                                        <td>23-08-2018 09:12:35</td>
+                                                        <td>Michael K. Ledford </td>
+
+                                                    </tr>
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- ============================================================== -->
+                            <!-- end recent orders  -->
+                            <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12">
+                                <!-- ============================================================== -->
+                                <!-- top perfomimg  -->
+                                <!-- ============================================================== -->
+                                <div class="card">
+                                    <h5 class="card-header">Top Performing Campaigns</h5>
+                                    <div class="card-body p-0">
+                                        <div class="table-responsive">
+                                            <table class="table no-wrap p-table">
+                                                <thead class="bg-light">
+                                                    <tr class="border-0">
+                                                        <th class="border-0">Campaign</th>
+                                                        <th class="border-0">Visits</th>
+                                                        <th class="border-0">Revenue</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>Campaign#1</td>
+                                                        <td>98,789 </td>
+                                                        <td>$4563</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Campaign#2</td>
+                                                        <td>2,789 </td>
+                                                        <td>$325</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Campaign#3</td>
+                                                        <td>1,459 </td>
+                                                        <td>$225</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Campaign#4</td>
+                                                        <td>5,035 </td>
+                                                        <td>$856</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Campaign#5</td>
+                                                        <td>10,000 </td>
+                                                        <td>$1000</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Campaign#5</td>
+                                                        <td>10,000 </td>
+                                                        <td>$1000</td>
+                                                    </tr>
+                                                  
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <!-- ============================================================== -->
+                                <!-- ============================================================== -->
+
+                            </div>
+
+                            <!-- ============================================================== -->
+                            <!-- product category  -->
+                            <!-- ============================================================== -->
+                            <!-- end sales traffice source  -->
+                            <!-- ============================================================== -->
+                            <!-- ============================================================== -->
+                            <!-- sales traffic country source  -->
+                            <!-- ============================================================== -->
+                            <!-- ============================================================== -->
+                            <!-- end sales traffice country source  -->
+                            <!-- ============================================================== -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- ============================================================== -->
+            <!-- footer -->
+            <!-- ============================================================== -->
+            <div class="footer">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+                            Copyright © 2018 Concept. All rights reserved. Dashboard by <a href="https://colorlib.com/wp/">Colorlib</a>.
+                        </div>
+                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+                            <div class="text-md-right footer-links d-none d-sm-block">
+                                <a href="javascript: void(0);">About</a>
+                                <a href="javascript: void(0);">Support</a>
+                                <a href="javascript: void(0);">Contact Us</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- ============================================================== -->
+            <!-- end footer -->
+            <!-- ============================================================== -->
+        </div>
+        <!-- ============================================================== -->
+        <!-- end wrapper  -->
+        <!-- ============================================================== -->
+    </div>
+
+@code {
+
+    string text;
+    Student student = new Student();
+    float accuracy;
+    protected override async Task OnInitializedAsync()
+    {
+        text = "Dashboard";
+        await Task.Run(() => AuthenticateUser());
+
+    }
+
+    public async Task AuthenticateUser()
+    {
+
+        student.mail = await oLocalStore.GetItemAsync<string>("mail");
+        student.password = await oLocalStore.GetItemAsync<string>("password");
+
+        if (student.mail == null || student.password == null)
+        {
+            NavigationManager.NavigateTo("/");
+        }
+        else
+        {
+            await Task.Run(() => connect.SignIn(student.mail, student.password));
+
+            student = connect.student;
+            accuracy =(student.total_right_answer/(float)student.total_question_answered)*100f;
+        }
+    }
+
+    public void LogOut()
+    {
+        oLocalStore.ClearAsync();
+        NavigationManager.NavigateTo("/");
+    }
+
+    // public async void SaveSession()
+    //{
+    //    await oLocalStore.SetItemAsync("mail", student.mail);
+    //    await oLocalStore.SetItemAsync("password", student.password);
+    //    await oLocalStore.SetItemAsync("studentID", student.studentID);
+    //    await oLocalStore.SetItemAsync("name", student.name);
+    //    await oLocalStore.SetItemAsync("phonenumber", student.phonenumber);
+    //   await oLocalStore.SetItemAsync("amount", student.amount);
+    //    await oLocalStore.SetItemAsync("point", student.point);
+    //   await oLocalStore.SetItemAsync("rank", student.rank);
+    //   await oLocalStore.SetItemAsync("total_question_answered", student.total_question_answered);
+    //    await oLocalStore.SetItemAsync("total_right_answer", student.total_right_answer);
+    //  }
+
+}
