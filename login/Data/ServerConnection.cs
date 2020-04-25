@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using login.Pages;
+using System.Collections.Generic;
 
 namespace login.Data
 {
@@ -11,6 +12,10 @@ namespace login.Data
         public int qsNumber { get; set; }
         public int submitted { get; set; }
         public Student student { get; set; }
+        public List<Student> TopStudentList { get; set; }
+        public List<Student> allStudent { get; set; }
+        public List<Teacher> allTeacher { get; set; }
+        public List<Teacher> TopTeacherList { get; set; }
 
         public ServerConnection()
         {
@@ -39,7 +44,7 @@ namespace login.Data
             string result = await response.Content.ReadAsStringAsync().ConfigureAwait(true);
             var r = JsonConvert.DeserializeObject<Response>(result);
             submitted = r.status;
-            
+
         }
 
         public async Task SignIn(string Mail, string pass)
@@ -52,16 +57,16 @@ namespace login.Data
             string result = await response.Content.ReadAsStringAsync().ConfigureAwait(true);
             var s = JsonConvert.DeserializeObject<Student>(result);
             student = s;
-            if(s.mail != null)
+            if (s.mail != null)
             {
                 submitted = 0;
-                
+
             }
             else
             {
                 submitted = 1;
             }
-            
+
         }
         public async Task SignUp(string Mail, string pass, string name, string phonenumber)
         {
@@ -73,6 +78,54 @@ namespace login.Data
             string result = await response.Content.ReadAsStringAsync().ConfigureAwait(true);
             var r = JsonConvert.DeserializeObject<Response>(result);
             submitted = r.status;
+        }
+
+        public async Task GetTopStudent()
+        {
+            List<Student> tenList = new List<Student>();
+            string url = "https://api.shikkhanobish.com/api/Medhabi/GetTopStudents";
+            HttpClient client = new HttpClient();
+            HttpResponseMessage response = await client.GetAsync(url).ConfigureAwait(true);
+            string result = await response.Content.ReadAsStringAsync().ConfigureAwait(true);
+            var studentList = JsonConvert.DeserializeObject<List<Student>>(result);
+            allStudent = studentList;
+            if (studentList[0].name != null)
+            {
+                submitted = 0;
+                for (int i = 0; i < 10; i++)
+                {
+                    tenList.Add(studentList[i]);
+                }
+            }
+            else
+            {
+                submitted = 1;
+            }
+            TopStudentList = tenList;
+        }
+        public async Task GetTopTeacher()
+        {
+            List<Teacher> topTen = new List<Teacher>();
+            string url = "https://api.shikkhanobish.com/api/Medhabi/GetTopTeacher";
+            HttpClient client = new HttpClient();
+            HttpResponseMessage response = await client.GetAsync(url).ConfigureAwait(true);
+            string result = await response.Content.ReadAsStringAsync().ConfigureAwait(true);
+            var TeacherList = JsonConvert.DeserializeObject<List<Teacher>>(result);
+            allTeacher = TeacherList;
+            if (TeacherList[0].name != null)
+            {
+                submitted = 0;
+                for (int i = 0; i < 10; i++)
+                {
+                    topTen.Add(TeacherList[i]);
+                }
+
+            }
+            else
+            {
+                submitted = 1;
+            }
+            TopTeacherList = topTen;
         }
     }
 }

@@ -6971,7 +6971,35 @@ Media Query
     padding: 17px 29px;}
 }
 
+/*---------------Spinner----------------------*/
+.lds-dual-ring {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    position: inherit;
+}
 
+    .lds-dual-ring:after {
+        content: " ";
+        display: block;
+        width: 34px;
+        height: 34px;
+        margin: 8px;
+        border-radius: 50%;
+        border: 6px solid #2e2f39;
+        border-color: #2e2f39 transparent #2e2f39 transparent;
+        animation: lds-dual-ring 1.2s linear infinite;
+    }
+
+@keyframes lds-dual-ring {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
 
 
 /* Custom, iPhone Retina */
