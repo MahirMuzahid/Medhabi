@@ -1,4 +1,5 @@
 ﻿@page "/SubmitQuestion"
+@inject Blazored.LocalStorage.ILocalStorageService oLocalStore
 @using login.Data
 @inject ServerConnection connect
 
@@ -50,8 +51,8 @@
 
                 </div>
                 <div data-validate="Password is required">
-                    Name
-                    <textarea cols="100" rows="8" style="background: #e6e6e6; width:100%; height:50px; position:relative; font-size:12px; border-radius: 5px; " @bind="name" type="text">    </textarea>
+                    <h4>Name:<strong> @name</strong></h4>
+                    
                 </div>
 
                 <div class="container-login100-form-btn">
@@ -75,36 +76,41 @@
     public string f4 { get; set; }
     public string qc { get; set; }
     public int ra { get; set; }
-    public string name { get; set; }
     public int TotalQuestion { get; set; }
     public string Member { get; set; }
+    string name = null;
+    int id = 0;
 
     protected override async Task OnInitializedAsync()
     {
         await Task.Run(() => connect.getTotalQuestion());
+        name = await oLocalStore.GetItemAsync<string>("TeacherName");
+        id = Int32.Parse (await oLocalStore.GetItemAsync<string>("TeacherID"));
 
         TotalQuestion = connect.qsNumber;
     }
 
-    private void check()
+    private async Task check()
     {
-        if ((ra >= 1 && ra <= 4) &&( mq != null || f1 != null || f2 != null || f3 != null || f4 != null || name != null))
+        if ((ra >= 1 && ra <= 4) && (mq != null || f1 != null || f2 != null || f3 != null || f4 != null || name != null))
         {
             Question qs = new Question();
             qs.question_code = qc;
             qs.question = mq;
-            qs.first_choice = "1. "+f1;
+            qs.first_choice = "1. " + f1;
             qs.second_choice = "2. " + f2;
             qs.third_choice = "3. " + f3;
             qs.forth_choice = "4. " + f4;
             qs.right_answer = ra;
+            qs.teacherID = id;
             qs.name = name;
 
-            connect.SubmitQuestion(qs);
-            connect.getTotalQuestion();
+
+            await Task.Run(() => connect.SubmitQuestion(qs));
+            await Task.Run(() => connect.getTotalQuestion());
 
             int i = connect.submitted;
-            if(i == 0 )
+            if (i == 0)
             {
                 ErrorText = "Successfully Submitted!";
                 mq = "";

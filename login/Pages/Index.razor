@@ -13,7 +13,7 @@
 
             <form class="login100-form validate-form">
                 <span class="login100-form-title">
-                    Student Sign In
+                    Sign In
                 </span>
                 <p style="color:red">@Error</p>
                 <div class="wrap-input100 " data-validate="Valid email is required: ex@abc.xyz">
@@ -33,20 +33,25 @@
                 </div>
 
                 <div class="container-login100-form-btn">
-                    <button class="login100-form-btn" type="button" @onclick="login">
+                    <button class="login100-form-btn" disabled style="background: #808080" type="button" @onclick="login">
                         @Logintxt
                     </button>
                 </div>
+                <div class="container-login100-form-btn">
+                    <button class="login100-form-btn" type="button" @onclick="loginTeacher">
+                        @LogintxtTeacher
+                    </button>
+                </div>
 
-                
 
-                
+
+
             </form>
         </div>
     </div>
 </div>
 @code{
-    private string mail, pass, Error, Logintxt;
+    private string mail, pass, Error, Logintxt, LogintxtTeacher;
 
     string sessionMsg = "";
     string sessionValue = "";
@@ -55,23 +60,37 @@
     protected override async Task OnInitializedAsync()
     {
         Student student = new Student();
+        Teacher teacher = new Teacher();
         student.mail = await oLocalStore.GetItemAsync<string>("mail");
         student.password = await oLocalStore.GetItemAsync<string>("password");
-        if(student.mail != null && student.password != null)
+        teacher.mail = await oLocalStore.GetItemAsync<string>("Tmail");
+        teacher.password = await oLocalStore.GetItemAsync<string>("Tpassword");
+        if(teacher.mail != null && teacher.password != null)
+        {
+            NavigationManager.NavigateTo("/TeacherDashboard");
+        }        
+        else if (student.mail != null && student.password != null)
         {
             NavigationManager.NavigateTo("/dashboard");
         }
         else
         {
-            Logintxt = "Login";
+            Logintxt = "Login Student";
+            LogintxtTeacher = "Login Teacher";
         }
+
 
     }
 
-    public async Task SaveSession(string mail, string password)
+    public async Task SaveSessionStudent(string mail, string password)
     {
         await oLocalStore.SetItemAsync("mail", mail);
         await oLocalStore.SetItemAsync("password", password);
+    }
+    public async Task SaveSessionTeacher(string mail, string password)
+    {
+        await oLocalStore.SetItemAsync("Tmail", mail);
+        await oLocalStore.SetItemAsync("Tpassword", password);
     }
 
 
@@ -81,7 +100,20 @@
         if (mail != null && pass != null )
         {
             await Task.Run(() => connect.SignIn(mail, pass));
-            nevigate();
+            nevigate(0);
+        }
+        else
+        {
+            Error = "Can't use empty box";
+        }
+    }
+    private async Task loginTeacher()
+    {
+        LogintxtTeacher = "Wait...";
+        if (mail != null && pass != null)
+        {
+            await Task.Run(() => connect.SignInTeacher(mail, pass));
+            nevigate(1);
         }
         else
         {
@@ -89,20 +121,39 @@
         }
     }
 
-    public async void nevigate()
+    public async void nevigate(int n)
     {
-        Student student = connect.student;
-        if (connect.submitted == 0)
+        if(n == 0)
         {
+            Student student = connect.student;
+            if (connect.submitted == 0)
+            {
 
-            await Task.Run(() => SaveSession(student.mail, student.password));
+                await Task.Run(() => SaveSessionStudent(student.mail, student.password));
 
-            NavigationManager.NavigateTo("/dashboard");
+                NavigationManager.NavigateTo("/dashboard");
+            }
+            else
+            {
+                Error = "Wrong Username or Password";
+            }
         }
-        else
+        if(n == 1)
         {
-            Error = "Wrong Username or Password";
+            Teacher teacher = connect.teacher;
+            if (connect.submitted == 0)
+            {
+
+                await Task.Run(() => SaveSessionTeacher(teacher.mail, teacher.password));
+
+                NavigationManager.NavigateTo("/TeacherDashboard");
+            }
+            else
+            {
+                Error = "Wrong Username or Password";
+            }
         }
+
     }
 
 

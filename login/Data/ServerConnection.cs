@@ -12,6 +12,7 @@ namespace login.Data
         public int qsNumber { get; set; }
         public int submitted { get; set; }
         public Student student { get; set; }
+        public Teacher teacher { get; set; }
         public List<Student> TopStudentList { get; set; }
         public List<Student> allStudent { get; set; }
         public List<Teacher> allTeacher { get; set; }
@@ -38,7 +39,7 @@ namespace login.Data
         {
             string url = "https://api.shikkhanobish.com/api/Medhabi/SubmitQuestion";
             HttpClient client = new HttpClient();
-            string jsonData = JsonConvert.SerializeObject(new { question_code = q.question_code, question = q.question, first_choice = q.first_choice, second_choice = q.second_choice, third_choice = q.third_choice, forth_choice = q.forth_choice, right_answer = q.right_answer, name = q.name });
+            string jsonData = JsonConvert.SerializeObject(new { question_code = q.question_code, question = q.question, first_choice = q.first_choice, second_choice = q.second_choice, third_choice = q.third_choice, forth_choice = q.forth_choice, right_answer = q.right_answer, name = q.name, teacherID  = q.teacherID});
             StringContent content = new StringContent(jsonData, Encoding.UTF8, "application/json");
             HttpResponseMessage response = await client.PostAsync(url, content).ConfigureAwait(true);
             string result = await response.Content.ReadAsStringAsync().ConfigureAwait(true);
@@ -58,6 +59,27 @@ namespace login.Data
             var s = JsonConvert.DeserializeObject<Student>(result);
             student = s;
             if (s.mail != null)
+            {
+                submitted = 0;
+
+            }
+            else
+            {
+                submitted = 1;
+            }
+
+        }
+        public async Task SignInTeacher(string Mail, string pass)
+        {
+            string url = "https://api.shikkhanobish.com/api/Medhabi/SignInTeacher";
+            HttpClient client = new HttpClient();
+            string jsonData = JsonConvert.SerializeObject(new { mail = Mail, password = pass });
+            StringContent content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+            HttpResponseMessage response = await client.PostAsync(url, content).ConfigureAwait(true);
+            string result = await response.Content.ReadAsStringAsync().ConfigureAwait(true);
+            var t = JsonConvert.DeserializeObject<Teacher>(result);
+            teacher = t;
+            if (t.mail != null)
             {
                 submitted = 0;
 

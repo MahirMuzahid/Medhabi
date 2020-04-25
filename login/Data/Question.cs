@@ -18,5 +18,6 @@ namespace login.Data
         public int amount { get; set; }
         public string response { get; set; }
         public int stetus { get; set; }
+        public int teacherID { get; set; }
     }
 }
