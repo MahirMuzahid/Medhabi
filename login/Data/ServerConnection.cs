@@ -114,9 +114,17 @@ namespace login.Data
             if (studentList[0].name != null)
             {
                 submitted = 0;
-                for (int i = 0; i < 10; i++)
+                for (int i = 0; i < allStudent.Count; i++)
                 {
-                    tenList.Add(studentList[i]);
+                    if(i == 10)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        tenList.Add(studentList[i]);
+                    }
+                    
                 }
             }
             else

@@ -33,7 +33,7 @@
                 </div>
 
                 <div class="container-login100-form-btn">
-                    <button class="login100-form-btn" disabled style="background: #808080" type="button" @onclick="login">
+                    <button class="login100-form-btn" style="background: #0094ff"  type="button" @onclick="login">
                         @Logintxt
                     </button>
                 </div>
@@ -59,7 +59,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        
+
         Student student = new Student();
         Teacher teacher = new Teacher();
         student.mail = await oLocalStore.GetItemAsync<string>("mail");
@@ -69,7 +69,7 @@
         if(teacher.mail != null && teacher.password != null)
         {
             NavigationManager.NavigateTo("/TeacherDashboard");
-        }        
+        }
         else if (student.mail != null && student.password != null)
         {
             NavigationManager.NavigateTo("/dashboard");
@@ -119,6 +119,7 @@
         else
         {
             Error = "Can't use empty box";
+            LogintxtTeacher = "Login";
         }
     }
 
@@ -137,6 +138,7 @@
             else
             {
                 Error = "Wrong Username or Password";
+                LogintxtTeacher = "Login";
             }
         }
         if(n == 1)
@@ -152,6 +154,7 @@
             else
             {
                 Error = "Wrong Username or Password";
+                LogintxtTeacher = "Login";
             }
         }
 
