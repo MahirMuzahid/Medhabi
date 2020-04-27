@@ -3,6 +3,7 @@
 @using login.Data
 @inject ServerConnection connect
 
+
 <div class="limiter">
     <div class="container-login100cn">
         <div class="wrap-login100cn">
@@ -46,11 +47,23 @@
 
                 </div>
                 <div data-validate="Password is required">
-                    Right Answer Number
-                    <textarea cols="100" rows="8" style="background: #e6e6e6; width:100%; height:50px; position:relative; font-size:12px; border-radius: 5px; " @bind="ra" type="text">    </textarea>
+                    Right Answer Number : <h3>@ra</h3><br>
+                    <button class="btnans" type="button" @onclick="ans1">
+                        1
+                    </button>
+                    <button class="btnans" type="button" @onclick="ans2">
+                        2
+                    </button>
+                    <button class="btnans" type="button" @onclick="ans3">
+                        3
+                    </button>
+                    <button class="btnans" type="button" @onclick="ans4">
+                        4
+                    </button>
+
 
                 </div>
-                <div data-validate="Password is required">
+                <div >
                     <h4>Name:<strong> @name</strong></h4>
                     
                 </div>
@@ -92,23 +105,23 @@
 
     private async Task check()
     {
-        if ((ra >= 1 && ra <= 4) && (mq != null || f1 != null || f2 != null || f3 != null || f4 != null || name != null))
+        Question qs = new Question();
+        qs.question_code = qc;
+        qs.question = mq;
+        qs.first_choice = "1. " + f1;
+        qs.second_choice = "2. " + f2;
+        qs.third_choice = "3. " + f3;
+        qs.forth_choice = "4. " + f4;
+        qs.right_answer = ra;
+        qs.teacherID = id;
+        qs.name = name;
+
+
+        await Task.Run(() => connect.SubmitQuestion(qs));
+        await Task.Run(() => connect.getTotalQuestion());
+
+        if(qc != null && mq != null && f1 != null && f2 != null && f3 != null && f4 != null)
         {
-            Question qs = new Question();
-            qs.question_code = qc;
-            qs.question = mq;
-            qs.first_choice = "1. " + f1;
-            qs.second_choice = "2. " + f2;
-            qs.third_choice = "3. " + f3;
-            qs.forth_choice = "4. " + f4;
-            qs.right_answer = ra;
-            qs.teacherID = id;
-            qs.name = name;
-
-
-            await Task.Run(() => connect.SubmitQuestion(qs));
-            await Task.Run(() => connect.getTotalQuestion());
-
             int i = connect.submitted;
             if (i == 0)
             {
@@ -124,13 +137,29 @@
             {
                 ErrorText = "Try Again!";
             }
-
-
         }
         else
         {
-            ErrorText = "Check Again";
+            ErrorText = "Fill all the boxes";
         }
+
         TotalQuestion = connect.qsNumber;
+    }
+
+    public void ans1()
+    {
+        ra = 1;
+    }
+    public void ans2()
+    {
+        ra = 2;
+    }
+    public void ans3()
+    {
+        ra = 3;
+    }
+    public void ans4()
+    {
+        ra = 4;
     }
 }

@@ -137,9 +137,17 @@ namespace login.Data
             if (TeacherList[0].name != null)
             {
                 submitted = 0;
-                for (int i = 0; i < 10; i++)
+                for (int i = 0; i < allTeacher.Count; i++)
                 {
-                    topTen.Add(TeacherList[i]);
+                    if( i == 10)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        topTen.Add(TeacherList[i]);
+                    }
+                    
                 }
 
             }

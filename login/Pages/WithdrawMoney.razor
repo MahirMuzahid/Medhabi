@@ -1,0 +1,92 @@
+﻿@page "/withdraw"
+@inject Blazored.LocalStorage.ILocalStorageService oLocalStore
+<div class="limiter">
+    <div class="container-login100cn">
+        <div class="wrap-login100cn">
+
+            <form class="login100-form validate-form">
+                <span class="login100-form">
+                    Withdraw Money
+                </span>
+                <br> <h5>You account balance</h5>
+                <br> <h2>@balance</h2>
+                <p style="color:red">@ErrorText</p>
+
+                <div class="wrap-input100 validate-input" data-validate="Valid email is required: ex@abc.xyz">
+                    <input class="input100" @bind="phonenumber" type="text" name="email" placeholder="Phonenumber">
+                    <span class="focus-input100"></span>
+                    <span class="symbol-input100">
+                        <i class="fa fa-envelope" aria-hidden="true"></i>
+                    </span>
+                </div>
+                <div class="wrap-input100 validate-input" data-validate="Valid email is required: ex@abc.xyz">
+                    <input class="input100" @bind="amount" type="number" name="email" placeholder="Amount">
+                    <span class="focus-input100"></span>
+                    <span class="symbol-input100">
+                        <i class="fa fa-envelope" aria-hidden="true"></i>
+                    </span>
+                </div>
+                <div class="wrap-input100 validate-input" data-validate="Valid email is required: ex@abc.xyz">
+                    <input class="input100" @bind="password" type="password" name="email" placeholder="Medhabi Password">
+                    <span class="focus-input100"></span>
+                    <span class="symbol-input100">
+                        <i class="fa fa-envelope" aria-hidden="true"></i>
+                    </span>
+                </div>
+
+                <div class="container-login100-form-btn">
+                    <button class="login100-form-btn" type="button" @onclick="send">
+                        @textB
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@code {
+    string phonenumber, password,realpass, ErrorText, textB, name,id;
+    int amount, balance;
+    protected override async Task OnInitializedAsync()
+    {
+        balance = await oLocalStore.GetItemAsync<int>("TeacherBalance");
+        name = await oLocalStore.GetItemAsync<string>("TeacherName");
+        realpass = await oLocalStore.GetItemAsync<string>("password");
+        id = await oLocalStore.GetItemAsync<string>("TeacherID");
+        textB = "Send Withdraw Request";
+    }
+
+    public async void send()
+    {
+        if((password == realpass) && (balance >= amount) && (balance >= 20))
+        {
+            string RecevierNumber = phonenumber, text = "Withdarw: Name = " + name + ", ID = " + id + ", Amount = " + amount;
+            string url = "https://www.bdgosms.com/send/?req=out&apikey=bdgoc3F0bqy9a4wEXRtI8VeBTmQL1ZhzuK&numb=" + RecevierNumber + "&sms=" + text;
+            HttpClient client = new HttpClient();
+            HttpResponseMessage response = await client.GetAsync(url);
+            string result = await response.Content.ReadAsStringAsync().ConfigureAwait(true);
+            if(result[0] == '{')
+            {
+                ErrorText = "Request Sent! If your number is right, we will send the money in : 1 hour";
+            }
+            else
+            {
+                ErrorText = "Check the number!";
+            }
+        }
+        else if(password != realpass)
+        {
+            ErrorText = "Password should match to your medhabi account password";
+        }
+        else if(balance < amount)
+        {
+            ErrorText = "You can't withdrw more than you have!";
+        }
+        else if (balance < 20)
+        {
+            ErrorText = "You can't withdrw if you have less than 20 taka";
+        }
+    }
+
+
+}

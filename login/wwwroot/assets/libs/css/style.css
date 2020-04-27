@@ -189,6 +189,21 @@ h3 {
     font-size: 20px;
 }
 
+.btnans {
+    background: #ffd800;
+    width: 60px;
+    height: 30px
+}
+.btnans:hover {
+    background: #2e2f39;
+    color: aliceblue;
+}
+
+
+
+
+
+
 h4 {
     font-size: 16px;
     line-height: 26px;
