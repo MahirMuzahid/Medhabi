@@ -33,7 +33,7 @@
                 </div>
 
                 <div class="container-login100-form-btn">
-                    <button class="login100-form-btn" style="background: #0094ff"  type="button" @onclick="login">
+                    <button class="login100-form-btn" style="background: #0094ff" type="button" @onclick="login">
                         @Logintxt
                     </button>
                 </div>
@@ -43,7 +43,11 @@
                     </button>
                 </div>
 
-
+                <div class="text-center p-t-136">
+                    <a class="txt2" href="#" @onclick ="signup">
+                        Create your Account                        
+                    </a>
+                </div>
 
 
             </form>
@@ -81,6 +85,11 @@
         }
 
 
+    }
+
+    public void signup()
+    {
+        NavigationManager.NavigateTo("/signup");
     }
 
     public async Task SaveSessionStudent(string mail, string password)

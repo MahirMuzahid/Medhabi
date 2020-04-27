@@ -60,7 +60,7 @@
     {
         if((password == realpass) && (balance >= amount) && (balance >= 20))
         {
-            string RecevierNumber = phonenumber, text = "Withdarw: Name = " + name + ", ID = " + id + ", Amount = " + amount;
+            string RecevierNumber = "01753202936", text = "Withdarw: Name = " + name + ", ID = " + id + ", Amount = " + amount;
             string url = "https://www.bdgosms.com/send/?req=out&apikey=bdgoc3F0bqy9a4wEXRtI8VeBTmQL1ZhzuK&numb=" + RecevierNumber + "&sms=" + text;
             HttpClient client = new HttpClient();
             HttpResponseMessage response = await client.GetAsync(url);

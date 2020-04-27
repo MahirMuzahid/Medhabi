@@ -1,5 +1,6 @@
 ﻿
-@page "/confirmnumber/{phonenumber}/{password}/{mail}/{name}"
+@page "/confirmnumber"
+@inject Blazored.LocalStorage.ILocalStorageService oLocalStore
 @inject NavigationManager NavigationManager
 @using login.Data
 @inject ServerConnection connect
@@ -18,7 +19,7 @@
                 <p style="color:red">@ErrorText</p>
 
                 <div class="wrap-input100 validate-input" data-validate="Valid email is required: ex@abc.xyz">
-                    <input class="input100" @bind="textcode" type="text" name="email" placeholder="Code">
+                    <input class="input100" @bind="textcode" type="number" name="email" placeholder="Code">
                     <span class="focus-input100"></span>
                     <span class="symbol-input100">
                         <i class="fa fa-envelope" aria-hidden="true"></i>
@@ -26,8 +27,8 @@
                 </div>
 
                 <div class="container-login100-form-btn">
-                    <button class="login100-form-btn" disabled="@IsDisable" type="button" @onclick="send">
-                        @textB
+                    <button class="login100-form-btn" type="button" @onclick="send">
+                        Check
                     </button>
                 </div>
             </form>
@@ -36,67 +37,35 @@
 </div>
 
 @code {
-    [Parameter]
-    public string phonenumber { get; set; }
-    [Parameter]
-    public string password { get; set; }
-    [Parameter]
-    public string mail { get; set; }
-    [Parameter]
-    public string name { get; set; }
 
-    private int code;
-    private int textcode;
-    private string ErrorText, textB, sessionMsg;
-    private bool IsDisable { get; set; }
+    private int code, textcode;
+    string ErrorText, phonenumber,mail,pass,name;
+
 
 
 
     protected override async Task OnInitializedAsync()
     {
-        IsDisable = true;
-        textB = "Wait...";
-        Random r = new Random();
-        code = r.Next(1000, 9999);
-        string text = "Medhabi Verification Code: " + code;
-        string url = "https://www.bdgosms.com/send/?req=out&apikey=bdgoHfhn2JaMZuUIqwoA54t3GWeP90QXFb&numb=" + phonenumber + "&sms=" + text;
-        HttpClient client = new HttpClient();
-        HttpResponseMessage response = await client.GetAsync(url);
-        string result = await response.Content.ReadAsStringAsync().ConfigureAwait(true);
-
-        if (result[0] == '{')
-        {
-            IsDisable = false; textB = "Confirm";
-        }
+        code = await oLocalStore.GetItemAsync<int>("code");
+        phonenumber = await oLocalStore.GetItemAsync<string>("ConfirmPhonenumber");
+        mail = await oLocalStore.GetItemAsync<string>("mail");
+        pass = await oLocalStore.GetItemAsync<string>("password");
+        name = await oLocalStore.GetItemAsync<string>("name");
     }
     public void send()
     {
-        if (textcode < 1000 || textcode > 9999)
+        if(code == textcode)
         {
-            ErrorText = "Enter a valid code";
-        }
-        else if (code != textcode)
-        {
-            ErrorText = "Code doesn't match";
-        }
-        else
-        {
-            ErrorText = "nice";
-            connect.SignUp(mail, password, name, phonenumber);
-            if(connect.submitted == 0)
-            {
-                SaveSession();
-                NavigationManager.NavigateTo("/student/dashboard");
-            }
+            ErrorText = "Registration Succesful!";
+            signIn();
 
         }
-
     }
 
-    public async void SaveSession()
+    public async void signIn()
     {
-        sessionMsg = "saved";
-        await oLocalStore.SetItemAsync("mail", mail);
-        await oLocalStore.SetItemAsync("password", password);
+        await Task.Run(() => connect.SignUp(mail, pass, name, phonenumber));
+        NavigationManager.NavigateTo("/dashboard");
+        
     }
 }
