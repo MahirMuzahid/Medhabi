@@ -169,10 +169,28 @@ iframe {
     align-items: center;
     padding: 15px;
     background: #9053c7;
-    background: -webkit-linear-gradient(-135deg, #1e1e1e, #7340e0);
-    background: -o-linear-gradient(-135deg, #1e1e1e, #7340e0);
-    background: -moz-linear-gradient(-135deg, #1e1e1e, #7340e0);
-    background: linear-gradient(-135deg, #1e1e1e, #7340e0);
+    background: -webkit-linear-gradient(-135deg, #3384e6, #8f3ced);
+    background: -o-linear-gradient(-135deg, #3384e6, #8f3ced);
+    background: -moz-linear-gradient(-135deg, #3384e6, #8f3ced);
+    background: linear-gradient(-135deg, #3384e6, #8f3ced);
+}
+.container-login80 {
+    width: 100%;
+    min-height: 100vh;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    padding: 30px;
+    background: #9053c7;
+    background: -webkit-linear-gradient(-135deg, #3384e6, #8f3ced);
+    background: -o-linear-gradient(-135deg, #3384e6, #8f3ced);
+    background: -moz-linear-gradient(-135deg, #3384e6, #8f3ced);
+    background: linear-gradient(-135deg, #3384e6, #8f3ced);
 }
 
 .wrap-login100 {
@@ -187,8 +205,9 @@ iframe {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
-    padding: 177px 130px 33px 95px;
-    box-shadow: 7px 5px #c850c0, 10px 10px #7340e0, 15px 15px #333333;
+    padding: 70px 130px 33px 95px;
+    
+    
 }
 .container-login100cn {
     width: 100%;
@@ -523,7 +542,7 @@ iframe {
     top: 0;
     left: 0;
     height: 25px;
-    width: 25px;
+    width: 10px;
     background-color: #dedede;
 }
 /* On mouse-over, add a grey background color */
@@ -548,19 +567,21 @@ iframe {
     display: block;
 }
 
-/* Style the checkmark/indicator */
-.container .checkmark:after {
-    left: 9px;
-    top: 5px;
-    width: 5px;
-    height: 10px;
-    border: solid white;
-    border-width: 0 3px 3px 0;
-    -webkit-transform: rotate(45deg);
-    -ms-transform: rotate(45deg);
-    transform: rotate(45deg);
-}
+
 label {
     display: block;
-    text-indent: 15px;
+    padding-left:100px;
+    
 }
+.circle {
+    width: 30px;
+    border-radius: 20px;
+    text-align: center;
+    font-size: 10px;
+    line-height: 3;
+    position: relative;
+    background: #38a9e4;
+    color: white;
+    font-family: Helvetica, Arial Black, sans;
+}
+  

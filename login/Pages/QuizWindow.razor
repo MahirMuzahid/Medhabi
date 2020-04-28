@@ -1,36 +1,90 @@
 ﻿@page "/quiz"
 
 <div class="limiter">
-    <div class="container-login100">
-        <div class="wrap-login100">
-            <h3>পরমাণু যে ফিশনযোগ্য, কে আবিষ্কার করেন?</h3>
-            <label class="container">
+    <div class="container-login100" style="        background: -webkit-linear-gradient(-135deg, #1e1e1e, #7340e0);
+        background: -o-linear-gradient(-135deg, #1e1e1e, #7340e0);
+        background: -moz-linear-gradient(-135deg, #1e1e1e, #7340e0);
+        background: linear-gradient(-135deg, #1e1e1e, #7340e0);">
+        
+        <div class="wrap-login100" style="box-shadow: 7px 5px #c850c0, 10px 10px #7340e0, 15px 15px #333333;">
 
-                <input type="checkbox" checked="checked">
-
-                <span class="checkmark"></span>
-                1. অটোহান ও স্ট্রেসম্যান
-            </label>
             
-            <label class="container">
-                ২. রজার বেকন ও বেকেরেল
-                <input type="checkbox">
-                <span class="checkmark"></span>
-            </label>
-            <label class="container">
-                3. রাইট ব্রাদারস
-                <input type="checkbox">
-                <span class="checkmark"></span>
-            </label>
-            <label class="container">
-                4. স্ট্রেসম্যান ও ম্যাক্সওয়েল
-                <input type="checkbox">
-                <span class="checkmark"></span>
-            </label>
+                <label style="padding:2px">Mahir Muzahid</label>
+                <div class="circle">1</div>
+                <div class="circle">2</div>
+                <div class="circle">3</div>
+                <div class="circle">4</div>
+                <div class="circle">5</div>
+                <label style="padding:2px">Nuhal Rahman</label>
+                <div class="circle">1</div>
+                <div class="circle">2</div>
+                <div class="circle">3</div>
+                <div class="circle">4</div>
+                <div class="circle">5</div>
+            
+            <div class="container-login100-form-btn">
+                <h1>Time: 10 sec</h1>
+            </div>
+            <div class="container-login100-form-btn">
+                <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:@value">
+                    @value
+                </div>
+            </div>
+            <div class="container-login100-form-btn">
+                <h3>পরমাণু যে ফিশনযোগ্য, কে আবিষ্কার করেন?</h3><br />
+                <label class="container">
+
+                    <input type="checkbox" @bind="@opOne">
+
+                    <span class="checkmark"></span>
+                    1. অটোহান ও স্ট্রেসম্যান
+                </label>
+
+                <label class="container">
+                    ২. রজার বেকন ও বেকেরেল
+                    <input type="checkbox" @bind="@opTwo">
+                    <span class="checkmark"></span>
+                </label>
+                <label class="container">
+                    3. রাইট ব্রাদারস
+                    <input type="checkbox">
+                    <span class="checkmark"></span>
+                </label>
+                <label class="container">
+                    4. স্ট্রেসম্যান ও ম্যাক্সওয়েল
+                    <input type="checkbox">
+                    <span class="checkmark"></span>
+                </label>
+                <div class="container-login100-form-btn">
+                    <button class="login100-form-btn" type="button" @onclick="check">
+                        Next
+                    </button>
+                </div>
+            </div>
+
+
+
         </div>
     </div>
 </div>
 
 @code {
+    public string value { get; set; }
+    public bool opOne { get; set; }
+    public bool opTwo { get; set; }
+    int c = 0;
+    protected override async Task OnInitializedAsync()
+    {
+        value = 0 + "%";
+    }
+    public void check()
+    {
+        c = c + 20;
+        value = c + "%";
+        opOne = false;
+        opTwo = false;
+
+    }
+    
 
 }
