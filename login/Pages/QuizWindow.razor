@@ -29,7 +29,7 @@
 
 
             <div class="container-login100-form-btn">
-                <h3>@connectionStatus and result is : Question_N: @oqn and Answer_n: @oan</h3>
+                
                 
             </div>
             <div class="container-login100-form-btn">
@@ -64,7 +64,7 @@
                     <span class="checkmark"></span>
                 </label>
                 <div class="container-login100-form-btn">
-                    <button class="login100-form-btn" type="button" @onclick="ConnectToServer">
+                    <button class="login100-form-btn" type="button" @onclick="check">
                         Next
                     </button>
                 </div>
@@ -98,42 +98,7 @@
 
 
 
-    //RealTime----------------------------------------------------
-
-    string url = "http://localhost:51173/QuizHub";
-
-    HubConnection _connection = null;
-    bool isConnected = false;
-    string connectionStatus = "Closed";
-
-    List<QuizInfo> quizinfo = new List<QuizInfo>();
-    int r = 0;
-
-    private async Task ConnectToServer()
-    {
-        _connection = new HubConnectionBuilder()
-            .WithUrl(url)
-            .Build();
-
-        await _connection.StartAsync();
-        isConnected = true;
-        connectionStatus = "Connected :-)";
-
-        _connection.Closed += async (s) =>
-        {
-            isConnected = false;
-            connectionStatus = "Disconnected";
-            await _connection.StartAsync();
-            isConnected = true;
-        };
-
-        _connection.On<QuizInfo>("QuizInfo", m =>
-        {
-            oqn = m.QuestionNumber;
-            oan = m.AnswerNumber;
-            StateHasChanged();
-        });
-    }
+    
 
 
 }

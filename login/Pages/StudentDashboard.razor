@@ -1,8 +1,10 @@
 ﻿@inject Blazored.LocalStorage.ILocalStorageService oLocalStore
 @inject NavigationManager NavigationManager
 @inject ServerConnection connect
+@implements IDisposable
 @page "/dashboard"
 @using login.Data
+@using System.Timers
 
 <div class="dashboard-main-wrapper">
     <!-- ============================================================== -->
@@ -35,7 +37,7 @@
                         <li class="nav-divider">
                             Menu
                             <a class="nav-link active" href="#" aria-expanded="false" data-target="#submenu-2" aria-controls="submenu-2">Dashboard</a>
-                            <a class="nav-link" href="#" aria-expanded="false" data-target="#submenu-2" aria-controls="submenu-2">Play</a>
+                           
                             <a class="nav-link" href="#"  @onclick="LogOut" aria-expanded="false" data-target="#submenu-2" aria-controls="submenu-2">Log Out</a>
                         </li>
                     </ul>
@@ -71,7 +73,7 @@
                     <div class="row">
                         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
                             <div class="page-header">
-                                <h2 class="pageheader-title">@student.name </h2>
+                                <h2 class="pageheader-title">@student.name </h2> <button class="login101-form-btn" @onclick="Play">@play </button>
 
                                 <div class="page-breadcrumb">
                                     <nav aria-label="breadcrumb">
@@ -368,10 +370,11 @@
     public List<Student> TopStudentList = new List<Student>();
     int accuracy = 0;
     int positionCounter = 0, totalStudent = 0;
-    string color;
+    string color,play;
+    int min = 0, sec = 0;
     protected override async Task OnInitializedAsync()
     {
-
+        play = "Play";
         await Task.Run(() => AuthenticateUser());
 
     }
@@ -496,6 +499,35 @@
         }
 
     }
+    Timer timer;
+    public void Play()
+    {
+        timer = new Timer();
+        timer.Interval = 1000;
+        timer.Elapsed += counter;
+        timer.Start();
+
+    }
+    int i;
+    private void counter(object sender, ElapsedEventArgs e)
+    {
+        i = i + 1;
+        play = "Connecting  " + i ;
+
+        Console.WriteLine(i);
+        InvokeAsync(() =>
+        {
+            StateHasChanged();
+        });
+    }
+    public void Dispose()
+    {
+        if(timer != null)
+        {
+            timer.Dispose();
+        }
+    }
 }
+
 
 

@@ -26,6 +26,7 @@ namespace QuizRealTimeApi.Controllers
             info.QuestionNumber = qn;
             info.AnswerNumber = qa;
             await _hubContext.Clients.All.SendAsync("QuizInfo",info);
+            
             return Ok("Answer has been sent successfully!");
         }
     }

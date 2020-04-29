@@ -1271,12 +1271,12 @@ Top Header
     border: none;
 }
 
-.navbar-right-top .nav-item .nav-link {
-    padding: 13px 20px;
-    font-size: 16px;
-    line-height: 2;
-    color: #82849f;
-}
+    .navbar-right-top .nav-item .nav-link {
+        padding: 13px 20px;
+        font-size: 16px;
+        line-height: 2;
+        color: #82849f;
+    }
 
 
 /* ------  top-search-bar --------  */
@@ -7016,6 +7016,34 @@ Media Query
     }
 }
 
+
+.login101-form-btn {
+    font-family: Montserrat-Bold;
+    font-size: 15px;
+    line-height: 1.5;
+    color: #fff;
+    text-transform: uppercase;
+    width: 40%;
+    height: 45px;
+    border-radius: 25px;
+    background: #25ce8b;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 25px;
+    -webkit-transition: all 0.4s;
+    -o-transition: all 0.4s;
+    -moz-transition: all 0.4s;
+    transition: all 0.4s;
+}
+
+    .login100-form-btn:hover {
+        background: #;
+    }
 
 /* Custom, iPhone Retina */
 @media only screen and (max-width:320px) {}
