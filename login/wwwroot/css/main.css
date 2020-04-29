@@ -373,6 +373,14 @@ iframe {
   justify-content: center;
   padding-top: 20px;
 }
+.container-login10-form-btn {
+    width: 100%;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -moz-box;
+    display: -ms-flexbox;
+    margin: 0 auto;
+}
 
 .login100-form-btn {
   font-family: Montserrat-Bold;
@@ -570,7 +578,6 @@ iframe {
 
 label {
     display: block;
-    padding-left:100px;
     
 }
 .circle {
@@ -582,6 +589,7 @@ label {
     position: relative;
     background: #38a9e4;
     color: white;
+    margin-left: 20px;
     font-family: Helvetica, Arial Black, sans;
 }
   
