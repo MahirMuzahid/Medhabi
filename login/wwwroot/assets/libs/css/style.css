@@ -7041,8 +7041,12 @@ Media Query
     transition: all 0.4s;
 }
 
-    .login100-form-btn:hover {
-        background: #;
+    .login101-form-btn:hover {
+        background: #0da363;
+        box-shadow: 10px, 10px;
+    }
+    .login101-form-btn:active {
+        background: #61f8bc;
     }
 
 /* Custom, iPhone Retina */

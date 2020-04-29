@@ -375,6 +375,7 @@
     protected override async Task OnInitializedAsync()
     {
         play = "Play";
+        on = false;
         await Task.Run(() => AuthenticateUser());
 
     }
@@ -502,19 +503,34 @@
     Timer timer;
     public void Play()
     {
-        timer = new Timer();
-        timer.Interval = 1000;
-        timer.Elapsed += counter;
-        timer.Start();
+        on =! on;
+        if(on == true)
+        {
+            timer = new Timer();
+            timer.Interval = 1000;
+            timer.Elapsed += counter;
+            timer.Start();
+        }
+        else
+        {
+            timer.Stop();
+            sec = 0;
+            min = 0;
+            play = "Play";
+        }
+
 
     }
-    int i;
+    public bool on;
     private void counter(object sender, ElapsedEventArgs e)
     {
-        i = i + 1;
-        play = "Connecting  " + i ;
-
-        Console.WriteLine(i);
+        sec = sec + 1;
+        play = "Searching... " + min + ":" + sec ;
+        if(sec == 59)
+        {
+            min = min + 1;
+            sec = 0;
+        }
         InvokeAsync(() =>
         {
             StateHasChanged();
