@@ -1,38 +1,41 @@
 ﻿@page "/quiz"
+@using Microsoft.AspNetCore.SignalR.Client
+@using login.Data
 
 <div class="limiter">
     <div class="container-login100" style="        background: -webkit-linear-gradient(-135deg, #1e1e1e, #7340e0);
         background: -o-linear-gradient(-135deg, #1e1e1e, #7340e0);
         background: -moz-linear-gradient(-135deg, #1e1e1e, #7340e0);
         background: linear-gradient(-135deg, #1e1e1e, #7340e0);">
-        
+
         <div class="wrap-login100" style="box-shadow: 7px 5px #c850c0, 10px 10px #7340e0, 15px 15px #333333;">
 
             <div class="container-login10-form-btn">
                 <label style="padding:2px;">Mahir Muzahid</label>
-                <div class="circle">1</div>
-                <div class="circle">2</div>
-                <div class="circle">3</div>
-                <div class="circle">4</div>
-                <div class="circle">5</div>
+                <div class="circle" style="background: #d8d8d8">1</div>
+                <div class="circle" style="background: #d8d8d8">2</div>
+                <div class="circle" style="background: #d8d8d8">3</div>
+                <div class="circle" style="background: #d8d8d8">4</div>
+                <div class="circle" style="background: #d8d8d8">5</div>
             </div>
             <div class="container-login10-form-btn">
                 <label style="padding:2px">Nuhal Rahman Chowdhury</label>
-                <div class="circle">1</div>
-                <div class="circle">2</div>
-                <div class="circle">3</div>
-                <div class="circle">4</div>
-                <div class="circle">5</div>
+                <div class="circle" style="background: #d8d8d8">1</div>
+                <div class="circle" style="background: #d8d8d8">2</div>
+                <div class="circle" style="background: #d8d8d8">3</div>
+                <div class="circle" style="background: #d8d8d8">4</div>
+                <div class="circle" style="background: #d8d8d8">5</div>
             </div>
-         
+
 
             <div class="container-login100-form-btn">
-                <h1>Time: 10 sec</h1>
+                <h3>@connectionStatus and result is : Question_N: @oqn and Answer_n: @oan</h3>
+                
             </div>
             <div class="container-login100-form-btn">
-                <div class="progress-bar progress-bar-striped  active" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width:@value">
-                    @value
-                    
+                <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width:@value">
+                    <h5 style="margin-top:40px">@value</h5>
+
                 </div>
             </div>
             <div class="container-login100-form-btn">
@@ -61,7 +64,7 @@
                     <span class="checkmark"></span>
                 </label>
                 <div class="container-login100-form-btn">
-                    <button class="login100-form-btn" type="button" @onclick="check">
+                    <button class="login100-form-btn" type="button" @onclick="ConnectToServer">
                         Next
                     </button>
                 </div>
@@ -77,6 +80,7 @@
     public string value { get; set; }
     public bool opOne { get; set; }
     public bool opTwo { get; set; }
+    public int oqn = 0, oan = 0;
     int c = 0;
     protected override async Task OnInitializedAsync()
     {
@@ -90,6 +94,46 @@
         opTwo = false;
 
     }
-    
+
+
+
+
+    //RealTime----------------------------------------------------
+
+    string url = "http://localhost:51173/QuizHub";
+
+    HubConnection _connection = null;
+    bool isConnected = false;
+    string connectionStatus = "Closed";
+
+    List<QuizInfo> quizinfo = new List<QuizInfo>();
+    int r = 0;
+
+    private async Task ConnectToServer()
+    {
+        _connection = new HubConnectionBuilder()
+            .WithUrl(url)
+            .Build();
+
+        await _connection.StartAsync();
+        isConnected = true;
+        connectionStatus = "Connected :-)";
+
+        _connection.Closed += async (s) =>
+        {
+            isConnected = false;
+            connectionStatus = "Disconnected";
+            await _connection.StartAsync();
+            isConnected = true;
+        };
+
+        _connection.On<QuizInfo>("QuizInfo", m =>
+        {
+            oqn = m.QuestionNumber;
+            oan = m.AnswerNumber;
+            StateHasChanged();
+        });
+    }
+
 
 }
