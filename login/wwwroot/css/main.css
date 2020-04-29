@@ -581,11 +581,11 @@ label {
     
 }
 .circle {
-    width: 30px;
-    border-radius: 20px;
+    width: 5%;
+    height: 80%;
+    border-radius: 30px;
     text-align: center;
     font-size: 10px;
-    line-height: 3;
     position: relative;
     background: #38a9e4;
     color: white;
