@@ -16,7 +16,6 @@
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            
         </nav>
     </div>
     <!-- ============================================================== -->
@@ -37,8 +36,8 @@
                         <li class="nav-divider">
                             Menu
                             <a class="nav-link active" href="#" aria-expanded="false" data-target="#submenu-2" aria-controls="submenu-2">Dashboard</a>
-                           
-                            <a class="nav-link" href="#"  @onclick="LogOut" aria-expanded="false" data-target="#submenu-2" aria-controls="submenu-2">Log Out</a>
+
+                            <a class="nav-link" href="#" @onclick="LogOut" aria-expanded="false" data-target="#submenu-2" aria-controls="submenu-2">Log Out</a>
                         </li>
                     </ul>
                 </div>
@@ -74,7 +73,6 @@
                         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
                             <div class="page-header">
                                 <h2 class="pageheader-title">@student.name </h2> <button class="login101-form-btn" @onclick="Play">@play </button>
-
                                 <div class="page-breadcrumb">
                                     <nav aria-label="breadcrumb">
                                         <ol class="breadcrumb">
@@ -100,7 +98,7 @@
                                             <h1 class="mb-1">@student.total_question_answered</h1>
                                         </div>
                                         <div class="metric-label d-inline-block float-right text-success font-weight-bold">
-                                            <span><i class=""></i></span>Accuracy: @accuracy%<span></span>
+                                            <span><i class=""></i></span><h5 style="color:  springgreen">Accuracy: @accuracy%</h5><span></span>
                                         </div>
                                     </div>
                                 </div>
@@ -114,7 +112,7 @@
                                             <h1 class="mb-1">@student.position</h1>
                                         </div>
                                         <div class="metric-label d-inline-block float-right text-success font-weight-bold">
-                                            <span><i class=""></i></span><span>Total: @totalStudent</span>
+                                            <span><i class=""></i></span><span><h5 style="color:  springgreen">Total: @totalStudent </h5></span>
                                         </div>
                                     </div>
                                 </div>
@@ -127,7 +125,7 @@
                                             <h1 class="mb-1">@student.rank</h1>
                                         </div>
                                         <div class="metric-label d-inline-block float-right text-primary font-weight-bold">
-                                            <span>Point: @student.point</span>
+                                            <span><h5 style="color:  springgreen">Point: @student.point</h5></span>
                                         </div>
                                     </div>
                                 </div>
@@ -370,7 +368,7 @@
     public List<Student> TopStudentList = new List<Student>();
     int accuracy = 0;
     int positionCounter = 0, totalStudent = 0;
-    string color,play;
+    string color, play;
     int min = 0, sec = 0;
     protected override async Task OnInitializedAsync()
     {
@@ -425,7 +423,7 @@
         for (int i = 0; i < TopStudentList.Count; i++)
         {
             TopStudentList[i].position = i + 1;
-            if(i == 10)
+            if (i == 10)
             {
                 break;
             }
@@ -481,7 +479,7 @@
         {
             if (connect.allStudent[k].name == student.name)
             {
-                student.position = k+1;
+                student.position = k + 1;
             }
         }
         totalStudent = connect.allStudent.Count;
@@ -498,13 +496,15 @@
                 TopStudentList[i].accureacy = (int)(100f * ((float)TopStudentList[i].total_right_answer / (float)TopStudentList[i].total_question_answered));
 
         }
-
+        //-------------------------------------------------------------------------------------
+        //Match Timer--------------------------------------------------------------------------
+        //-------------------------------------------------------------------------------------
     }
     Timer timer;
     public void Play()
     {
-        on =! on;
-        if(on == true)
+        on = !on;
+        if (on == true)
         {
             timer = new Timer();
             timer.Interval = 1000;
@@ -519,14 +519,13 @@
             play = "Play";
         }
 
-
     }
     public bool on;
     private void counter(object sender, ElapsedEventArgs e)
     {
         sec = sec + 1;
-        play = "Searching... " + min + ":" + sec ;
-        if(sec == 59)
+        play = "Searching... " + min + ":" + sec;
+        if (sec == 59)
         {
             min = min + 1;
             sec = 0;
@@ -536,14 +535,46 @@
             StateHasChanged();
         });
     }
+
+
+
+    //------------------------------------------------------------------------------
+    //Match Making------------------------------------------------------------------
+    //------------------------------------------------------------------------------
+    MatchMaking matchmaking = new MatchMaking();
+
     public void Dispose()
     {
-        if(timer != null)
+        if (timer != null)
         {
             timer.Dispose();
         }
     }
+
+    public async Task MatchmakingInfo ()
+    {
+        await Task.Run(() => connect.GetMatchMaking());
+        for(int i = 0; i < connect.matchmaking.Count; i++)
+        {
+            if(connect.matchmaking[i].secondPlayerID == 0)
+            {
+                await Task.Run(() => connect.DeleteIfFound(connect.matchmaking[0].firstPlayerID));
+                break;
+            }
+            else if( i == (connect.matchmaking.Count-1))
+            {
+                await Task.Run(() => connect.SetMachMaking(matchmaking));
+                break;
+            }
+        }
+    }
+
+    public async Task connectWithPlayer()
+    {
+        //
+    }
+    public async Task CreateQuestion()
+    {
+
+    }
 }
-
-
-

@@ -17,6 +17,7 @@ namespace login.Data
         public List<Student> allStudent { get; set; }
         public List<Teacher> allTeacher { get; set; }
         public List<Teacher> TopTeacherList { get; set; }
+        public List<MatchMaking> matchmaking { get; set; }
 
         public ServerConnection()
         {
@@ -164,6 +165,40 @@ namespace login.Data
                 submitted = 1;
             }
             TopTeacherList = topTen;
+        }
+
+        public async Task GetMatchMaking()
+        {
+            List<MatchMaking> topTen = new List<MatchMaking>();
+            string url = "https://api.shikkhanobish.com/api/Medhabi/GetMatchMaking";
+            HttpClient client = new HttpClient();
+            HttpResponseMessage response = await client.GetAsync(url).ConfigureAwait(true);
+            string result = await response.Content.ReadAsStringAsync().ConfigureAwait(true);
+            var MatchMaking = JsonConvert.DeserializeObject<List<MatchMaking>>(result);
+            matchmaking = MatchMaking;
+        }
+
+        public async Task DeleteIfFound(int id)
+        {
+            string url = "https://api.shikkhanobish.com/api/Medhabi/DeleteIfFoundMatch";
+            HttpClient client = new HttpClient();
+            string jsonData = JsonConvert.SerializeObject(new { firstPlayerID = id });
+            StringContent content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+            HttpResponseMessage response = await client.PostAsync(url, content).ConfigureAwait(true);
+            string result = await response.Content.ReadAsStringAsync().ConfigureAwait(true);
+            var r = JsonConvert.DeserializeObject<Response>(result);
+            submitted = r.status;
+        }
+        public async Task SetMachMaking(MatchMaking mm)
+        {
+            string url = "https://api.shikkhanobish.com/api/Medhabi/SetMachMaking";
+            HttpClient client = new HttpClient();
+            string jsonData = JsonConvert.SerializeObject(new { firstPlayerID = mm.firstPlayerID, matchID = mm.matchID, firstQuestionID = mm.firstQuestionID, secondQuestionID = mm.secondQuestionID, thirdQuestionID = mm.thirdQuestionID, forthQuestionID = mm.forthQuestionID, fifthQuestionID = mm.fifthQuestionID });
+            StringContent content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+            HttpResponseMessage response = await client.PostAsync(url, content).ConfigureAwait(true);
+            string result = await response.Content.ReadAsStringAsync().ConfigureAwait(true);
+            var r = JsonConvert.DeserializeObject<Response>(result);
+            submitted = r.status;
         }
     }
 }
