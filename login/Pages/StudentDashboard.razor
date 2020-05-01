@@ -7,6 +7,8 @@
 @using login.Data
 @using System.Timers
 
+
+
 <div class="dashboard-main-wrapper">
     <!-- ============================================================== -->
     <!-- navbar -->
@@ -70,6 +72,15 @@
                     <!-- ============================================================== -->
                     <!-- pageheader  -->
                     <!-- ============================================================== -->
+                    <div id="myModal" class="@modelController">
+
+                        <!-- Modal content -->
+                        <div class="modal-content">
+                            <span class="close">&times;</span>
+                            <p>Some text in the Modal..asdsadsadsadasdsadasdasdasdasd</p><br /> <button @onclick="close">Close</button>
+                        </div>
+
+                    </div>
                     <div class="row">
                         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
                             <div class="page-header">
@@ -373,6 +384,7 @@
     int min = 0, sec = 0;
     protected override async Task OnInitializedAsync()
     {
+        modelController = "modalClose";
         play = "Play";
         on = false;
         await Task.Run(() => AuthenticateUser());
@@ -516,9 +528,8 @@
         else
         {
             timer.Stop();
-            sec = 0;
-            min = 0;
             play = "Play";
+            await Task.Run(() => connect.DeleteIfFound(student.studentID));
             await _connection.StopAsync();
         }
 
@@ -664,6 +675,15 @@
         _connection.On<int>("Connected", id =>
         {
             connectedStudentID = id;
+            if(connectedStudentID > 0)
+            {
+                modelController = "modalOpen";
+            }
         });
+    }
+    string modelController;
+    public void close ()
+    {
+        modelController = "modalClose";
     }
 }
