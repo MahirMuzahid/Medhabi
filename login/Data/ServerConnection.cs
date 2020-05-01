@@ -18,7 +18,7 @@ namespace login.Data
         public List<Teacher> allTeacher { get; set; }
         public List<Teacher> TopTeacherList { get; set; }
         public List<MatchMaking> matchmaking { get; set; }
-
+        public List<Question> allqs { get; set; }
         public ServerConnection()
         {
         }
@@ -199,6 +199,27 @@ namespace login.Data
             string result = await response.Content.ReadAsStringAsync().ConfigureAwait(true);
             var r = JsonConvert.DeserializeObject<Response>(result);
             submitted = r.status;
+        }
+
+        public async Task MakeQuestion(QuestionMaker qs)
+        {
+            string url = "https://api.shikkhanobish.com/api/Medhabi/MakeQuestion";
+            HttpClient client = new HttpClient();
+            string jsonData = JsonConvert.SerializeObject(new { firstqsID = qs.firstqsID, secondID = qs.secondID, thirdID = qs.thirdID, forthID = qs.forthID, fifthID = qs.fifthID });
+            StringContent content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+            HttpResponseMessage response = await client.PostAsync(url, content).ConfigureAwait(true);
+            string result = await response.Content.ReadAsStringAsync().ConfigureAwait(true);
+            var r = JsonConvert.DeserializeObject<List<Question>>(result);
+
+            if(r.Count < 5)
+            {
+                submitted = 1;
+            }
+            else
+            {
+                submitted = 0;
+                allqs = r;
+            }
         }
     }
 }

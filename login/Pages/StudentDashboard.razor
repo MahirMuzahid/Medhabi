@@ -501,7 +501,7 @@
         //-------------------------------------------------------------------------------------
     }
     Timer timer;
-    public void Play()
+    public async Task Play()
     {
         on = !on;
         if (on == true)
@@ -510,6 +510,7 @@
             timer.Interval = 1000;
             timer.Elapsed += counter;
             timer.Start();
+            await Task.Run(() => MatchmakingInfo());
         }
         else
         {
@@ -554,27 +555,78 @@
     public async Task MatchmakingInfo ()
     {
         await Task.Run(() => connect.GetMatchMaking());
-        for(int i = 0; i < connect.matchmaking.Count; i++)
+        if(connect.matchmaking.Count == 0)
         {
-            if(connect.matchmaking[i].secondPlayerID == 0)
+            await Task.Run(() => SetInMatchmaking());
+        }
+        else
+        {
+            for (int i = 0; i < connect.matchmaking.Count; i++)
             {
-                await Task.Run(() => connect.DeleteIfFound(connect.matchmaking[0].firstPlayerID));
-                break;
-            }
-            else if( i == (connect.matchmaking.Count-1))
-            {
-                await Task.Run(() => connect.SetMachMaking(matchmaking));
-                break;
+                if (connect.matchmaking[i].secondPlayerID == 0)
+                {
+                    await Task.Run(() => connect.DeleteIfFound(connect.matchmaking[0].firstPlayerID));
+                    break;
+                }
+                else if (i == (connect.matchmaking.Count - 1))
+                {
+                    await Task.Run(() => SetInMatchmaking());
+                    break;
+                }
             }
         }
+
+    }
+    public async Task SetInMatchmaking()
+    {
+        Random r = new Random();
+        int random;
+        for (int j = 0; j < 5; j++)
+        {
+            random = r.Next(0, 300);
+            if (j == 0)
+            {
+                matchmaking.firstQuestionID = random;
+            }
+            else if (j == 1)
+            {
+                matchmaking.secondQuestionID = random;
+            }
+            else if (j == 2)
+            {
+                matchmaking.thirdQuestionID = random;
+            }
+            else if (j == 3)
+            {
+                matchmaking.forthQuestionID = random;
+            }
+            else if (j == 4)
+            {
+                matchmaking.fifthQuestionID = random;
+            }
+        }
+        matchmaking.firstPlayerID = student.studentID;
+        matchmaking.matchID = Guid.NewGuid().ToString();
+        await Task.Run(() => connect.SetMachMaking(matchmaking));
+        QuestionMaker qm = new QuestionMaker();
+        qm.firstqsID = matchmaking.firstQuestionID;
+        qm.secondID = matchmaking.secondQuestionID;
+        qm.thirdID = matchmaking.thirdQuestionID;
+        qm.forthID = matchmaking.forthQuestionID;
+        qm.fifthID = matchmaking.fifthQuestionID;
+    }
+    public List<Question> allqs { get; set; }
+    public async Task GetQuestiob(QuestionMaker qm)
+    {
+        await Task.Run(() => connect.MakeQuestion(qm));
+        allqs = connect.allqs;
     }
 
     public async Task connectWithPlayer()
     {
         //
     }
-    public async Task CreateQuestion()
-    {
 
-    }
+
+
 }
