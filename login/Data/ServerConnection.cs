@@ -17,7 +17,8 @@ namespace login.Data
         public List<Student> allStudent { get; set; }
         public List<Teacher> allTeacher { get; set; }
         public List<Teacher> TopTeacherList { get; set; }
-        public List<MatchMaking> matchmaking { get; set; }
+        public List<MatchMaking> matchmakingList { get; set; }
+        public MatchMaking ConnectedMatch { get; set; }
         public List<Question> allqs { get; set; }
         public ServerConnection()
         {
@@ -175,7 +176,7 @@ namespace login.Data
             HttpResponseMessage response = await client.GetAsync(url).ConfigureAwait(true);
             string result = await response.Content.ReadAsStringAsync().ConfigureAwait(true);
             var MatchMaking = JsonConvert.DeserializeObject<List<MatchMaking>>(result);
-            matchmaking = MatchMaking;
+            matchmakingList = MatchMaking;
         }
 
         public async Task DeleteIfFound(int id)
@@ -186,8 +187,8 @@ namespace login.Data
             StringContent content = new StringContent(jsonData, Encoding.UTF8, "application/json");
             HttpResponseMessage response = await client.PostAsync(url, content).ConfigureAwait(true);
             string result = await response.Content.ReadAsStringAsync().ConfigureAwait(true);
-            var r = JsonConvert.DeserializeObject<Response>(result);
-            submitted = r.status;
+            var r = JsonConvert.DeserializeObject<MatchMaking>(result);
+            ConnectedMatch = r;
         }
         public async Task SetMachMaking(MatchMaking mm)
         {
@@ -220,6 +221,16 @@ namespace login.Data
                 submitted = 0;
                 allqs = r;
             }
+        }
+
+        public async Task ConnectWith2ndStudent(int studentID)
+        {
+            string url = "https://medhabiapi.shikkhanobish.com/api/Quiz/SohwConnected?id=" + studentID;
+            HttpClient client = new HttpClient();
+            StringContent content = new StringContent("", Encoding.UTF8, "application/json");
+            HttpResponseMessage response = await client.PostAsync(url, content).ConfigureAwait(true);
+            string result = await response.Content.ReadAsStringAsync().ConfigureAwait(true);
+            var r = JsonConvert.DeserializeObject<string>(result);
         }
     }
 }

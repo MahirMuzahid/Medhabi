@@ -20,7 +20,7 @@ namespace QuizRealTimeApi.Controllers
             _hubContext = hubContext;
         }
 
-        [HttpPost]
+        [HttpPost("PassAnswer")]
         public async Task<IActionResult> Post([FromQuery]int qn, int qa)
         {
             info.QuestionNumber = qn;
@@ -28,6 +28,14 @@ namespace QuizRealTimeApi.Controllers
             await _hubContext.Clients.All.SendAsync("QuizInfo",info);
             
             return Ok("Answer has been sent successfully!");
+        }
+        [HttpPost("SohwConnected")]
+        public async Task<IActionResult> GetConnected([FromQuery]int id)
+        {
+            int studentID = id;
+            await _hubContext.Clients.All.SendAsync("Connected", studentID);
+
+            return Ok("Conneted");
         }
     }
 }

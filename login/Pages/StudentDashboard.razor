@@ -1,6 +1,7 @@
 ﻿@inject Blazored.LocalStorage.ILocalStorageService oLocalStore
 @inject NavigationManager NavigationManager
 @inject ServerConnection connect
+@using Microsoft.AspNetCore.SignalR.Client
 @implements IDisposable
 @page "/dashboard"
 @using login.Data
@@ -518,6 +519,7 @@
             sec = 0;
             min = 0;
             play = "Play";
+            await _connection.StopAsync();
         }
 
     }
@@ -542,8 +544,8 @@
     //------------------------------------------------------------------------------
     //Match Making------------------------------------------------------------------
     //------------------------------------------------------------------------------
-    MatchMaking matchmaking = new MatchMaking();
 
+    MatchMaking matchmaking = new MatchMaking();
     public void Dispose()
     {
         if (timer != null)
@@ -551,24 +553,28 @@
             timer.Dispose();
         }
     }
-
-    public async Task MatchmakingInfo ()
+    public MatchMaking connectedMatch { get; set; }
+    public async Task MatchmakingInfo()
     {
+        await Task.Run(() => ConnectToServer());
         await Task.Run(() => connect.GetMatchMaking());
-        if(connect.matchmaking.Count == 0)
+        if (connect.matchmakingList.Count == 0)
         {
             await Task.Run(() => SetInMatchmaking());
         }
         else
         {
-            for (int i = 0; i < connect.matchmaking.Count; i++)
+            for (int i = 0; i < connect.matchmakingList.Count; i++)
             {
-                if (connect.matchmaking[i].secondPlayerID == 0)
+                if (connect.matchmakingList[i].secondPlayerID == 0)
                 {
-                    await Task.Run(() => connect.DeleteIfFound(connect.matchmaking[0].firstPlayerID));
+                    await Task.Run(() => connect.DeleteIfFound(connect.matchmakingList[0].firstPlayerID));
+                    connectedMatch = connect.ConnectedMatch;
+                    connectedMatch.secondPlayerID = student.studentID;
+                    await Task.Run(() => connect.ConnectWith2ndStudent(student.studentID));
                     break;
                 }
-                else if (i == (connect.matchmaking.Count - 1))
+                else if (i == (connect.matchmakingList.Count - 1))
                 {
                     await Task.Run(() => SetInMatchmaking());
                     break;
@@ -622,11 +628,42 @@
         allqs = connect.allqs;
     }
 
-    public async Task connectWithPlayer()
+
+    //----------------------------------------------------------------------
+    //Real Time Server Connection With 2nd Player---------------------------
+    //----------------------------------------------------------------------
+
+    string url = "https://medhabiapi.shikkhanobish.com/QuizHub";
+    public int connectedStudentID { get; set; }
+    HubConnection _connection = null;
+    bool isConnected = false;
+    string connectionStatus = "Closed";
+
+    List<QuizInfo> quizinfo = new List<QuizInfo>();
+
+
+    private async Task ConnectToServer()
     {
-        //
+        _connection = new HubConnectionBuilder()
+            .WithUrl(url)
+            .Build();
+
+        await _connection.StartAsync();
+        isConnected = true;
+        connectionStatus = "Connected";
+
+        _connection.Closed += async (s) =>
+        {
+            isConnected = false;
+            connectionStatus = "Disconnected";
+            await _connection.StartAsync();
+            isConnected = true;
+
+        };
+
+        _connection.On<int>("Connected", id =>
+        {
+            connectedStudentID = id;
+        });
     }
-
-
-
 }

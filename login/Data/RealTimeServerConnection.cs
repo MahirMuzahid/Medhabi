@@ -9,13 +9,13 @@ namespace login.Data
     public class RealTimeServerConnection
     {
         string url = "http://localhost:51173/QuizHub";
-
+        public int connectedStudentID {get; set;}
         HubConnection _connection = null;
         bool isConnected = false;
         string connectionStatus = "Closed";
 
         List<QuizInfo> quizinfo = new List<QuizInfo>();
-        int r = 0;
+
 
         private async Task ConnectToServer()
         {
@@ -40,6 +40,10 @@ namespace login.Data
                 //oqn = m.QuestionNumber;
                 //oan = m.AnswerNumber;
                 ///StateHasChanged(); have to add this is UI
+            });
+            _connection.On<int>("Connected", id =>
+            {
+                connectedStudentID = id;
             });
         }
     }
