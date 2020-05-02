@@ -7,8 +7,6 @@
 @using login.Data
 @using System.Timers
 
-
-
 <div class="dashboard-main-wrapper">
     <!-- ============================================================== -->
     <!-- navbar -->
@@ -72,15 +70,20 @@
                     <!-- ============================================================== -->
                     <!-- pageheader  -->
                     <!-- ============================================================== -->
-                    <div id="myModal" class="@modelController">
+                    <div >
+                        <div id="myModal" class="modalOpen">
 
-                        <!-- Modal content -->
-                        <div class="modal-content">
-                            <span class="close">&times;</span>
-                            <p>Some text in the Modal..asdsadsadsadasdsadasdasdasdasd</p><br /> <button @onclick="close">Close</button>
+                            <!-- Modal content -->
+                            <div class="modal-content " style="border-radius: 25px; font-size: 15px">
+                                <span class="close">&times;</span>
+                                <p style="align-self:center; font-size: 18px"><b>Mahir Muzahid</b><br />Rank: Good<br />Point: 650<br />Answered Quesyion: 200</p><br />
+                                <a style="color: white" class="myButton1">Accept</a><br />
+                                <a style="color: white" class="myButton2">Reject</a>
+                                <br /><a style="color: crimson; text-align: center"> If you reject you, 10 point will be didacted from you</a>
+                            </div>
                         </div>
-
                     </div>
+                    
                     <div class="row">
                         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
                             <div class="page-header">
@@ -528,9 +531,15 @@
         else
         {
             timer.Stop();
+            sec = 0;
+            min = 0;
             play = "Play";
             await Task.Run(() => connect.DeleteIfFound(student.studentID));
             await _connection.StopAsync();
+            await InvokeAsync(() =>
+            {
+                StateHasChanged();
+            });
         }
 
     }
@@ -549,8 +558,6 @@
             StateHasChanged();
         });
     }
-
-
 
     //------------------------------------------------------------------------------
     //Match Making------------------------------------------------------------------
@@ -639,7 +646,6 @@
         allqs = connect.allqs;
     }
 
-
     //----------------------------------------------------------------------
     //Real Time Server Connection With 2nd Player---------------------------
     //----------------------------------------------------------------------
@@ -651,7 +657,6 @@
     string connectionStatus = "Closed";
 
     List<QuizInfo> quizinfo = new List<QuizInfo>();
-
 
     private async Task ConnectToServer()
     {
@@ -675,14 +680,14 @@
         _connection.On<int>("Connected", id =>
         {
             connectedStudentID = id;
-            if(connectedStudentID > 0)
+            if (connectedStudentID > 0)
             {
                 modelController = "modalOpen";
             }
         });
     }
     string modelController;
-    public void close ()
+    public void close()
     {
         modelController = "modalClose";
     }
