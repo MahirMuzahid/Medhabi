@@ -71,14 +71,14 @@
                     <!-- pageheader  -->
                     <!-- ============================================================== -->
                     <div >
-                        <div id="myModal" class="modalOpen">
+                        <div id="myModal" class="@modelController">
 
                             <!-- Modal content -->
                             <div class="modal-content " style="border-radius: 25px; font-size: 15px">
                                 <span class="close">&times;</span>
-                                <p style="align-self:center; font-size: 18px"><b>Mahir Muzahid</b><br />Rank: Good<br />Point: 650<br />Answered Quesyion: 200</p><br />
+                                <p style="align-self:center; font-size: 18px"><b>@connectedStudent.name</b><br />Rank: @connectedStudent.rank<br />Point: @connectedStudent.point<br />Answered Quesyion: @connectedStudent.total_question_answered</p><br />
                                 <a style="color: white" class="myButton1">Accept</a><br />
-                                <a style="color: white" class="myButton2">Reject</a>
+                                <a style="color: white" @onclick="close" class="myButton2">Reject</a>
                                 <br /><a style="color: crimson; text-align: center"> If you reject you, 10 point will be didacted from you</a>
                             </div>
                         </div>
@@ -522,6 +522,7 @@
         on = !on;
         if (on == true)
         {
+            play = "Searching... ";
             timer = new Timer();
             timer.Interval = 1000;
             timer.Elapsed += counter;
@@ -677,18 +678,38 @@
 
         };
 
-        _connection.On<int>("Connected", id =>
+        _connection.On<int>("Connected", async id =>
         {
             connectedStudentID = id;
-            if (connectedStudentID > 0)
-            {
-                modelController = "modalOpen";
-            }
+            await Task.Run(() => showplayer(id));
         });
+
+
+    }
+    public Student connectedStudent = new Student();
+    public async Task showplayer(int id)
+    {
+        if (connectedStudentID > 0)
+        {
+            await Task.Run(() => connect.getInfoFromId(connectedStudentID));
+            connectedStudent = connect.secondstudent;
+            modelController = "modalOpen";
+        }
     }
     string modelController;
-    public void close()
+    public async Task close()
     {
         modelController = "modalClose";
+        timer.Stop();
+        sec = 0;
+        min = 0;
+        play = "Play";
+        await Task.Run(() => connect.DeleteIfFound(student.studentID));
+        await _connection.StopAsync();
+        connectedStudentID = 0;
+        await InvokeAsync(() =>
+        {
+            StateHasChanged();
+        });
     }
 }

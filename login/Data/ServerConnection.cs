@@ -12,6 +12,7 @@ namespace login.Data
         public int qsNumber { get; set; }
         public int submitted { get; set; }
         public Student student { get; set; }
+        public Student secondstudent { get; set; }
         public Teacher teacher { get; set; }
         public List<Student> TopStudentList { get; set; }
         public List<Student> allStudent { get; set; }
@@ -231,6 +232,28 @@ namespace login.Data
             HttpResponseMessage response = await client.PostAsync(url, content).ConfigureAwait(true);
             string result = await response.Content.ReadAsStringAsync().ConfigureAwait(true);
             var r = JsonConvert.DeserializeObject<string>(result);
+        }
+
+        public async Task getInfoFromId(int id)
+        {
+            string url = "https://api.shikkhanobish.com/api/Medhabi/GetInfoFromId";
+            HttpClient client = new HttpClient();
+            string jsonData = JsonConvert.SerializeObject(new { studentID = id });
+            StringContent content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+            HttpResponseMessage response = await client.PostAsync(url, content).ConfigureAwait(true);
+            string result = await response.Content.ReadAsStringAsync().ConfigureAwait(true);
+            var s = JsonConvert.DeserializeObject<Student>(result);
+            secondstudent = s;
+            if (s.mail != null)
+            {
+                submitted = 0;
+
+            }
+            else
+            {
+                submitted = 1;
+            }
+
         }
     }
 }
