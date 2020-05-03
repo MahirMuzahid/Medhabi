@@ -77,9 +77,9 @@
                             <div class="modal-content " style="border-radius: 25px; font-size: 15px">
                                 <span class="close">&times;</span>
                                 <p style="align-self:center; font-size: 18px"><b>@connectedStudent.name</b><br />Rank: @connectedStudent.rank<br />Point: @connectedStudent.point<br />Answered Quesyion: @connectedStudent.total_question_answered</p><br />
-                                <a style="color: white" class="myButton1">Accept</a><br />
-                                <a style="color: white" @onclick="close" class="myButton2">Reject</a>
-                                <br /><a style="color: crimson; text-align: center"> If you reject you, 10 point will be didacted from you</a>
+                                <a style="color: white" @onclick="(async() => await sendSecondPlayer())" class="myButton1">Accept</a><br />
+                                <a style="color: white" @onclick="(async() => await close())" class="myButton2">Reject</a>
+                                <br /><a style="color: crimson; text-align: center"> [If you reject you, 10 point will be didacted from you(minimum point: 10)]</a>
                             </div>
                         </div>
                     </div>
@@ -113,7 +113,7 @@
                                             <h1 class="mb-1">@student.total_question_answered</h1>
                                         </div>
                                         <div class="metric-label d-inline-block float-right text-success font-weight-bold">
-                                            <span><i class=""></i></span><h5 style="color:  springgreen">Accuracy: @accuracy%</h5><span></span>
+                                            <span><i class=""></i></span><h5 style="color: #20b760">Accuracy: @accuracy%</h5><span></span>
                                         </div>
                                     </div>
                                 </div>
@@ -127,7 +127,7 @@
                                             <h1 class="mb-1">@student.position</h1>
                                         </div>
                                         <div class="metric-label d-inline-block float-right text-success font-weight-bold">
-                                            <span><i class=""></i></span><span><h5 style="color:  springgreen">Total: @totalStudent </h5></span>
+                                            <span><i class=""></i></span><span><h5 style="color:  #20b760">Total: @totalStudent </h5></span>
                                         </div>
                                     </div>
                                 </div>
@@ -140,7 +140,7 @@
                                             <h1 class="mb-1">@student.rank</h1>
                                         </div>
                                         <div class="metric-label d-inline-block float-right text-primary font-weight-bold">
-                                            <span><h5 style="color:  springgreen">Point: @student.point</h5></span>
+                                            <span><h5 style="color:  #20b760">Point: @student.point</h5></span>
                                         </div>
                                     </div>
                                 </div>
@@ -573,6 +573,7 @@
         }
     }
     public MatchMaking connectedMatch { get; set; }
+    public bool selforNor = false;
     public async Task MatchmakingInfo()
     {
         await Task.Run(() => ConnectToServer());
@@ -587,10 +588,14 @@
             {
                 if (connect.matchmakingList[i].secondPlayerID == 0)
                 {
-                    await Task.Run(() => connect.DeleteIfFound(connect.matchmakingList[0].firstPlayerID));
-                    connectedMatch = connect.ConnectedMatch;
-                    connectedMatch.secondPlayerID = student.studentID;
-                    await Task.Run(() => connect.ConnectWith2ndStudent(student.studentID));
+                    selforNor = true;
+                    modelController = "modalOpen";
+                    await Task.Run(() => connect.getInfoFromId(connect.matchmakingList[i].firstPlayerID));
+                    connectedStudent = connect.secondstudent;
+                    await InvokeAsync(() =>
+                    {
+                        StateHasChanged();
+                    });
                     break;
                 }
                 else if (i == (connect.matchmakingList.Count - 1))
@@ -653,6 +658,7 @@
 
     string url = "https://medhabiapi.shikkhanobish.com/QuizHub";
     public int connectedStudentID { get; set; }
+    int senderID;
     HubConnection _connection = null;
     bool isConnected = false;
     string connectionStatus = "Closed";
@@ -678,38 +684,100 @@
 
         };
 
-        _connection.On<int>("Connected", async id =>
+
+
+        _connection.On<int,int>("Connected", async (receiverID, studentID) =>
         {
-            connectedStudentID = id;
-            await Task.Run(() => showplayer(id));
+            if(receiverID  == student.studentID)
+            {
+                connectedStudentID = studentID;
+                await Task.Run(() => showplayer());
+            }
         });
 
 
     }
     public Student connectedStudent = new Student();
-    public async Task showplayer(int id)
+    public async Task showplayer()
     {
         if (connectedStudentID > 0)
         {
             await Task.Run(() => connect.getInfoFromId(connectedStudentID));
             connectedStudent = connect.secondstudent;
             modelController = "modalOpen";
+            await InvokeAsync(() =>
+            {
+                StateHasChanged();
+            });
         }
     }
     string modelController;
     public async Task close()
     {
-        modelController = "modalClose";
-        timer.Stop();
-        sec = 0;
-        min = 0;
-        play = "Play";
-        await Task.Run(() => connect.DeleteIfFound(student.studentID));
-        await _connection.StopAsync();
-        connectedStudentID = 0;
-        await InvokeAsync(() =>
+        if(selforNor == false)
         {
-            StateHasChanged();
-        });
+            on = !on;
+            modelController = "modalClose";
+            timer.Stop();
+            sec = 0;
+            min = 0;
+            play = "Play";
+            await Task.Run(() => connect.DeleteIfFound(student.studentID));
+            await _connection.StopAsync();
+            connectedStudentID = 0;
+            if (student.point > 11)
+            {
+                await Task.Run(() => connect.DidactPoint(student.studentID));
+                await Task.Run(() => connect.getInfoFromId(student.studentID));
+                student = connect.secondstudent;
+            }
+
+            await InvokeAsync(() =>
+            {
+                StateHasChanged();
+            });
+
+        }
+        else
+        {
+
+            modelController = "modalClose";
+            timer.Stop();
+            sec = 0;
+            min = 0;
+            play = "Play";
+            await _connection.StopAsync();
+            connectedStudentID = 0;
+            if (student.point > 11)
+            {
+                await Task.Run(() => connect.DidactPoint(student.studentID));
+                await Task.Run(() => connect.getInfoFromId(student.studentID));
+                student = connect.secondstudent;
+            }
+
+            await InvokeAsync(() =>
+            {
+                StateHasChanged();
+            });
+            on = !on;
+            selforNor = true;
+        }
+
+    }
+    public async Task sendSecondPlayer()
+    {
+        if(selforNor == true)
+        {
+            await Task.Run(() => connect.DeleteIfFound(connectedStudent.studentID));
+            connectedMatch = connect.ConnectedMatch;
+            connectedMatch.secondPlayerID = student.studentID;
+            connectedStudentID = connectedMatch.firstPlayerID;
+            await Task.Run(() => connect.ConnectWith2ndStudent(connectedMatch.firstPlayerID, student.studentID));
+        }
+        else
+        {
+            //Go To Match with Matchmaking Info
+        }
+
     }
 }

@@ -30,10 +30,9 @@ namespace QuizRealTimeApi.Controllers
             return Ok("Answer has been sent successfully!");
         }
         [HttpPost("SohwConnected")]
-        public async Task<IActionResult> GetConnected([FromQuery]int id)
+        public async Task<IActionResult> GetConnected(int receiverID, int studentID )
         {
-            int studentID = id;
-            await _hubContext.Clients.All.SendAsync("Connected", studentID);
+            await _hubContext.Clients.All.SendAsync("Connected", receiverID,studentID);
 
             return Ok("Conneted");
         }

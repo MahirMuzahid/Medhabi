@@ -224,9 +224,9 @@ namespace login.Data
             }
         }
 
-        public async Task ConnectWith2ndStudent(int studentID)
+        public async Task ConnectWith2ndStudent( int recevierID, int studentID)
         {
-            string url = "https://medhabiapi.shikkhanobish.com/api/Quiz/SohwConnected?id=" + studentID;
+            string url = "https://medhabiapi.shikkhanobish.com/api/Quiz/SohwConnected?receiverID=" + recevierID + "&studentID=" + studentID;
             HttpClient client = new HttpClient();
             StringContent content = new StringContent("", Encoding.UTF8, "application/json");
             HttpResponseMessage response = await client.PostAsync(url, content).ConfigureAwait(true);
@@ -254,6 +254,18 @@ namespace login.Data
                 submitted = 1;
             }
 
+        }
+
+        public async Task DidactPoint(int id)
+        {
+            string url = "https://api.shikkhanobish.com/api/Medhabi/DidactPoint";
+            HttpClient client = new HttpClient();
+            string jsonData = JsonConvert.SerializeObject(new { studentID = id });
+            StringContent content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+            HttpResponseMessage response = await client.PostAsync(url, content).ConfigureAwait(true);
+            string result = await response.Content.ReadAsStringAsync().ConfigureAwait(true);
+            var r = JsonConvert.DeserializeObject<Response>(result);
+            submitted = r.status;
         }
     }
 }
