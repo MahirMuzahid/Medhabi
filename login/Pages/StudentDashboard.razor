@@ -70,7 +70,7 @@
                     <!-- ============================================================== -->
                     <!-- pageheader  -->
                     <!-- ============================================================== -->
-                    <div >
+                    <div>
                         <div id="myModal" class="@modelController">
 
                             <!-- Modal content -->
@@ -83,7 +83,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="row">
                         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
                             <div class="page-header">
@@ -385,6 +385,18 @@
     int positionCounter = 0, totalStudent = 0;
     string color, play;
     int min = 0, sec = 0;
+    string modelController;
+    Timer timer;
+    public bool on;
+    MatchMaking matchmaking = new MatchMaking();
+    string url = "https://medhabiapi.shikkhanobish.com/QuizHub";
+    public int connectedStudentID { get; set; }
+    int senderID;
+    HubConnection _connection = null;
+    bool isConnected = false;
+    string connectionStatus = "Closed";
+    List<QuizInfo> quizinfo = new List<QuizInfo>();
+
     protected override async Task OnInitializedAsync()
     {
         modelController = "modalClose";
@@ -393,6 +405,10 @@
         await Task.Run(() => AuthenticateUser());
 
     }
+
+    //-------------------------------------------------------------------------------------
+    //Before Connecting To Server----------------------------------------------------------
+    //-------------------------------------------------------------------------------------
 
     public async Task AuthenticateUser()
     {
@@ -427,13 +443,11 @@
             AccuracyCounter();
         }
     }
-
     public void LogOut()
     {
         oLocalStore.ClearAsync();
         NavigationManager.NavigateTo("/");
     }
-
     public void PositionCounter()
     {
         for (int i = 0; i < TopStudentList.Count; i++)
@@ -509,14 +523,18 @@
                 TopStudentList[i].accureacy = 0;
             }
             else
+            {
                 TopStudentList[i].accureacy = (int)(100f * ((float)TopStudentList[i].total_right_answer / (float)TopStudentList[i].total_question_answered));
+            }
 
         }
-        //-------------------------------------------------------------------------------------
-        //Match Timer--------------------------------------------------------------------------
-        //-------------------------------------------------------------------------------------
+
     }
-    Timer timer;
+
+    //-------------------------------------------------------------------------------------
+    //Match Timer--------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------
+
     public async Task Play()
     {
         on = !on;
@@ -544,7 +562,6 @@
         }
 
     }
-    public bool on;
     private void counter(object sender, ElapsedEventArgs e)
     {
         sec = sec + 1;
@@ -564,7 +581,6 @@
     //Match Making------------------------------------------------------------------
     //------------------------------------------------------------------------------
 
-    MatchMaking matchmaking = new MatchMaking();
     public void Dispose()
     {
         if (timer != null)
@@ -656,15 +672,6 @@
     //Real Time Server Connection With 2nd Player---------------------------
     //----------------------------------------------------------------------
 
-    string url = "https://medhabiapi.shikkhanobish.com/QuizHub";
-    public int connectedStudentID { get; set; }
-    int senderID;
-    HubConnection _connection = null;
-    bool isConnected = false;
-    string connectionStatus = "Closed";
-
-    List<QuizInfo> quizinfo = new List<QuizInfo>();
-
     private async Task ConnectToServer()
     {
         _connection = new HubConnectionBuilder()
@@ -684,17 +691,14 @@
 
         };
 
-
-
-        _connection.On<int,int>("Connected", async (receiverID, studentID) =>
+        _connection.On<int, int>("Connected", async (receiverID, studentID) =>
         {
-            if(receiverID  == student.studentID)
+            if (receiverID == student.studentID)
             {
                 connectedStudentID = studentID;
                 await Task.Run(() => showplayer());
             }
         });
-
 
     }
     public Student connectedStudent = new Student();
@@ -711,10 +715,9 @@
             });
         }
     }
-    string modelController;
     public async Task close()
     {
-        if(selforNor == false)
+        if (selforNor == false)
         {
             on = !on;
             modelController = "modalClose";
@@ -766,7 +769,7 @@
     }
     public async Task sendSecondPlayer()
     {
-        if(selforNor == true)
+        if (selforNor == true)
         {
             await Task.Run(() => connect.DeleteIfFound(connectedStudent.studentID));
             connectedMatch = connect.ConnectedMatch;
