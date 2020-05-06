@@ -628,6 +628,7 @@
                     textcolor = "black";
                     selforNor = true;
                     modelController = "modalOpen";
+                    matchmaking = connect.matchmakingList[i];
                     await Task.Run(() => connect.getInfoFromId(connect.matchmakingList[i].firstPlayerID));
                     connectedStudent = connect.secondstudent;
 
@@ -747,7 +748,7 @@
             connectedStudent = connect.secondstudent;
             modelController = "modalOpen";
             send = new Timer();
-            send.Interval = 100;
+            send.Interval = 1000;
             send.Elapsed += timecounter;
             send.Start();
             await InvokeAsync(() =>
@@ -791,9 +792,17 @@
     {
         if (selforNor == false)
         {
+            matchmaking.secondPlayerID = connectedStudentID;           
+            await oLocalStore.SetItemAsync("mmid", matchmaking.matchID);
+            await oLocalStore.SetItemAsync("firstPlayerID", student.studentID);
+            await oLocalStore.SetItemAsync("secondPlayerID", matchmaking.secondPlayerID);
+            await oLocalStore.SetItemAsync("q1", matchmaking.firstQuestionID);
+            await oLocalStore.SetItemAsync("q2", matchmaking.secondQuestionID);
+            await oLocalStore.SetItemAsync("q3", matchmaking.thirdQuestionID);
+            await oLocalStore.SetItemAsync("q4", matchmaking.forthQuestionID);
+            await oLocalStore.SetItemAsync("q5", matchmaking.fifthQuestionID);
+            await oLocalStore.SetItemAsync("self", "0");
             NavigationManager.NavigateTo("/quiz");
-            connect.ConnectWith2ndStudent(connectedStudent.studentID, student.studentID);
-
         }
         if (selforNor == true)
         {
@@ -801,6 +810,16 @@
             connectedMatch = connect.ConnectedMatch;
             connectedMatch.secondPlayerID = student.studentID;
             connectedStudentID = connectedMatch.firstPlayerID;
+            await oLocalStore.SetItemAsync("mmid", matchmaking.matchID);
+            await oLocalStore.SetItemAsync("firstPlayerID", connectedStudent.studentID);
+            await oLocalStore.SetItemAsync("secondPlayerID", student.studentID);
+            await oLocalStore.SetItemAsync("q1", matchmaking.firstQuestionID);
+            await oLocalStore.SetItemAsync("q2", matchmaking.secondQuestionID);
+            await oLocalStore.SetItemAsync("q3", matchmaking.thirdQuestionID);
+            await oLocalStore.SetItemAsync("q4", matchmaking.forthQuestionID);
+            await oLocalStore.SetItemAsync("q5", matchmaking.fifthQuestionID);
+            await oLocalStore.SetItemAsync("self", "1");
+            await oLocalStore.SetItemAsync("myID", student.studentID);
             NavigationManager.NavigateTo("/quiz");
             value = 100;
             send.Stop();

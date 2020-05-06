@@ -277,5 +277,14 @@ namespace login.Data
             string result = await response.Content.ReadAsStringAsync().ConfigureAwait(true);
             var r = JsonConvert.DeserializeObject<string>(result);
         }
+        public async Task sendmatchInfo(int recevierID, int studentID, string matchmakingID)
+        {
+            string url = "https://medhabiapi.shikkhanobish.com/api/Quiz/Matchconnect?receiverID=" + recevierID + "&studentID=" + studentID + "&matchID=" + matchmakingID ;
+            HttpClient client = new HttpClient();
+            StringContent content = new StringContent("", Encoding.UTF8, "application/json");
+            HttpResponseMessage response = await client.PostAsync(url, content).ConfigureAwait(true);
+            string result = await response.Content.ReadAsStringAsync().ConfigureAwait(true);
+            var r = JsonConvert.DeserializeObject<string>(result);
+        }
     }
 }
