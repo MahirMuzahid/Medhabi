@@ -7049,6 +7049,12 @@ Media Query
         background: #61f8bc;
     }
 
+.nameText {
+    align-self: center;
+    font-size: 18px;
+    padding: 20px
+}
+
 
 
    /*Popup Model Overlay*/
@@ -7057,28 +7063,18 @@ Media Query
     display: block; /* Hidden by default */
     position: fixed; /* Stay in place */
     z-index: 1; /* Sit on top */
-    padding-top: 20%; /* Location of the box */
-    left: 0;
+    padding-top: 10%; /* Location of the box */
+    left: 10px;
     font-size: 20px;
-    top: 0;
+    top: 0%;
     width: 100%; /* Full width */
     height: 100%; /* Full height */
     overflow: auto; /* Enable scroll if needed */
     align-self: center;
-    
     background: rgba(57, 57, 57, 0.40);
 }
 .modalClose {
     display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
-    padding-top: 20%; /* Location of the box */
-    left: 0;
-    top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background: rgba(57, 57, 57, 0.40);
 }
 
 /* Modal Content */
@@ -7104,80 +7100,158 @@ Media Query
         text-decoration: none;
         cursor: pointer;
     }
+@media only screen and (max-width:1920px ) {
+    .modelContent {
+        width: 30%;
+        display: -webkit-box;
+        display: -webkit-flex;
+        display: -moz-box;
+        display: -ms-flexbox;
+        
+        text-align: center;
+        margin: 0 auto;
+    }
+}
+    @media only screen and (max-width:1400px ) {
+        .modelContent {
+            width: 40%;
+            display: -webkit-box;
+            display: -webkit-flex;
+            display: -moz-box;
+            display: -ms-flexbox;
+            text-align: center;
+            margin: 0 auto;
+        }
+    }
+@media only screen and (max-width:1000px ) {
+    .modelContent {
+        width: 80%;
+        display: -webkit-box;
+        display: -webkit-flex;
+        display: -moz-box;
+        display: -ms-flexbox;
+        text-align: center;
+        margin: 0 auto;
+    }
+}
 
+    @media only screen and (max-width:750px ) {
+        .modalOpen {
+            display: block; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            padding-top: 20%; /* Location of the box */
+            left: 0;
+            font-size: 20px;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            align-self: center;
+            background: rgba(57, 57, 57, 0.40);
+        }
 
+        .nameText {
+            align-self: center;
+            font-size: 15px;
+            padding: 20px
+        }
 
+        .modelContent {
+            width: 100%;
+            text-align: center;
+        }
+    }
+
+    @media only screen and (max-width:650px ) {
+        .nameText {
+            align-self: center;
+            font-size: 15px;
+            padding: 10px
+        }
+
+        .modelContent {
+            width: 100%;
+            padding: 5px;
+            text-align: center;
+            display: -webkit-box;
+            display: -webkit-flex;
+        }
+    }
 
     /*Play Button*/
 
 
-.myButton1 {
-    box-shadow: 0px 10px 14px -7px #2ec551;
-    background: linear-gradient(to bottom, #49ef89 5%, #22d54c 100%);
-    background-color: #b359a1;
-    border-radius: 8px;
-    display: inline-block;
-    cursor: pointer;
-    color: #ffffff;
-    width: 30%;
-    height: 10%;
-    font-family: Arial;
-    font-size: 20px;
-    font-weight: bold;
-    align-self: center;
-    text-align: center;
-    text-decoration: none;
-    text-shadow: 0px 1px 0px #db53db;
-    flex-wrap: nowrap;
-}
-.myButton2 {
-    box-shadow: 0px 10px 14px -7px  #c46464;
-    background: linear-gradient(to bottom, #ff407b 5%, #ef172c 100%);
-    background-color: #b359a1;
-    border-radius: 8px;
-    display: inline-block;
-    cursor: pointer;
-    color: #ffffff;
-    width: 30%;
-    height: 10%;
-    font-family: Arial;
-    font-size: 20px;
-    font-weight: bold;
-    align-self: center;
-    text-align: center;
-    text-decoration: none;
-    text-shadow: 0px 1px 0px #db53db;
-    flex-wrap: nowrap;
-}
+    .myButton1 {
+        box-shadow: 0px 10px 14px -7px #2ec551;
+        background: linear-gradient(to bottom, #49ef89 5%, #22d54c 100%);
+        background-color: #b359a1;
+        border-radius: 8px;
+        display: inline-block;
+        cursor: pointer;
+        color: #ffffff;
+        width: 30%;
+        height: 10%;
+        font-family: Arial;
+        font-size: 20px;
+        font-weight: bold;
+        align-self: center;
+        text-align: center;
+        text-decoration: none;
+        text-shadow: 0px 1px 0px #db53db;
+        flex-wrap: nowrap;
+    }
 
-.myButton1:hover {
-    background: linear-gradient(to bottom, #722cab 5%, #b359a1 100%);
-    box-shadow: 0px 10px 14px -7px #8b5de2;
-    color: #fff;
-}
+    .myButton2 {
+        box-shadow: 0px 10px 14px -7px #c46464;
+        background: linear-gradient(to bottom, #ff407b 5%, #ef172c 100%);
+        background-color: #b359a1;
+        border-radius: 8px;
+        display: inline-block;
+        cursor: pointer;
+        color: #ffffff;
+        width: 30%;
+        height: 10%;
+        font-family: Arial;
+        font-size: 20px;
+        font-weight: bold;
+        align-self: center;
+        text-align: center;
+        text-decoration: none;
+        text-shadow: 0px 1px 0px #db53db;
+        flex-wrap: nowrap;
+    }
 
-.myButton1:active {
-    position: relative;
-    top: 1px;
-    box-shadow: 0px;
-    color: #fff;
-}
-.myButton2:hover {
-    box-shadow: 0px 10px 14px -7px #8b5de2;
-    background: linear-gradient(to bottom, #722cab 5%, #b359a1 100%);
-    color: #fff;
-}
+    .myButton1:hover {
+        background: linear-gradient(to bottom, #722cab 5%, #b359a1 100%);
+        box-shadow: 0px 10px 14px -7px #8b5de2;
+        color: #fff;
+    }
 
-.myButton2:active {
-    position: relative;
-    top: 1px;
-    box-shadow: 0px;
-    color: #fff;
-}
+    .myButton1:active {
+        position: relative;
+        top: 1px;
+        box-shadow: 0px;
+        color: #fff;
+    }
+
+    .myButton2:hover {
+        box-shadow: 0px 10px 14px -7px #8b5de2;
+        background: linear-gradient(to bottom, #722cab 5%, #b359a1 100%);
+        color: #fff;
+    }
+
+    .myButton2:active {
+        position: relative;
+        top: 1px;
+        box-shadow: 0px;
+        color: #fff;
+    }
 
 
 
 
 
-/* Custom, iPhone Retina */
-@media only screen and (max-width:320px) {}
+    /* Custom, iPhone Retina */
+    @media only screen and (max-width:320px) {
+    }

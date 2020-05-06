@@ -267,5 +267,15 @@ namespace login.Data
             var r = JsonConvert.DeserializeObject<Response>(result);
             submitted = r.status;
         }
+
+        public async Task sendIfReject(int recevierID, int studentID)
+        {
+            string url = "https://medhabiapi.shikkhanobish.com/api/Quiz/Reject?receiverID=" + recevierID + "&studentID=" + studentID;
+            HttpClient client = new HttpClient();
+            StringContent content = new StringContent("", Encoding.UTF8, "application/json");
+            HttpResponseMessage response = await client.PostAsync(url, content).ConfigureAwait(true);
+            string result = await response.Content.ReadAsStringAsync().ConfigureAwait(true);
+            var r = JsonConvert.DeserializeObject<string>(result);
+        }
     }
 }

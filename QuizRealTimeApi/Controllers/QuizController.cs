@@ -36,5 +36,12 @@ namespace QuizRealTimeApi.Controllers
 
             return Ok("Conneted");
         }
+        [HttpPost("Reject")]
+        public async Task<IActionResult> Rejected(int receiverID, int studentID)
+        {
+            await _hubContext.Clients.All.SendAsync("Rejected", receiverID, studentID);
+
+            return Ok("Rejected");
+        }
     }
 }

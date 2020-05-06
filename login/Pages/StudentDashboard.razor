@@ -71,15 +71,20 @@
                     <!-- pageheader  -->
                     <!-- ============================================================== -->
                     <div>
-                        <div id="myModal" class="@modelController">
+                        <div id="myModal" class="@modelController" style="text-align: center;">
 
                             <!-- Modal content -->
-                            <div class="modal-content " style="border-radius: 25px; font-size: 15px">
-                                <span class="close">&times;</span>
-                                <p style="align-self:center; font-size: 18px"><b>@connectedStudent.name</b><br />Rank: @connectedStudent.rank<br />Point: @connectedStudent.point<br />Answered Quesyion: @connectedStudent.total_question_answered</p><br />
-                                <a style="color: white" @onclick="(async() => await sendSecondPlayer())" class="myButton1">Accept</a><br />
-                                <a style="color: white" @onclick="(async() => await close())" class="myButton2">Reject</a>
-                                <br /><a style="color: crimson; text-align: center"> [If you reject you, 10 point will be didacted from you(minimum point: 10)]</a>
+                            <div class="modal-content " style="border-radius: 25px; font-size: 15px; text-align: center;background:@acceptedColor ">
+                                <div class="modelContent" style="text-align: center;padding: 20px; ">
+                                    <p class="nameText" style="color: @textcolor"><b>@student.name</b><br />Rank: @student.rank<br />Point: @student.point<br />Answered: @student.total_question_answered</p><br />
+                                    <p class="nameText" style="color: @textcolor"><b>@connectedStudent.name</b><br />Rank: @connectedStudent.rank<br />Point: @connectedStudent.point<br />Answered: @connectedStudent.total_question_answered</p><br />
+                                </div>
+                                <a style="color: @textcolor">@showTxt</a>
+                                <a style="color: white; display: @display" @onclick="(async() => await sendSecondPlayer())" class="myButton1">Accept</a><br />
+                                <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width:@value%">
+                                    
+                                </div>
+                                <br /><a style="color: crimson; text-align: center;Display: @display"> [If you don't accept in 20 second, 10 points will be didacted from you(minimum point: 10)]</a>
                             </div>
                         </div>
                     </div>
@@ -113,7 +118,7 @@
                                             <h1 class="mb-1">@student.total_question_answered</h1>
                                         </div>
                                         <div class="metric-label d-inline-block float-right text-success font-weight-bold">
-                                            <span><i class=""></i></span><h5 style="color: #20b760">Accuracy: @accuracy%</h5><span></span>
+                                            <span><i class=""></i></span><h5 style="color: #20b760">Accuracy: @accuracy%</h5>
                                         </div>
                                     </div>
                                 </div>
@@ -381,13 +386,13 @@
     Student student = new Student();
     public List<Teacher> TopTeacherList = new List<Teacher>();
     public List<Student> TopStudentList = new List<Student>();
-    int accuracy = 0;
+    int accuracy = 0, value;
     int positionCounter = 0, totalStudent = 0;
     string color, play;
     int min = 0, sec = 0;
     string modelController;
-    Timer timer;
-    public bool on;
+    Timer timer,send;
+    public bool on, otherPlayerReject;
     MatchMaking matchmaking = new MatchMaking();
     string url = "https://medhabiapi.shikkhanobish.com/QuizHub";
     public int connectedStudentID { get; set; }
@@ -396,6 +401,9 @@
     bool isConnected = false;
     string connectionStatus = "Closed";
     List<QuizInfo> quizinfo = new List<QuizInfo>();
+    string acceptedColor, textcolor, showTxt, display;
+    public MatchMaking connectedMatch { get; set; }
+    public bool selforNor = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -403,6 +411,12 @@
         play = "Play";
         on = false;
         await Task.Run(() => AuthenticateUser());
+        acceptedColor = "#ffffff";
+        textcolor = "black";
+        showTxt = "Click to accept chalange";
+        display = "block";
+        selforNor = false;
+        value = 100;
 
     }
 
@@ -588,8 +602,7 @@
             timer.Dispose();
         }
     }
-    public MatchMaking connectedMatch { get; set; }
-    public bool selforNor = false;
+
     public async Task MatchmakingInfo()
     {
         await Task.Run(() => ConnectToServer());
@@ -600,14 +613,24 @@
         }
         else
         {
+            //If I found match--------------------------------------------------------------------------
             for (int i = 0; i < connect.matchmakingList.Count; i++)
             {
                 if (connect.matchmakingList[i].secondPlayerID == 0)
                 {
+                    send = new Timer();
+                    send.Interval = 1000;
+
+                    send.Elapsed += timecounter;
+                    send.Start();
+                    showTxt = "Click to accept chalange";
+                    acceptedColor = "#ffffff";
+                    textcolor = "black";
                     selforNor = true;
                     modelController = "modalOpen";
                     await Task.Run(() => connect.getInfoFromId(connect.matchmakingList[i].firstPlayerID));
                     connectedStudent = connect.secondstudent;
+
                     await InvokeAsync(() =>
                     {
                         StateHasChanged();
@@ -690,11 +713,25 @@
             isConnected = true;
 
         };
+        _connection.On<int, int>("Rejected", async (receiverID, studentID) =>
+        {
+            if (receiverID == student.studentID)
+            {
+                selforNor = false;
+                otherPlayerReject = true;
+                await Task.Run(() => connect.getInfoFromId(studentID));
+                connectedStudent = connect.secondstudent;
+                showTxt = connectedStudent.name + " is disconnected";
+                await Task.Run(() => close());
 
+            }
+        });
         _connection.On<int, int>("Connected", async (receiverID, studentID) =>
         {
             if (receiverID == student.studentID)
             {
+                selforNor = false;
+
                 connectedStudentID = studentID;
                 await Task.Run(() => showplayer());
             }
@@ -709,73 +746,67 @@
             await Task.Run(() => connect.getInfoFromId(connectedStudentID));
             connectedStudent = connect.secondstudent;
             modelController = "modalOpen";
+            send = new Timer();
+            send.Interval = 100;
+            send.Elapsed += timecounter;
+            send.Start();
             await InvokeAsync(() =>
             {
                 StateHasChanged();
             });
         }
     }
+
     public async Task close()
     {
-        if (selforNor == false)
+        if (otherPlayerReject == false)
         {
-            on = !on;
-            modelController = "modalClose";
-            timer.Stop();
-            sec = 0;
-            min = 0;
-            play = "Play";
-            await Task.Run(() => connect.DeleteIfFound(student.studentID));
-            await _connection.StopAsync();
-            connectedStudentID = 0;
-            if (student.point > 11)
-            {
-                await Task.Run(() => connect.DidactPoint(student.studentID));
-                await Task.Run(() => connect.getInfoFromId(student.studentID));
-                student = connect.secondstudent;
-            }
-
-            await InvokeAsync(() =>
-            {
-                StateHasChanged();
-            });
-
+            await Task.Run(() => connect.sendIfReject(connectedStudent.studentID, student.studentID));
         }
-        else
+
+        on = !on;
+        modelController = "modalClose";
+        timer.Stop();
+        sec = 0;
+        min = 0;
+        play = "Play";
+        await Task.Run(() => connect.DeleteIfFound(connectedStudent.studentID));
+
+        connectedStudentID = 0;
+        if (student.point > 11 && otherPlayerReject == false)
         {
-
-            modelController = "modalClose";
-            timer.Stop();
-            sec = 0;
-            min = 0;
-            play = "Play";
-            await _connection.StopAsync();
-            connectedStudentID = 0;
-            if (student.point > 11)
-            {
-                await Task.Run(() => connect.DidactPoint(student.studentID));
-                await Task.Run(() => connect.getInfoFromId(student.studentID));
-                student = connect.secondstudent;
-            }
-
-            await InvokeAsync(() =>
-            {
-                StateHasChanged();
-            });
-            on = !on;
-            selforNor = true;
+            await Task.Run(() => connect.DidactPoint(student.studentID));
+            await Task.Run(() => connect.getInfoFromId(student.studentID));
+            student = connect.secondstudent;
         }
+
+        await InvokeAsync(() =>
+        {
+            StateHasChanged();
+        });
+        //await Task.Run(() => Play());
 
     }
     public async Task sendSecondPlayer()
     {
+        if (selforNor == false)
+        {
+            NavigationManager.NavigateTo("/quiz");
+            connect.ConnectWith2ndStudent(connectedStudent.studentID, student.studentID);
+
+        }
         if (selforNor == true)
         {
             await Task.Run(() => connect.DeleteIfFound(connectedStudent.studentID));
             connectedMatch = connect.ConnectedMatch;
             connectedMatch.secondPlayerID = student.studentID;
             connectedStudentID = connectedMatch.firstPlayerID;
+            NavigationManager.NavigateTo("/quiz");
+            value = 100;
+            send.Stop();
             await Task.Run(() => connect.ConnectWith2ndStudent(connectedMatch.firstPlayerID, student.studentID));
+            //await Task.Run(() => ConnectToServer());
+
         }
         else
         {
@@ -783,4 +814,26 @@
         }
 
     }
+    private async void timecounter(object sender, ElapsedEventArgs e)
+    {
+        value = value - 5;
+        if (value < 0)
+        {
+            modelController = "modalClose";
+            await _connection.StopAsync();
+            value = 100;
+            send.Stop();
+            on = !on;
+            timer.Stop();
+            sec = 0;
+            min = 0;
+            play = "Play";
+            await InvokeAsync(() =>
+            {
+                StateHasChanged();
+            });
+        }
+    }
+
+
 }
