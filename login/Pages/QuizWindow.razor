@@ -15,7 +15,7 @@
         <div class="wrap-login100" style="box-shadow: 7px 5px #c850c0, 10px 10px #7340e0, 15px 15px #333333;">
 
             <div class="container-login10-form-btn">
-                <label style="padding:2px; color: #14b265 ">Mahir Muzahid</label>
+                <label style="padding:2px; color: @playerColor1">@firstplayer.name</label>
                 <div class="circle" style="background: #d8d8d8">1</div>
                 <div class="circle" style="background: #d8d8d8">2</div>
                 <div class="circle" style="background: #d8d8d8">3</div>
@@ -23,7 +23,7 @@
                 <div class="circle" style="background: #d8d8d8">5</div>
             </div>
             <div class="container-login10-form-btn">
-                <label style="padding:2px; color: @playerColor">Nuhal Rahman Chowdhury</label>
+                <label style="padding:2px; color: @playerColor2">@secondplayer.name</label>
                 <div class="circle" style="background: #d8d8d8">1</div>
                 <div class="circle" style="background: #d8d8d8">2</div>
                 <div class="circle" style="background: #d8d8d8">3</div>
@@ -33,7 +33,7 @@
 
 
             <div class="container-login100-form-btn">
-
+                <b>@waittext</b>
 
             </div>
             <div class="container-login100-form-btn">
@@ -42,7 +42,7 @@
 
                 </div>
             </div>
-            <div class="container-login100-form-btn">
+            <div class="container-login100-form-btn" style="display:@display">
                 <h3>পরমাণু যে ফিশনযোগ্য, কে আবিষ্কার করেন?</h3><br />
                 <label class="container">
 
@@ -85,43 +85,63 @@
     public bool opOne { get; set; }
     public bool opTwo { get; set; }
     public int oqn = 0, oan = 0;
-    int c = 0, self;
+    int c = 0, self = 0,myid = 0;
+    Student firstplayer = new Student();
+    Student secondplayer = new Student();
     HubConnection _connection = null;
     bool isConnected = false;
-    string connectionStatus = "Closed", playerColor;
-    public MatchMaking mm = new MatchMaking();
-    string url = "https://medhabiapi.shikkhanobish.com/QuizHub";
+    string connectionStatus = "Closed", playerColor1, playerColor2, display;
+    MatchMaking mm = new MatchMaking();
+    string url = "https://medhabiapi.shikkhanobish.com/QuizHub", waittext;
     protected override async Task OnInitializedAsync()
     {
-        await ConnectToServer();
-        playerColor = "#cbcbcb";
+        display = "none";
         value = 0 + "%";
+        await ConnectToServer();
+        playerColor1 = "#ADADAD";
+        playerColor2 = "#ADADAD";
         self = await oLocalStore.GetItemAsync<int>("self");
-        if(self == 0)
+        myid = await oLocalStore.GetItemAsync<int>("myID");
+        mm.firstPlayerID = await oLocalStore.GetItemAsync<int>("firstPlayerID");
+        mm.secondPlayerID = await oLocalStore.GetItemAsync<int>("secondPlayerID");
+        await Task.Run(() => connect.getInfoFromId(mm.firstPlayerID));
+        firstplayer =  connect.secondstudent;
+        await Task.Run(() => connect.getInfoFromId(mm.secondPlayerID));
+        secondplayer = connect.secondstudent;
+        if (self == 0)
         {
+
             mm.matchID = await oLocalStore.GetItemAsync<string>("mmid");
-            mm.firstPlayerID = await oLocalStore.GetItemAsync<int>("firstPlayerID");
-            mm.secondPlayerID = await oLocalStore.GetItemAsync<int>("secondPlayerID");
+            myid = await oLocalStore.GetItemAsync<int>("myID");
             mm.firstQuestionID = await oLocalStore.GetItemAsync<int>("q1");
             mm.secondQuestionID = await oLocalStore.GetItemAsync<int>("q2");
             mm.thirdQuestionID = await oLocalStore.GetItemAsync<int>("q3");
             mm.forthQuestionID = await oLocalStore.GetItemAsync<int>("q4");
             mm.fifthQuestionID = await oLocalStore.GetItemAsync<int>("q5");
+            playerColor1 = "#723CCB";
+            playerColor2 = "#723CCB";
+            display = "block";
+            await InvokeAsync(() =>
+            {
+                StateHasChanged();
+            });
             await Task.Run(() => connect.sendmatchInfo(mm.secondPlayerID, mm.firstPlayerID, mm.matchID));
-            playerColor = "#14b265";
+
         }
         else
         {
+            playerColor1 = "#ADADAD";
+            playerColor2 = "#723CCB";
+            waittext = "Waiting for " +firstplayer.name+ " to connect in match...";
             mm.matchID = await oLocalStore.GetItemAsync<string>("mmid");
-            mm.firstPlayerID = await oLocalStore.GetItemAsync<int>("firstPlayerID");
-            mm.secondPlayerID = await oLocalStore.GetItemAsync<int>("secondPlayerID");
+            myid = await oLocalStore.GetItemAsync<int>("myID");
             mm.firstQuestionID = await oLocalStore.GetItemAsync<int>("q1");
             mm.secondQuestionID = await oLocalStore.GetItemAsync<int>("q2");
             mm.thirdQuestionID = await oLocalStore.GetItemAsync<int>("q3");
             mm.forthQuestionID = await oLocalStore.GetItemAsync<int>("q4");
             mm.fifthQuestionID = await oLocalStore.GetItemAsync<int>("q5");
-            playerColor = "#cbcbcb";
         }
+
     }
 
     private async Task ConnectToServer()
@@ -147,13 +167,35 @@
 
         });
 
-        _connection.On<int, int,string>("mc", (receiverID, studentID, matchID) =>
+        _connection.On<int, int,string>("mc", async (receiverID, studentID, matchID) =>
         {
-            if(receiverID == mm.secondPlayerID && matchID == mm.matchID)
+            if(receiverID == myid && matchID == "close")
             {
-                playerColor = "#cbcbcb";
+                await oLocalStore.SetItemAsync("mmid", null);
+                await oLocalStore.SetItemAsync("firstPlayerID", 0);
+                await oLocalStore.SetItemAsync("secondPlayerID", 0);
+                await oLocalStore.SetItemAsync("q1", 0);
+                await oLocalStore.SetItemAsync("q2", 0);
+                await oLocalStore.SetItemAsync("q3", 0);
+                await oLocalStore.SetItemAsync("q4", 0);
+                await oLocalStore.SetItemAsync("q5", 0);
+                await oLocalStore.SetItemAsync("self", null);
+                await oLocalStore.SetItemAsync("myID", 0);
+                NavigationManager.NavigateTo("/dashboard");
             }
-            
+            else if(receiverID == myid )
+            {
+                waittext = null;
+                mm.matchID = matchID;
+                playerColor1 = "#723CCB";
+                display = "block";
+                await InvokeAsync(() =>
+                {
+                    StateHasChanged();
+                });
+            }
+
+
         });
 
     }

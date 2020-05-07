@@ -417,6 +417,7 @@
         display = "block";
         selforNor = false;
         value = 100;
+        accept = 0;
 
     }
 
@@ -790,9 +791,11 @@
     }
     public async Task sendSecondPlayer()
     {
+
         if (selforNor == false)
         {
-            matchmaking.secondPlayerID = connectedStudentID;           
+            accept = 1;
+            matchmaking.secondPlayerID = connectedStudentID;
             await oLocalStore.SetItemAsync("mmid", matchmaking.matchID);
             await oLocalStore.SetItemAsync("firstPlayerID", student.studentID);
             await oLocalStore.SetItemAsync("secondPlayerID", matchmaking.secondPlayerID);
@@ -801,8 +804,9 @@
             await oLocalStore.SetItemAsync("q3", matchmaking.thirdQuestionID);
             await oLocalStore.SetItemAsync("q4", matchmaking.forthQuestionID);
             await oLocalStore.SetItemAsync("q5", matchmaking.fifthQuestionID);
+            await oLocalStore.SetItemAsync("myID", student.studentID);
             await oLocalStore.SetItemAsync("self", "0");
-            NavigationManager.NavigateTo("/quiz");
+            send.Stop();
         }
         if (selforNor == true)
         {
@@ -820,19 +824,12 @@
             await oLocalStore.SetItemAsync("q5", matchmaking.fifthQuestionID);
             await oLocalStore.SetItemAsync("self", "1");
             await oLocalStore.SetItemAsync("myID", student.studentID);
-            NavigationManager.NavigateTo("/quiz");
-            value = 100;
+            connect.ConnectWith2ndStudent(connectedMatch.firstPlayerID, student.studentID);
             send.Stop();
-            await Task.Run(() => connect.ConnectWith2ndStudent(connectedMatch.firstPlayerID, student.studentID));
-            //await Task.Run(() => ConnectToServer());
-
         }
-        else
-        {
-            //Go To Match with Matchmaking Info
-        }
-
+        NavigationManager.NavigateTo("/quiz");
     }
+    int accept;
     private async void timecounter(object sender, ElapsedEventArgs e)
     {
         value = value - 5;
@@ -847,6 +844,11 @@
             sec = 0;
             min = 0;
             play = "Play";
+            string close = "close";
+            if( accept == 0)
+            {
+                connect.sendmatchInfo(connectedStudent.studentID, student.studentID, close);
+            }
             await InvokeAsync(() =>
             {
                 StateHasChanged();
