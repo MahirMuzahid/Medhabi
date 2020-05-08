@@ -566,6 +566,8 @@
             timer.Stop();
             sec = 0;
             min = 0;
+            timer.Enabled = false;
+            timer.Close();
             play = "Play";
             await Task.Run(() => connect.DeleteIfFound(student.studentID));
             await _connection.StopAsync();
@@ -620,7 +622,6 @@
                 {
                     send = new Timer();
                     send.Interval = 1000;
-
                     send.Elapsed += timecounter;
                     send.Start();
                     showTxt = "Click to accept chalange";
@@ -828,26 +829,33 @@
         NavigationManager.NavigateTo("/quiz");
     }
 
-    private async void timecounter(object sender, ElapsedEventArgs e)
+    private async void timecounter(object sender, System.Timers.ElapsedEventArgs e)
     {
-        value = value - 5;
         if (value < 0)
         {
-            modelController = "modalClose";
-            await _connection.StopAsync();
-            value = 100;
             send.Stop();
-            on = !on;
             timer.Stop();
+            send.Enabled = false;
+            send.Close();
+            timer.Enabled = false;
+            timer.Close();
+            modelController = "modalClose";
+            on = !on;
             sec = 0;
             min = 0;
             play = "Play";
-           
+            await _connection.StopAsync();
             await InvokeAsync(() =>
             {
                 StateHasChanged();
             });
+            value = 100;
         }
+        else
+        {
+            value = value - 5;
+        }
+
     }
 
 

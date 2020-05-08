@@ -16,7 +16,7 @@
         <div class="wrap-login100" style="box-shadow: 7px 5px #c850c0, 10px 10px #7340e0, 15px 15px #333333;">
 
             <div class="container-login10-form-btn">
-                <label style="padding:2px; color: @playerColor1">@firstplayer.name</label>
+                <label style="padding:2px; color: @playerColor1;">@firstplayer.name</label>
                 <div class="circle" style=" background: @p1q1">1</div>
                 <div class="circle" style=" background: @p1q2">2</div>
                 <div class="circle" style=" background: @p1q3">3</div>
@@ -34,17 +34,18 @@
 
 
             <div class="container-login100-form-btn">
-                <b>@waittext</b>
+                <b style="color: @connectColor">@waittext</b><br />
+                <a style="font-size: 25px; font-weight: bold">@quizTimer </a>
 
             </div>
-            <div class="container-login100-form-btn">
+            <div class="container-login100-form-btn" style="display:@display">
                 <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width:@value">
                     <h5 style="margin-top:40px">@value</h5>
 
                 </div>
             </div>
             <div class="container-login100-form-btn" style="display:@display">
-                <h3>@showqs</h3><br />
+                <h3 >@showqs</h3><br />
                 <label class="container">
 
                     <input type="checkbox" @bind="@op1">
@@ -82,6 +83,7 @@
 </div>
 
 @code {
+    string quizTimer;
     string showqs, ch1, ch2, ch3, ch4;
     List<int> ans = new List<int>();
     public List<Question> allqs { get; set; }
@@ -101,12 +103,14 @@
     MatchMaking mm = new MatchMaking();
     string url = "https://medhabiapi.shikkhanobish.com/QuizHub", waittext;
     int counter = 0;
-    string rightans = "#3ACF85";
+    string rightans = "#3ACF85", connectColor;
     string wrongans = "#D84949";
     Timer timer;
     int secondplayertimer = 23;
+    bool playeron;
     protected override async Task OnInitializedAsync()
     {
+        connectColor = "#727272";
         p1q1 = "#D2D2D2";
         p1q2 = "#D2D2D2";
         p1q3 = "#D2D2D2";
@@ -143,6 +147,7 @@
         qm.forthID = mm.forthQuestionID;
         qm.fifthID = mm.fifthQuestionID;
         await Task.Run(() => GetQuestiob(qm));
+        allqs =  connect.allqs;
         if (self == 0)
         {
             playerColor1 = "#3498DB";
@@ -153,8 +158,12 @@
             });
 
             display = "block";
-            await connect.sendmatchInfo(mm.secondPlayerID, mm.firstPlayerID, mm.matchID);
+            connect.sendmatchInfo(mm.secondPlayerID, mm.firstPlayerID, mm.matchID);
             await Task.Run(() => showquestioninWindow(allqs[0].question, allqs[0].first_choice, allqs[0].second_choice, allqs[0].third_choice, allqs[0].forth_choice, allqs[0].right_answer));
+            timer = new Timer();
+            timer.Interval = 1000;
+            timer.Elapsed += startquiztimer;
+            timer.Start();
 
         }
         else
@@ -173,9 +182,22 @@
     private async void waitfor2ndplayer(object sender, ElapsedEventArgs e)
     {
         secondplayertimer = secondplayertimer - 1;
-        if(secondplayertimer == 3)
+        if(secondplayertimer < 4 && playeron == false)
         {
+            connectColor = "#E32F2F";
             waittext =firstplayer.name + " could not connect in match ";
+
+        }
+        else if(playeron == false)
+        {
+            waittext = "Waiting for " + firstplayer.name + " to connect in match in " + (secondplayertimer - 3);
+        }
+        else if (playeron == true)
+        {
+            waittext = null ;
+        }
+        if (secondplayertimer == 0 && playeron == false)
+        {
             await oLocalStore.SetItemAsync("mmid", null);
             await oLocalStore.SetItemAsync("firstPlayerID", 0);
             await oLocalStore.SetItemAsync("secondPlayerID", 0);
@@ -186,12 +208,10 @@
             await oLocalStore.SetItemAsync("q5", 0);
             await oLocalStore.SetItemAsync("self", null);
             await oLocalStore.SetItemAsync("myID", 0);
+            timer.Stop();
             NavigationManager.NavigateTo("/dashboard");
         }
-        else
-        {
-            waittext = "Waiting for " + firstplayer.name + " to connect in match in " + secondplayertimer;
-        }
+
         await InvokeAsync(() =>
         {
             StateHasChanged();
@@ -244,6 +264,7 @@
         {
             if (receiverID == myid)
             {
+                playeron = true;
                 waittext = null;
                 mm.matchID = matchID;
                 playerColor1 = "#3498DB";
@@ -254,26 +275,74 @@
                     StateHasChanged();
                 });
 
+                timer = new Timer();
+                timer.Interval = 1000;
+                timer.Elapsed += startquiztimer;
+                timer.Start();
+
             }
+        });
+
+    }
+    int qtimer = 0,qmin;
+    private async void startquiztimer(object sender, ElapsedEventArgs e)
+    {
+        qtimer = qtimer + 1;
+        if(qtimer == 60)
+        {
+            qmin = qmin + 1;
+            qtimer = 0;
+        }
+        if(qtimer < 10)
+        {
+            if(qmin < 10)
+            {
+                quizTimer = "0"+ qmin + ":" + "0" + qtimer;
+            }
+            else
+            {
+                quizTimer = qmin + ":" + "0" + qtimer;
+            }
+
+        }
+        else
+        {
+            if(qmin < 10)
+            {
+                quizTimer = "0" + qmin + ":" + qtimer;
+            }
+            else
+            {
+                quizTimer = qmin + ":" + qtimer;
+            }
+
+        }
+        await InvokeAsync(() =>
+        {
+            StateHasChanged();
         });
 
     }
 
     public async void check()
     {
-        checkWrightWrong();
-        counter++;
-        c = c + 25;
-        value = c + "%";
-        op1 = false;
-        op2 = false;
-        op3 = false;
-        op4 = false;
-        await Task.Run(() => showquestioninWindow(allqs[counter].question, allqs[counter].first_choice, allqs[counter].second_choice, allqs[counter].third_choice, allqs[counter].forth_choice, allqs[counter].right_answer));
-        await InvokeAsync(() =>
+        if(counter < 5)
         {
-            StateHasChanged();
-        });
+            checkWrightWrong();
+            c = c + 20;
+            value = c + "%";
+            op1 = false;
+            op2 = false;
+            op3 = false;
+            op4 = false;
+            await Task.Run(() => showquestioninWindow(allqs[counter].question, allqs[counter].first_choice, allqs[counter].second_choice, allqs[counter].third_choice, allqs[counter].forth_choice, allqs[counter].right_answer));
+            counter++;
+            await InvokeAsync(() =>
+            {
+                StateHasChanged();
+            });
+        }
+
     }
 
 
@@ -342,7 +411,7 @@
                 p1q4 = wrongans;
             }
         }
-        else if (counter == 5)
+        else if (counter == 4)
         {
             if (allqs[counter].right_answer == givnans)
             {
