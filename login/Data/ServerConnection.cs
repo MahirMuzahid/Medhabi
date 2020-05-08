@@ -47,7 +47,7 @@ namespace login.Data
             HttpResponseMessage response = await client.PostAsync(url, content).ConfigureAwait(true);
             string result = await response.Content.ReadAsStringAsync().ConfigureAwait(true);
             var r = JsonConvert.DeserializeObject<Response>(result);
-            submitted = r.status;
+            submitted = r.Status;
 
         }
 
@@ -102,7 +102,7 @@ namespace login.Data
             HttpResponseMessage response = await client.PostAsync(url, content).ConfigureAwait(true);
             string result = await response.Content.ReadAsStringAsync().ConfigureAwait(true);
             var r = JsonConvert.DeserializeObject<Response>(result);
-            submitted = r.status;
+            submitted = r.Status;
         }
 
         public async Task GetTopStudent()
@@ -200,7 +200,7 @@ namespace login.Data
             HttpResponseMessage response = await client.PostAsync(url, content).ConfigureAwait(true);
             string result = await response.Content.ReadAsStringAsync().ConfigureAwait(true);
             var r = JsonConvert.DeserializeObject<Response>(result);
-            submitted = r.status;
+            submitted = r.Status;
         }
 
         public async Task MakeQuestion(QuestionMaker qs)
@@ -265,7 +265,7 @@ namespace login.Data
             HttpResponseMessage response = await client.PostAsync(url, content).ConfigureAwait(true);
             string result = await response.Content.ReadAsStringAsync().ConfigureAwait(true);
             var r = JsonConvert.DeserializeObject<Response>(result);
-            submitted = r.status;
+            submitted = r.Status;
         }
 
         public async Task sendIfReject(int recevierID, int studentID)
@@ -279,12 +279,25 @@ namespace login.Data
         }
         public async Task sendmatchInfo(int recevierID, int studentID, string matchmakingID)
         {
-            string url = "https://medhabiapi.shikkhanobish.com/api/Quiz/Matchconnect?receiverID=" + recevierID + "&studentID=" + studentID + "&matchID=" + matchmakingID ;
+            string url = "https://medhabiapi.shikkhanobish.com/api/Quiz/MatchconnectRequest?receiverID=" + recevierID + "&studentID=" + studentID + "&matchID=" + matchmakingID ;
             HttpClient client = new HttpClient();
             StringContent content = new StringContent("", Encoding.UTF8, "application/json");
             HttpResponseMessage response = await client.PostAsync(url, content).ConfigureAwait(true);
             string result = await response.Content.ReadAsStringAsync().ConfigureAwait(true);
             var r = JsonConvert.DeserializeObject<string>(result);
+        }
+
+        public async Task ConfirmQs(int questionID)
+        {
+            string url = "https://api.shikkhanobish.com/api/Medhabi/ConfirmQs";
+            HttpClient client = new HttpClient();
+            string jsonData = JsonConvert.SerializeObject(new { questionID= questionID });
+            StringContent content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+            HttpResponseMessage response = await client.PostAsync(url, content).ConfigureAwait(true);
+            string result = await response.Content.ReadAsStringAsync().ConfigureAwait(true);
+            var r = JsonConvert.DeserializeObject<Response>(result);
+            submitted = r.Status;
+            
         }
     }
 }

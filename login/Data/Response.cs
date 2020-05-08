@@ -7,7 +7,7 @@ namespace login.Data
 {
     public class Response
     {
-        public string  message { get; set; }
-        public int status { get; set; }
+        public string Massage { get; set; }
+        public int Status { get; set; }
     }
 }

@@ -43,10 +43,10 @@ namespace QuizRealTimeApi.Controllers
 
             return Ok("Rejected");
         }
-        [HttpPost("Matchconnect")]
+        [HttpPost("MatchconnectRequest")]
         public async Task<IActionResult> connectionsts(int receiverID, int studentID, string matchID)
         {
-            await _hubContext.Clients.All.SendAsync("mc", receiverID, studentID, matchID);
+            await _hubContext.Clients.All.SendAsync("mcr", receiverID, studentID, matchID);
 
             return Ok("matchconnected");
         }
