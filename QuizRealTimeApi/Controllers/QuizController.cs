@@ -21,11 +21,9 @@ namespace QuizRealTimeApi.Controllers
         }
 
         [HttpPost("PassAnswer")]
-        public async Task<IActionResult> Post([FromQuery]int qn, int qa)
+        public async Task<IActionResult> Post(int receiverID, int qn, int qa)
         {
-            info.QuestionNumber = qn;
-            info.AnswerNumber = qa;
-            await _hubContext.Clients.All.SendAsync("QuizInfo",info);
+            await _hubContext.Clients.All.SendAsync("QuizInfo", receiverID, qn, qa);
             
             return Ok("Answer has been sent successfully!");
         }

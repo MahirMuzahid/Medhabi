@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.30002.166
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "login", "login\login.csproj", "{43D4C4EF-3D8C-41FD-BFD6-5FDF40C512CC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuizRealTimeApi", "QuizRealTimeApi\QuizRealTimeApi.csproj", "{D30FD9FE-F147-46A6-86A5-B0DDF45E712F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuizRealTimeApi", "QuizRealTimeApi\QuizRealTimeApi.csproj", "{D30FD9FE-F147-46A6-86A5-B0DDF45E712F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

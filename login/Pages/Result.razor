@@ -1,0 +1,228 @@
+﻿@page "/result"
+@using login.Data
+@inject Blazored.LocalStorage.ILocalStorageService oLocalStore
+@inject NavigationManager NavigationManager
+@inject ServerConnection connect
+@using System.Timers
+
+<div id="particle-container ">
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+</div>
+<div class="container-login100 " style="background: -webkit-linear-gradient(-135deg, #FFEB26, #26FF93);
+        background: -o-linear-gradient(-135deg, #FFEB26, #26FF93);
+        background: -moz-linear-gradient(-135deg, #FFEB26, #26FF93);
+        background: linear-gradient(-135deg, #FFEB26, #26FF93);">
+
+
+    <div class="wrap-login99 roll-in-blurred-left" style="-webkit-box-shadow: 2px 50px 66px -37px rgba(0,0,0,0.38);
+                                                                -moz-box-shadow: 2px 50px 66px -37px rgba(0,0,0,0.38);
+                                                                    box-shadow: 2px 50px 66px -37px rgba(0,0,0,0.38); background: #50ff5e;">
+        <label class="resultText" style="  font-weight: bold; color: #008b14"> Mahir Muzahid</label> <br />
+        <label class="resultText" style="color: #008b14"> Right Answer : 3</label><br />
+        <label class="resultText" style="color: #008b14"> Wrong Answer: 2</label><br />
+        <label class="resultText" style="color: #008b14"> Time: 55 second</label>
+    </div>
+    <div class="wrap-login99 roll-in-blurred-left" style="-webkit-box-shadow: 2px 50px 66px -37px rgba(0,0,0,0.38);
+                                                                -moz-box-shadow: 2px 50px 66px -37px rgba(0,0,0,0.38);
+                                                                    box-shadow: 2px 50px 66px -37px rgba(0,0,0,0.38); background: #ff5959;">
+        <label class="resultText" style="font-weight: bold;color: #aa0202"> Mahir Muzahid</label> <br />
+        <label class="resultText" style="color: #aa0202"> Right Answer : 3</label><br />
+        <label class="resultText" style="color: #aa0202"> Wrong Answer: 2</label><br />
+        <label class="resultText" style="color: #aa0202"> Time: 55 second</label>
+    </div>
+
+    <svg viewBox="0 0 1000 150">
+        <symbol id="s-text">
+            <text text-anchor="middle" x="50%" y="80%">YOU LOOSE!!!</text>
+        </symbol>
+
+        <g class="g-ants">
+            <use xlink:href="#s-text" class="text-copy2"></use>
+            <use xlink:href="#s-text" class="text-copy2"></use>
+            <use xlink:href="#s-text" class="text-copy2"></use>
+            <use xlink:href="#s-text" class="text-copy2"></use>
+            <use xlink:href="#s-text" class="text-copy2"></use>
+        </g>
+    </svg>
+
+</div>
+
+@code {
+    int winnestudentID,looserStudentID;
+    Student winner, looser;
+    protected override async Task OnInitializedAsync()
+    {
+        winnestudentID = await oLocalStore.GetItemAsync<int>("wID");
+        looserStudentID = await oLocalStore.GetItemAsync<int>("lID");
+
+        await Task.Run(() => connect.getInfoFromId(winnestudentID));
+        winner = connect.secondstudent;
+        await Task.Run(() => connect.getInfoFromId(looserStudentID));
+        looser = connect.secondstudent;
+
+    }
+}
+

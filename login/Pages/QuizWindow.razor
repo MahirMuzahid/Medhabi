@@ -108,6 +108,8 @@
     Timer timer;
     int secondplayertimer = 23;
     bool playeron;
+    int otherplayer;
+    bool meFirstPlayer;
     protected override async Task OnInitializedAsync()
     {
         connectColor = "#727272";
@@ -147,9 +149,10 @@
         qm.forthID = mm.forthQuestionID;
         qm.fifthID = mm.fifthQuestionID;
         await Task.Run(() => GetQuestiob(qm));
-        allqs =  connect.allqs;
+
         if (self == 0)
         {
+            meFirstPlayer = true;
             playerColor1 = "#3498DB";
             playerColor2 = "#723CCB";
             await InvokeAsync(() =>
@@ -159,6 +162,7 @@
 
             display = "block";
             connect.sendmatchInfo(mm.secondPlayerID, mm.firstPlayerID, mm.matchID);
+            otherplayer = mm.secondPlayerID;
             await Task.Run(() => showquestioninWindow(allqs[0].question, allqs[0].first_choice, allqs[0].second_choice, allqs[0].third_choice, allqs[0].forth_choice, allqs[0].right_answer));
             timer = new Timer();
             timer.Interval = 1000;
@@ -168,6 +172,7 @@
         }
         else
         {
+            meFirstPlayer = false;
             playerColor1 = "#ADADAD";
             playerColor2 = "#723CCB";
 
@@ -182,19 +187,19 @@
     private async void waitfor2ndplayer(object sender, ElapsedEventArgs e)
     {
         secondplayertimer = secondplayertimer - 1;
-        if(secondplayertimer < 4 && playeron == false)
+        if (secondplayertimer < 4 && playeron == false)
         {
             connectColor = "#E32F2F";
-            waittext =firstplayer.name + " could not connect in match ";
+            waittext = firstplayer.name + " could not connect in match ";
 
         }
-        else if(playeron == false)
+        else if (playeron == false)
         {
             waittext = "Waiting for " + firstplayer.name + " to connect in match in " + (secondplayertimer - 3);
         }
         else if (playeron == true)
         {
-            waittext = null ;
+            waittext = null;
         }
         if (secondplayertimer == 0 && playeron == false)
         {
@@ -255,15 +260,19 @@
             isConnected = true;
 
         };
-        _connection.On<int, int>("Rejected", async (receiverID, studentID) =>
+        _connection.On<int, int, int>("QuizInfo", (receiverID, qn, qa) =>
         {
-
+            if(receiverID == myid)
+            {
+                placewriteorwrong(qn, qa, 1);
+            }
         });
 
         _connection.On<int, int, string>("mcr", async (receiverID, studentID, matchID) =>
         {
             if (receiverID == myid)
             {
+                otherplayer = studentID;
                 playeron = true;
                 waittext = null;
                 mm.matchID = matchID;
@@ -284,20 +293,20 @@
         });
 
     }
-    int qtimer = 0,qmin;
+    int qtimer = 0, qmin;
     private async void startquiztimer(object sender, ElapsedEventArgs e)
     {
         qtimer = qtimer + 1;
-        if(qtimer == 60)
+        if (qtimer == 60)
         {
             qmin = qmin + 1;
             qtimer = 0;
         }
-        if(qtimer < 10)
+        if (qtimer < 10)
         {
-            if(qmin < 10)
+            if (qmin < 10)
             {
-                quizTimer = "0"+ qmin + ":" + "0" + qtimer;
+                quizTimer = "0" + qmin + ":" + "0" + qtimer;
             }
             else
             {
@@ -307,7 +316,7 @@
         }
         else
         {
-            if(qmin < 10)
+            if (qmin < 10)
             {
                 quizTimer = "0" + qmin + ":" + qtimer;
             }
@@ -326,17 +335,26 @@
 
     public async void check()
     {
-        if(counter < 5)
+        if (counter < 5)
         {
             checkWrightWrong();
+            placewriteorwrong( counter,givnans,0);
+            connect.passans(otherplayer, counter, givnans);
             c = c + 20;
             value = c + "%";
             op1 = false;
             op2 = false;
             op3 = false;
             op4 = false;
-            await Task.Run(() => showquestioninWindow(allqs[counter].question, allqs[counter].first_choice, allqs[counter].second_choice, allqs[counter].third_choice, allqs[counter].forth_choice, allqs[counter].right_answer));
             counter++;
+            if(counter < 5)
+            {
+                await Task.Run(() => showquestioninWindow(allqs[counter].question, allqs[counter].first_choice, allqs[counter].second_choice, allqs[counter].third_choice, allqs[counter].forth_choice, allqs[counter].right_answer));
+            }
+            else
+            {
+                //Show result
+            }
             await InvokeAsync(() =>
             {
                 StateHasChanged();
@@ -347,10 +365,10 @@
 
 
 
-
+    int givnans = 0;
     public void checkWrightWrong()
     {
-        int givnans = 0;
+
         if (op1 == true)
         {
             givnans = 1;
@@ -367,61 +385,147 @@
         {
             givnans = 4;
         }
-        if (counter == 0)
+
+    }
+
+    public void placewriteorwrong(int qn, int qa,int fromwhere)
+    {
+        int go = 0;
+        if(meFirstPlayer == true && fromwhere == 0)
         {
-            if (allqs[counter].right_answer == givnans)
+            go = 0;
+        }
+        else if (meFirstPlayer == true && fromwhere == 1)
+        {
+            go = 1;
+        }
+        else if (meFirstPlayer == false && fromwhere == 0)
+        {
+            go = 1;
+        }
+        else if (meFirstPlayer == false && fromwhere == 1)
+        {
+            go = 0;
+        }
+        if (go == 0)
+        {
+            if (qn == 0)
+
             {
-                p1q1 = rightans;
+                if (allqs[qn].right_answer == qa)
+                {
+                    p1q1 = rightans;
+                }
+                else
+                {
+                    p1q1 = wrongans;
+                }
             }
-            else
+            else if (qn == 1)
             {
-                p1q1 = wrongans;
+                if (allqs[qn].right_answer == qa)
+                {
+                    p1q2 = rightans;
+                }
+                else
+                {
+                    p1q2 = wrongans;
+                }
+            }
+            else if (qn == 2)
+            {
+                if (allqs[qn].right_answer == qa)
+                {
+                    p1q3 = rightans;
+                }
+                else
+                {
+                    p1q3 = wrongans;
+                }
+            }
+            else if (qn == 3)
+            {
+                if (allqs[qn].right_answer == qa)
+                {
+                    p1q4 = rightans;
+                }
+                else
+                {
+                    p1q4 = wrongans;
+                }
+            }
+            else if (qn == 4)
+            {
+                if (allqs[qn].right_answer == qa)
+                {
+                    p1q5 = rightans;
+                }
+                else
+                {
+                    p1q5 = wrongans;
+                }
             }
         }
-        else if (counter == 1)
+        else if(go == 1)
         {
-            if (allqs[counter].right_answer == givnans)
+            if (qn == 0)
             {
-                p1q2 = rightans;
+                if (allqs[qn].right_answer == qa)
+                {
+                    p2q1 = rightans;
+                }
+                else
+                {
+                    p2q1 = wrongans;
+                }
             }
-            else
+            else if (qn == 1)
             {
-                p1q2 = wrongans;
+                if (allqs[qn].right_answer == qa)
+                {
+                    p2q2 = rightans;
+                }
+                else
+                {
+                    p2q2 = wrongans;
+                }
+            }
+            else if (qn == 2)
+            {
+                if (allqs[qn].right_answer == qa)
+                {
+                    p2q3 = rightans;
+                }
+                else
+                {
+                    p2q3 = wrongans;
+                }
+            }
+            else if (qn == 3)
+            {
+                if (allqs[qn].right_answer == qa)
+                {
+                    p2q4 = rightans;
+                }
+                else
+                {
+                    p2q4 = wrongans;
+                }
+            }
+            else if (qn == 4)
+            {
+                if (allqs[qn].right_answer == qa)
+                {
+                    p2q5 = rightans;
+                }
+                else
+                {
+                    p2q5 = wrongans;
+                }
             }
         }
-        else if (counter == 2)
-        {
-            if (allqs[counter].right_answer == givnans)
-            {
-                p1q3 = rightans;
-            }
-            else
-            {
-                p1q3 = wrongans;
-            }
-        }
-        else if (counter == 3)
-        {
-            if (allqs[counter].right_answer == givnans)
-            {
-                p1q4 = rightans;
-            }
-            else
-            {
-                p1q4 = wrongans;
-            }
-        }
-        else if (counter == 4)
-        {
-            if (allqs[counter].right_answer == givnans)
-            {
-                p1q5 = rightans;
-            }
-            else
-            {
-                p1q5 = wrongans;
-            }
-        }
+
+
 
     }
 

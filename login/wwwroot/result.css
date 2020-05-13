@@ -1,0 +1,694 @@
+
+
+.particle {
+	position: absolute;
+	border-radius: 50%;
+}
+
+@keyframes particle-animation-1 {
+	100% {
+		transform: translate3d(81vw, 24vh, 92px);
+	}
+}
+
+.particle:nth-child(1) {
+	animation: particle-animation-1 60s infinite;
+	opacity: 0.45;
+	height: 8px;
+	width: 8px;
+	animation-delay: -0.2s;
+	transform: translate3d(90vw, 45vh, 66px);
+	background: #26d962;
+}
+
+@keyframes particle-animation-2 {
+	100% {
+		transform: translate3d(67vw, 18vh, 42px);
+	}
+}
+
+.particle:nth-child(2) {
+	animation: particle-animation-2 60s infinite;
+	opacity: 0.35;
+	height: 7px;
+	width: 7px;
+	animation-delay: -0.4s;
+	transform: translate3d(6vw, 53vh, 49px);
+	background: #4126d9;
+}
+
+@keyframes particle-animation-3 {
+	100% {
+		transform: translate3d(1vw, 54vh, 38px);
+	}
+}
+
+.particle:nth-child(3) {
+	animation: particle-animation-3 60s infinite;
+	opacity: 0.59;
+	height: 8px;
+	width: 8px;
+	animation-delay: -0.6s;
+	transform: translate3d(63vw, 3vh, 61px);
+	background: #d9ac26;
+}
+
+@keyframes particle-animation-4 {
+	100% {
+		transform: translate3d(77vw, 86vh, 92px);
+	}
+}
+
+.particle:nth-child(4) {
+	animation: particle-animation-4 60s infinite;
+	opacity: 0.66;
+	height: 7px;
+	width: 7px;
+	animation-delay: -0.8s;
+	transform: translate3d(71vw, 7vh, 96px);
+	background: #266ed9;
+}
+
+@keyframes particle-animation-5 {
+	100% {
+		transform: translate3d(39vw, 15vh, 20px);
+	}
+}
+
+.particle:nth-child(5) {
+	animation: particle-animation-5 60s infinite;
+	opacity: 0.61;
+	height: 8px;
+	width: 8px;
+	animation-delay: -1s;
+	transform: translate3d(75vw, 54vh, 40px);
+	background: #26d0d9;
+}
+
+@keyframes particle-animation-6 {
+	100% {
+		transform: translate3d(46vw, 39vh, 15px);
+	}
+}
+
+.particle:nth-child(6) {
+	animation: particle-animation-6 60s infinite;
+	opacity: 0.66;
+	height: 8px;
+	width: 8px;
+	animation-delay: -1.2s;
+	transform: translate3d(52vw, 35vh, 71px);
+	background: #6bd926;
+}
+
+@keyframes particle-animation-7 {
+	100% {
+		transform: translate3d(4vw, 89vh, 11px);
+	}
+}
+
+.particle:nth-child(7) {
+	animation: particle-animation-7 60s infinite;
+	opacity: 0.98;
+	height: 8px;
+	width: 8px;
+	animation-delay: -1.4s;
+	transform: translate3d(7vw, 64vh, 59px);
+	background: #264ad9;
+}
+
+@keyframes particle-animation-8 {
+	100% {
+		transform: translate3d(45vw, 65vh, 16px);
+	}
+}
+
+.particle:nth-child(8) {
+	animation: particle-animation-8 60s infinite;
+	opacity: 0.43;
+	height: 8px;
+	width: 8px;
+	animation-delay: -1.6s;
+	transform: translate3d(87vw, 26vh, 6px);
+	background: #d926bb;
+}
+
+@keyframes particle-animation-9 {
+	100% {
+		transform: translate3d(17vw, 7vh, 11px);
+	}
+}
+
+.particle:nth-child(9) {
+	animation: particle-animation-9 60s infinite;
+	opacity: 0.92;
+	height: 10px;
+	width: 10px;
+	animation-delay: -1.8s;
+	transform: translate3d(41vw, 5vh, 76px);
+	background: #26bed9;
+}
+
+@keyframes particle-animation-10 {
+	100% {
+		transform: translate3d(38vw, 66vh, 49px);
+	}
+}
+
+.particle:nth-child(10) {
+	animation: particle-animation-10 60s infinite;
+	opacity: 0.96;
+	height: 7px;
+	width: 7px;
+	animation-delay: -2s;
+	transform: translate3d(23vw, 88vh, 19px);
+	background: #26d9c1;
+}
+
+@keyframes particle-animation-11 {
+	100% {
+		transform: translate3d(47vw, 50vh, 22px);
+	}
+}
+
+.particle:nth-child(11) {
+	animation: particle-animation-11 60s infinite;
+	opacity: 0.68;
+	height: 9px;
+	width: 9px;
+	animation-delay: -2.2s;
+	transform: translate3d(9vw, 59vh, 32px);
+	background: #262fd9;
+}
+
+@keyframes particle-animation-12 {
+	100% {
+		transform: translate3d(65vw, 88vh, 64px);
+	}
+}
+
+.particle:nth-child(12) {
+	animation: particle-animation-12 60s infinite;
+	opacity: 0.72;
+	height: 6px;
+	width: 6px;
+	animation-delay: -2.4s;
+	transform: translate3d(76vw, 3vh, 82px);
+	background: #c426d9;
+}
+
+@keyframes particle-animation-13 {
+	100% {
+		transform: translate3d(57vw, 80vh, 26px);
+	}
+}
+
+.particle:nth-child(13) {
+	animation: particle-animation-13 60s infinite;
+	opacity: 0.19;
+	height: 7px;
+	width: 7px;
+	animation-delay: -2.6s;
+	transform: translate3d(12vw, 42vh, 16px);
+	background: #d926b8;
+}
+
+@keyframes particle-animation-14 {
+	100% {
+		transform: translate3d(12vw, 3vh, 54px);
+	}
+}
+
+.particle:nth-child(14) {
+	animation: particle-animation-14 60s infinite;
+	opacity: 0.41;
+	height: 10px;
+	width: 10px;
+	animation-delay: -2.8s;
+	transform: translate3d(29vw, 14vh, 79px);
+	background: #269dd9;
+}
+
+@keyframes particle-animation-15 {
+	100% {
+		transform: translate3d(76vw, 70vh, 61px);
+	}
+}
+
+.particle:nth-child(15) {
+	animation: particle-animation-15 60s infinite;
+	opacity: 0.18;
+	height: 6px;
+	width: 6px;
+	animation-delay: -3s;
+	transform: translate3d(32vw, 11vh, 70px);
+	background: #d94126;
+}
+
+@keyframes particle-animation-16 {
+	100% {
+		transform: translate3d(82vw, 57vh, 43px);
+	}
+}
+
+.particle:nth-child(16) {
+	animation: particle-animation-16 60s infinite;
+	opacity: 0.82;
+	height: 6px;
+	width: 6px;
+	animation-delay: -3.2s;
+	transform: translate3d(50vw, 58vh, 6px);
+	background: #d9ca26;
+}
+
+@keyframes particle-animation-17 {
+	100% {
+		transform: translate3d(23vw, 83vh, 51px);
+	}
+}
+
+.particle:nth-child(17) {
+	animation: particle-animation-17 60s infinite;
+	opacity: 0.86;
+	height: 9px;
+	width: 9px;
+	animation-delay: -3.4s;
+	transform: translate3d(43vw, 77vh, 31px);
+	background: #d97726;
+}
+
+@keyframes particle-animation-18 {
+	100% {
+		transform: translate3d(29vw, 30vh, 24px);
+	}
+}
+
+.particle:nth-child(18) {
+	animation: particle-animation-18 60s infinite;
+	opacity: 0.39;
+	height: 9px;
+	width: 9px;
+	animation-delay: -3.6s;
+	transform: translate3d(17vw, 48vh, 97px);
+	background: #26d97a;
+}
+
+@keyframes particle-animation-19 {
+	100% {
+		transform: translate3d(85vw, 45vh, 57px);
+	}
+}
+
+.particle:nth-child(19) {
+	animation: particle-animation-19 60s infinite;
+	opacity: 0.38;
+	height: 8px;
+	width: 8px;
+	animation-delay: -3.8s;
+	transform: translate3d(32vw, 42vh, 43px);
+	background: #d92691;
+}
+
+@keyframes particle-animation-20 {
+	100% {
+		transform: translate3d(23vw, 36vh, 33px);
+	}
+}
+
+.particle:nth-child(20) {
+	animation: particle-animation-20 60s infinite;
+	opacity: 0.52;
+	height: 6px;
+	width: 6px;
+	animation-delay: -4s;
+	transform: translate3d(54vw, 59vh, 56px);
+	background: #d9b526;
+}
+
+@keyframes particle-animation-21 {
+	100% {
+		transform: translate3d(26vw, 86vh, 55px);
+	}
+}
+
+.particle:nth-child(21) {
+	animation: particle-animation-21 60s infinite;
+	opacity: 0.95;
+	height: 7px;
+	width: 7px;
+	animation-delay: -4.2s;
+	transform: translate3d(57vw, 70vh, 35px);
+	background: #d326d9;
+}
+
+@keyframes particle-animation-22 {
+	100% {
+		transform: translate3d(90vw, 21vh, 51px);
+	}
+}
+
+.particle:nth-child(22) {
+	animation: particle-animation-22 60s infinite;
+	opacity: 0.19;
+	height: 9px;
+	width: 9px;
+	animation-delay: -4.4s;
+	transform: translate3d(89vw, 75vh, 11px);
+	background: #d926be;
+}
+
+@keyframes particle-animation-23 {
+	100% {
+		transform: translate3d(51vw, 70vh, 25px);
+	}
+}
+
+.particle:nth-child(23) {
+	animation: particle-animation-23 60s infinite;
+	opacity: 0.06;
+	height: 8px;
+	width: 8px;
+	animation-delay: -4.6s;
+	transform: translate3d(79vw, 9vh, 38px);
+	background: #26d977;
+}
+
+@keyframes particle-animation-24 {
+	100% {
+		transform: translate3d(66vw, 35vh, 11px);
+	}
+}
+
+.particle:nth-child(24) {
+	animation: particle-animation-24 60s infinite;
+	opacity: 0.1;
+	height: 7px;
+	width: 7px;
+	animation-delay: -4.8s;
+	transform: translate3d(66vw, 10vh, 19px);
+	background: #26bbd9;
+}
+
+@keyframes particle-animation-25 {
+	100% {
+		transform: translate3d(72vw, 76vh, 81px);
+	}
+}
+
+.particle:nth-child(25) {
+	animation: particle-animation-25 60s infinite;
+	opacity: 0.73;
+	height: 10px;
+	width: 10px;
+	animation-delay: -5s;
+	transform: translate3d(24vw, 76vh, 13px);
+	background: #38d926;
+}
+
+@keyframes particle-animation-26 {
+	100% {
+		transform: translate3d(63vw, 46vh, 12px);
+	}
+}
+
+.particle:nth-child(26) {
+	animation: particle-animation-26 60s infinite;
+	opacity: 0.67;
+	height: 6px;
+	width: 6px;
+	animation-delay: -5.2s;
+	transform: translate3d(25vw, 15vh, 34px);
+	background: #26d92f;
+}
+
+@keyframes particle-animation-27 {
+	100% {
+		transform: translate3d(86vw, 85vh, 76px);
+	}
+}
+
+.particle:nth-child(27) {
+	animation: particle-animation-27 60s infinite;
+	opacity: 0.59;
+	height: 10px;
+	width: 10px;
+	animation-delay: -5.4s;
+	transform: translate3d(55vw, 54vh, 83px);
+	background: #4dd926;
+}
+
+@keyframes particle-animation-28 {
+	100% {
+		transform: translate3d(66vw, 45vh, 80px);
+	}
+}
+
+.particle:nth-child(28) {
+	animation: particle-animation-28 60s infinite;
+	opacity: 0.62;
+	height: 8px;
+	width: 8px;
+	animation-delay: -5.6s;
+	transform: translate3d(15vw, 18vh, 82px);
+	background: #bb26d9;
+}
+
+@keyframes particle-animation-29 {
+	100% {
+		transform: translate3d(67vw, 15vh, 65px);
+	}
+}
+
+.particle:nth-child(29) {
+	animation: particle-animation-29 60s infinite;
+	opacity: 0.27;
+	height: 10px;
+	width: 10px;
+	animation-delay: -5.8s;
+	transform: translate3d(52vw, 68vh, 18px);
+	background: #d92697;
+}
+
+@keyframes particle-animation-30 {
+	100% {
+		transform: translate3d(57vw, 17vh, 12px);
+	}
+}
+
+.particle:nth-child(30) {
+	animation: particle-animation-30 60s infinite;
+	opacity: 0.14;
+	height: 7px;
+	width: 7px;
+	animation-delay: -6s;
+	transform: translate3d(48vw, 46vh, 78px);
+	background: #4dd926;
+}
+
+
+
+
+.roll-in-blurred-left {
+	-webkit-animation: roll-in-blurred-left 0.65s cubic-bezier(0.230, 1.000, 0.320, 1.000) both;
+	animation: roll-in-blurred-left 0.65s cubic-bezier(0.230, 1.000, 0.320, 1.000) both;
+	
+}
+.box-square {
+	text-align: center;
+	display: inline-block;
+	margin: 0 auto;
+	justify-content: center;
+	align-items: center;
+	background: #68bdfe;
+	width: 100px;
+	height: 100px;
+	position: absolute;
+}
+/* ----------------------------------------------
+ * Generated by Animista on 2020-5-9 23:36:59
+ * Licensed under FreeBSD License.
+ * See http://animista.net/license for more info. 
+ * w: http://animista.net, t: @cssanimista
+ * ---------------------------------------------- */
+
+/**
+ * ----------------------------------------
+ * animation roll-in-blurred-left
+ * ----------------------------------------
+ */
+@-webkit-keyframes roll-in-blurred-left {
+	0% {
+		-webkit-transform: translateX(-1000px) rotate(-720deg);
+		transform: translateX(-1000px) rotate(-720deg);
+		-webkit-filter: blur(50px);
+		filter: blur(50px);
+		opacity: 0;
+	}
+
+	100% {
+		-webkit-transform: translateX(0) rotate(0deg);
+		transform: translateX(0) rotate(0deg);
+		-webkit-filter: blur(0);
+		filter: blur(0);
+		opacity: 1;
+	}
+}
+
+@keyframes roll-in-blurred-left {
+	0% {
+		-webkit-transform: translateX(-1000px) rotate(-720deg);
+		transform: translateX(-1000px) rotate(-720deg);
+		-webkit-filter: blur(50px);
+		filter: blur(50px);
+		opacity: 0;
+	}
+
+	100% {
+		-webkit-transform: translateX(0) rotate(0deg);
+		transform: translateX(0) rotate(0deg);
+		-webkit-filter: blur(0);
+		filter: blur(0);
+		opacity: 1;
+	}
+}
+
+.wrap-login99 {
+	background: #fff;
+	border-radius: 10px;
+	text-align: center;
+	justify-content: space-between;
+	font-size: 20px ;
+	box-shadow: 7px 5px #FFEB26;
+	margin-right: 50px;
+	flex-wrap: nowrap;
+	width: 400px;
+	height: 400px;
+	padding: 20px
+}
+.resultText {
+	text-align: center;
+	margin-bottom: 20px;
+	font-size: 16px;
+	
+}
+
+@media (max-width: 576px) {
+	.wrap-login99 {
+		background: #fff;
+		border-radius: 10px;
+		text-align: center;
+		justify-content: space-between;
+		font-size: 20px;
+		flex-wrap: nowrap;
+		width: 150px;
+		height: 300px
+	}
+	.resultText {
+		text-align: center;
+		font-size: 12px;
+	}
+}
+
+@import url(https://fonts.googleapis.com/css?family=Montserrat);
+
+html, body {
+	height: 100%;
+	font-weight: 800;
+}
+
+
+
+svg {
+	display: block;
+	font: 10.5em 'Montserrat';
+	width: 960px;
+	height: 300px;
+	margin: 0 auto;
+}
+
+.text-copy {
+	fill: none;
+	stroke: white;
+	stroke-dasharray: 6% 29%;
+	stroke-width: 5px;
+	stroke-dashoffset: 0%;
+	animation: stroke-offset 5.5s infinite linear;
+}
+
+	.text-copy:nth-child(1) {
+		stroke: #20A109;
+		animation-delay: -1s;
+	}
+
+	.text-copy:nth-child(2) {
+		stroke: #20A109;
+		animation-delay: -2s;
+	}
+
+	.text-copy:nth-child(3) {
+		stroke: #4BB238;
+		animation-delay: -3s;
+	}
+
+	.text-copy:nth-child(4) {
+		stroke: #20A109;
+		animation-delay: -4s;
+	}
+
+	.text-copy:nth-child(5) {
+		stroke: #4BB238;
+		animation-delay: -5s;
+	}
+
+@keyframes stroke-offset {
+	100% {
+		stroke-dashoffset: -35%;
+	}
+}
+
+
+.text-copy2 {
+	fill: none;
+	stroke: white;
+	stroke-dasharray: 6% 29%;
+	stroke-width: 5px;
+	stroke-dashoffset: 0%;
+	animation: stroke-offset 5.5s infinite linear;
+}
+
+	.text-copy2:nth-child(1) {
+		stroke: #FF3434;
+		animation-delay: -1s;
+	}
+
+	.text-copy2:nth-child(2) {
+		stroke: #FF3434;
+		animation-delay: -2s;
+	}
+
+	.text-copy2:nth-child(3) {
+		stroke: #FF3434;
+		animation-delay: -3s;
+	}
+
+	.text-copy2:nth-child(4) {
+		stroke: #DE5C5C;
+		animation-delay: -4s;
+	}
+
+	.text-copy2:nth-child(5) {
+		stroke: #DE5C5C;
+		animation-delay: -5s;
+	}
+
+@keyframes stroke-offset {
+	100% {
+		stroke-dashoffset: -35%;
+	}
+}
+
+
+
+
+
+ 

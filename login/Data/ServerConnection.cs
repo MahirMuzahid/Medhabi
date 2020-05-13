@@ -14,6 +14,8 @@ namespace login.Data
         public Student student { get; set; }
         public Student secondstudent { get; set; }
         public Teacher teacher { get; set; }
+        public List<PlayerHistory> PlayerHistoryList { get; set; }
+        public List<MatchHistory> MatchHistoryList { get; set; }
         public List<Student> TopStudentList { get; set; }
         public List<Student> allStudent { get; set; }
         public List<Teacher> allTeacher { get; set; }
@@ -211,17 +213,9 @@ namespace login.Data
             StringContent content = new StringContent(jsonData, Encoding.UTF8, "application/json");
             HttpResponseMessage response = await client.PostAsync(url, content).ConfigureAwait(true);
             string result = await response.Content.ReadAsStringAsync().ConfigureAwait(true);
-            var r = JsonConvert.DeserializeObject<List<Question>>(result);
+            allqs = JsonConvert.DeserializeObject<List<Question>>(result);
 
-            if(r.Count < 5)
-            {
-                submitted = 1;
-            }
-            else
-            {
-                submitted = 0;
-                allqs = r;
-            }
+            
         }
 
         public async Task ConnectWith2ndStudent( int recevierID, int studentID)
@@ -298,6 +292,41 @@ namespace login.Data
             var r = JsonConvert.DeserializeObject<Response>(result);
             submitted = r.Status;
             
+        }
+        public async Task passans(int receiverID, int qn, int qa)
+        {
+            string url = "https://medhabiapi.shikkhanobish.com/api/Quiz/PassAnswer?receiverID=" + receiverID + "&qn=" + qn + "&qa=" + qa;
+            HttpClient client = new HttpClient();
+            StringContent content = new StringContent("", Encoding.UTF8, "application/json");
+            HttpResponseMessage response = await client.PostAsync(url, content).ConfigureAwait(true);
+            string result = await response.Content.ReadAsStringAsync().ConfigureAwait(true);
+            var r = JsonConvert.DeserializeObject<string>(result);
+
+        }
+
+        public async Task EditPlayerHistory(PlayerHistory ph)
+        {
+            string url = "https://api.shikkhanobish.com/api/Medhabi/EditPlayerHistory";
+            HttpClient client = new HttpClient();
+            string jsonData = JsonConvert.SerializeObject(new { matchID = ph.matchID, matchStatus = ph.matchStatus, q1 = ph.q1, q2 = ph.q2, q3 = ph.q3, questionID = ph.matchID, q4 = ph.q4, q5 = ph.q5, whatToDO = ph.whatToDO });
+            StringContent content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+            HttpResponseMessage response = await client.PostAsync(url, content).ConfigureAwait(true);
+            string result = await response.Content.ReadAsStringAsync().ConfigureAwait(true);
+            var r = JsonConvert.DeserializeObject<List<PlayerHistory>>(result);
+            PlayerHistoryList = r;
+
+        }
+        public async Task EditMatchHistory(MatchHistory mh)
+        {
+            string url = "https://api.shikkhanobish.com/api/Medhabi/EditMatchHistory";
+            HttpClient client = new HttpClient();
+            string jsonData = JsonConvert.SerializeObject(new { matchID = mh.matchID, winnerPlayerID = mh.winnerPlayerID, looserPlayerID = mh.looserPlayerID, q1 = mh.q1, q2 = mh.q2, q3 = mh.q3, questionID = mh.matchID, q4 = mh.q4, q5 = mh.q5, whatToDO = mh.whatToDO });
+            StringContent content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+            HttpResponseMessage response = await client.PostAsync(url, content).ConfigureAwait(true);
+            string result = await response.Content.ReadAsStringAsync().ConfigureAwait(true);
+            var r = JsonConvert.DeserializeObject<List<MatchHistory>>(result);
+            MatchHistoryList = r;
+
         }
     }
 }
