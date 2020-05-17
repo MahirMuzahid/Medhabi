@@ -308,7 +308,7 @@ namespace login.Data
         {
             string url = "https://api.shikkhanobish.com/api/Medhabi/EditPlayerHistory";
             HttpClient client = new HttpClient();
-            string jsonData = JsonConvert.SerializeObject(new { matchID = ph.matchID, matchStatus = ph.matchStatus, q1 = ph.q1, q2 = ph.q2, q3 = ph.q3, questionID = ph.matchID, q4 = ph.q4, q5 = ph.q5, whatToDO = ph.whatToDO });
+            string jsonData = JsonConvert.SerializeObject(new { matchID = ph.matchID, playerID = ph.playerID, matchStatus = ph.matchStatus, q1 = ph.q1, q2 = ph.q2, q3 = ph.q3, questionID = ph.matchID, q4 = ph.q4, q5 = ph.q5, whatToDO = ph.whatToDO });
             StringContent content = new StringContent(jsonData, Encoding.UTF8, "application/json");
             HttpResponseMessage response = await client.PostAsync(url, content).ConfigureAwait(true);
             string result = await response.Content.ReadAsStringAsync().ConfigureAwait(true);
@@ -327,6 +327,24 @@ namespace login.Data
             var r = JsonConvert.DeserializeObject<List<MatchHistory>>(result);
             MatchHistoryList = r;
 
+        }
+        public async Task senddone(int receiverID, int studentID, int ra, int time)
+        {
+            string url = "https://medhabiapi.shikkhanobish.com/api/Quiz/SendDoneMsg?receiverID=" + receiverID + "&studentID=" + studentID + "&ra=" + ra + "&time=" + time;
+            HttpClient client = new HttpClient();
+            StringContent content = new StringContent("", Encoding.UTF8, "application/json");
+            HttpResponseMessage response = await client.PostAsync(url, content).ConfigureAwait(true);
+        }
+        public async Task UpdateInfo(Student s)
+        {
+            string url = "https://api.shikkhanobish.com/api/Medhabi/updateStudnetInfo";
+            HttpClient client = new HttpClient();
+            string jsonData = JsonConvert.SerializeObject(new { total_question_answered = s.total_question_answered, total_right_answer = s.total_right_answer, point = s.point, rank = s.rank, studentID = s.studentID });
+            StringContent content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+            HttpResponseMessage response = await client.PostAsync(url, content).ConfigureAwait(true);
+            string result = await response.Content.ReadAsStringAsync().ConfigureAwait(true);
+            var r = JsonConvert.DeserializeObject<Response>(result);
+            submitted = r.Status;
         }
     }
 }

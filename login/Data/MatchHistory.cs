@@ -7,7 +7,7 @@ namespace login.Data
 {
     public class MatchHistory
     {
-        public int matchID { get; set; }
+        public string matchID { get; set; }
         public int winnerPlayerID { get; set; }
         public int looserPlayerID { get; set; }
         public int q1 { get; set; }

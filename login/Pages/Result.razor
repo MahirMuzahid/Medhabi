@@ -180,23 +180,36 @@
     <div class="wrap-login99 roll-in-blurred-left" style="-webkit-box-shadow: 2px 50px 66px -37px rgba(0,0,0,0.38);
                                                                 -moz-box-shadow: 2px 50px 66px -37px rgba(0,0,0,0.38);
                                                                     box-shadow: 2px 50px 66px -37px rgba(0,0,0,0.38); background: #50ff5e;">
-        <label class="resultText" style="  font-weight: bold; color: #008b14"> Mahir Muzahid</label> <br />
-        <label class="resultText" style="color: #008b14"> Right Answer : 3</label><br />
-        <label class="resultText" style="color: #008b14"> Wrong Answer: 2</label><br />
-        <label class="resultText" style="color: #008b14"> Time: 55 second</label>
-    </div>
-    <div class="wrap-login99 roll-in-blurred-left" style="-webkit-box-shadow: 2px 50px 66px -37px rgba(0,0,0,0.38);
+        <label class="resultText" style="  font-weight: bold; color: #008b14"> @winnestudentname</label> <br />
+        <label class="resultText" style="color: #008b14"> Right Answer : @wRa</label><br />
+        <label class="resultText" style="color: #008b14"> Wrong Answer: @wWa </label><br />
+        <label class="resultText" style="color: #008b14"> Time: @wT</label>
+    </div> 0
+    <div class="wrap-login99 slide-in-blurred-right" style="-webkit-box-shadow: 2px 50px 66px -37px rgba(0,0,0,0.38);
                                                                 -moz-box-shadow: 2px 50px 66px -37px rgba(0,0,0,0.38);
                                                                     box-shadow: 2px 50px 66px -37px rgba(0,0,0,0.38); background: #ff5959;">
-        <label class="resultText" style="font-weight: bold;color: #aa0202"> Mahir Muzahid</label> <br />
-        <label class="resultText" style="color: #aa0202"> Right Answer : 3</label><br />
-        <label class="resultText" style="color: #aa0202"> Wrong Answer: 2</label><br />
-        <label class="resultText" style="color: #aa0202"> Time: 55 second</label>
+        <label class="resultText" style="font-weight: bold;color: #aa0202"> @looserStudentname</label> <br />
+        <label class="resultText" style="color: #aa0202"> Right Answer : @lRa</label><br />
+        <label class="resultText" style="color: #aa0202"> Wrong Answer: @lWa</label><br />
+        <label class="resultText" style="color: #aa0202"> Time: @lT</label>
     </div>
 
-    <svg viewBox="0 0 1000 150">
+    <svg viewBox="0 0 1000 150" style="display: @display1">
         <symbol id="s-text">
-            <text text-anchor="middle" x="50%" y="80%">YOU LOOSE!!!</text>
+            <text text-anchor="middle" x="50%" y="80%">YOU WIN!!!</text>
+        </symbol>
+
+        <g class="g-ants">
+            <use xlink:href="#s-text" class="text-copy"></use>
+            <use xlink:href="#s-text" class="text-copy"></use>
+            <use xlink:href="#s-text" class="text-copy"></use>
+            <use xlink:href="#s-text" class="text-copy"></use>
+            <use xlink:href="#s-text" class="text-copy"></use>
+        </g>
+    </svg>
+    <svg viewBox="0 0 1000 150" style="display: @display2">
+        <symbol id="s-text">
+            <text text-anchor="middle" x="50%" y="80%">YOU LOSE!!!</text>
         </symbol>
 
         <g class="g-ants">
@@ -207,22 +220,73 @@
             <use xlink:href="#s-text" class="text-copy2"></use>
         </g>
     </svg>
-
+    <a class="myButton" @onclick="go">Go To Dashboard</a>
 </div>
 
 @code {
-    int winnestudentID,looserStudentID;
-    Student winner, looser;
+    string winnestudentname,looserStudentname, lT, wT,display1, display2;
+    int wRa, lRa, wWa, lWa;
+    bool win;
+    string wlText,className;
     protected override async Task OnInitializedAsync()
     {
-        winnestudentID = await oLocalStore.GetItemAsync<int>("wID");
-        looserStudentID = await oLocalStore.GetItemAsync<int>("lID");
+        if(await oLocalStore.GetItemAsync<string>("wname") == null)
+        {
+            NavigationManager.NavigateTo("/dashboard");
+        }
+        else
+        {
+            display1 = "none";
+            display2 = "none";
+            winnestudentname = await oLocalStore.GetItemAsync<string>("wname");
+            looserStudentname = await oLocalStore.GetItemAsync<string>("lname");
+            wRa = await oLocalStore.GetItemAsync<int>("wRa");
+            wWa = await oLocalStore.GetItemAsync<int>("wWa");
+            wT = await oLocalStore.GetItemAsync<string>("wT");
+            lRa = await oLocalStore.GetItemAsync<int>("lRa");
+            lWa = await oLocalStore.GetItemAsync<int>("lWa");
+            lT = await oLocalStore.GetItemAsync<string>("lT");
+            win = await oLocalStore.GetItemAsync<bool>("win");
+            wWa = 5 - wRa;
+            lWa = 5 - lRa;
+            if (win == true)
+            {
+                display1 = "block";
+            }
+            else
+            {
+                display2 = "block";
+            }
+            await InvokeAsync(() =>
+            {
+                StateHasChanged();
+            });
+        }
 
-        await Task.Run(() => connect.getInfoFromId(winnestudentID));
-        winner = connect.secondstudent;
-        await Task.Run(() => connect.getInfoFromId(looserStudentID));
-        looser = connect.secondstudent;
+    }
 
+    public async void go()
+    {
+        await oLocalStore.SetItemAsync("lname", null);
+        await oLocalStore.SetItemAsync("wname", null);
+        await oLocalStore.SetItemAsync("lRa", 0);
+        await oLocalStore.SetItemAsync("lT", 0);
+        await oLocalStore.SetItemAsync("lID", 0);
+        await oLocalStore.SetItemAsync("wID", 0);
+        await oLocalStore.SetItemAsync("wRa", 0);
+        await oLocalStore.SetItemAsync("wT", 0);
+        await oLocalStore.SetItemAsync("mmid", 0);
+        await oLocalStore.SetItemAsync("firstPlayerID", 0);
+        await oLocalStore.SetItemAsync("secondPlayerID", 0);
+        await oLocalStore.SetItemAsync("q1", 0);
+        await oLocalStore.SetItemAsync("q2", 0);
+        await oLocalStore.SetItemAsync("q3", 0);
+        await oLocalStore.SetItemAsync("q4", 0);
+        await oLocalStore.SetItemAsync("q5", 0);
+        await oLocalStore.SetItemAsync("myID", 0);
+        await oLocalStore.SetItemAsync("self", null);
+
+        NavigationManager.NavigateTo("/dashboard");
     }
 }
 

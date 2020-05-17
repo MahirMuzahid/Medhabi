@@ -48,5 +48,12 @@ namespace QuizRealTimeApi.Controllers
 
             return Ok("matchconnected");
         }
+        [HttpPost("SendDoneMsg")]
+        public async Task<IActionResult> done(int receiverID, int studentID, int ra, int time)
+        {
+            await _hubContext.Clients.All.SendAsync("donemsg", receiverID, studentID, ra,time);
+
+            return Ok("sent");
+        }
     }
 }

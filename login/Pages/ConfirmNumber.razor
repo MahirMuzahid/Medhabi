@@ -57,15 +57,10 @@
         if(code == textcode)
         {
             ErrorText = "Registration Succesful!";
-            signIn();
+           
 
         }
     }
 
-    public async void signIn()
-    {
-        await Task.Run(() => connect.SignUp(mail, pass, name, phonenumber));
-        NavigationManager.NavigateTo("/dashboard");
-        
-    }
+    
 }

@@ -1,6 +1,7 @@
 ﻿@page "/signup"
 @inject NavigationManager NavigationManager
 @inject Blazored.LocalStorage.ILocalStorageService oLocalStore
+@inject login.Data.ServerConnection connect
 
 <div class="limiter">
     <div class="container-login100">
@@ -92,29 +93,18 @@
         }
         else
         {
-            Random r = new Random();
-            int code = r.Next(1000, 9999);
-            string text = "Medhabi Verification Code: " + code;
-            string RecevierNumber = pnumber;
-            string url = "https://www.bdgosms.com/send/?req=out&apikey=bdgoc3F0bqy9a4wEXRtI8VeBTmQL1ZhzuK&numb=" + RecevierNumber + "&sms=" + text;
-            HttpClient client = new HttpClient();
-            HttpResponseMessage response = await client.GetAsync(url);
-            string result = await response.Content.ReadAsStringAsync().ConfigureAwait(true);
-            if (result[0] == '{')
-            {
-                await oLocalStore.SetItemAsync("code", code);
-                await oLocalStore.SetItemAsync("ConfirmPhonenumber", pnumber);
-                await oLocalStore.SetItemAsync("mail", mail);
-                await oLocalStore.SetItemAsync("password", passf);
-                await oLocalStore.SetItemAsync("name", name);
-                NavigationManager.NavigateTo("/confirmnumber");
-            }
-            else
-            {
-                ErrorText = "Check the number!";
-            }
+            await oLocalStore.SetItemAsync("ConfirmPhonenumber", pnumber);
+            await oLocalStore.SetItemAsync("mail", mail);
+            await oLocalStore.SetItemAsync("password", passf);
+            await oLocalStore.SetItemAsync("name", name);
+            signIn();
 
         }
     }
+    public async void signIn()
+    {
+        await Task.Run(() => connect.SignUp(mail, passf, name, pnumber));
+        NavigationManager.NavigateTo("/dashboard");
 
+    }
 }
