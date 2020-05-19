@@ -6,7 +6,6 @@
 @inject ServerConnection connect
 @using System.Timers
 
-
 <div class="limiter">
     <div class="container-login100" style="background: -webkit-linear-gradient(-135deg, #1e1e1e, #7340e0);
         background: -o-linear-gradient(-135deg, #1e1e1e, #7340e0);
@@ -32,20 +31,19 @@
                 <div class="circle" style=" background: @p2q5">5</div>
             </div>
 
-
             <div class="container-login100-form-btn">
-                <b style="color: @connectColor;" >@waittext</b><br />
+                <b style="color: @connectColor;">@waittext</b>
+                <br />
                 <a style="font-size: 25px; font-weight: bold; display:@display">@quizTimer </a>
-
             </div>
             <div class="container-login100-form-btn" style="display:@display">
                 <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width:@value">
                     <h5 style="margin-top: 40px">@value</h5>
-
                 </div>
             </div>
             <div class="container-login100-form-btn" style="display:@display">
-                <h3 >@showqs</h3><br />
+                <h3>@showqs</h3>
+                <br />
                 <label class="container">
 
                     <input type="checkbox" @bind="@op1">
@@ -75,17 +73,17 @@
                     </button>
                 </div>
             </div>
-
-
-
         </div>
     </div>
 </div>
 
 @code {
+    //
+    //ALl Veriable----------------------------------------------------------------------------------------------------------------------
+    //
     string quizTimer;
     string showqs, ch1, ch2, ch3, ch4;
-    List<int> ans = new List<int>();
+    List<int> ans = new List<int> ();
     public List<Question> allqs { get; set; }
     public string value { get; set; }
     public bool op1 { get; set; }
@@ -94,13 +92,13 @@
     public bool op4 { get; set; }
     public int oqn = 0, oan = 0, right;
     int c = 0, self = 0, myid = 0;
-    Student firstplayer = new Student();
-    Student secondplayer = new Student();
+    Student firstplayer = new Student ();
+    Student secondplayer = new Student ();
     HubConnection _connection = null;
     bool isConnected = false;
     string p1q1, p1q2, p1q3, p1q4, p1q5, p2q1, p2q2, p2q3, p2q4, p2q5;
     string connectionStatus = "Closed", playerColor1, playerColor2, display;
-    MatchMaking mm = new MatchMaking();
+    MatchMaking mm = new MatchMaking ();
     string url = "https://medhabiapi.shikkhanobish.com/QuizHub", waittext;
     int counter = 0;
     string rightans = "#3ACF85", connectColor;
@@ -111,14 +109,34 @@
     int otherplayerID;
     bool meFirstPlayer;
     int myTime, otherTime;
-    string otherPlayerName,myName;
+    string otherPlayerName, myName;
     int myPoint;
+    int qtimer = 0, qmin;
+    int givnans = 0;
+    int meRight, otherRight;
+    PlayerHistory ph = new PlayerHistory ();
+    MatchHistory mh = new MatchHistory ();
+    bool medone, otherDone;
+    //
+    //ALl Veriable End----------------------------------------------------------------------------------------------------------------------
+    //
 
-    protected override async Task OnInitializedAsync()
+
+
+
+
+
+
+
+
+    //
+    //Inital M3thod----------------------------------------------------------------------------------------------------------------------
+    //
+    protected override async Task OnInitializedAsync ( )
     {
-        if(await oLocalStore.GetItemAsync<int>("firstPlayerID") == 0)
+        if ( await oLocalStore.GetItemAsync<int> ( "firstPlayerID" ) == 0 )
         {
-            NavigationManager.NavigateTo("/dashboard");
+            NavigationManager.NavigateTo ( "/dashboard" );
         }
         else
         {
@@ -137,53 +155,53 @@
             p2q5 = "#D2D2D2";
             display = "none";
             value = 0 + "%";
-            await ConnectToServer();
+            await ConnectToServer ();
             playerColor1 = "#ADADAD";
             playerColor2 = "#ADADAD";
-            self = await oLocalStore.GetItemAsync<int>("self");
-            myid = await oLocalStore.GetItemAsync<int>("myID");
-            mm.firstPlayerID = await oLocalStore.GetItemAsync<int>("firstPlayerID");
-            mm.secondPlayerID = await oLocalStore.GetItemAsync<int>("secondPlayerID");
-            await Task.Run(() => connect.getInfoFromId(mm.firstPlayerID));
+            self = await oLocalStore.GetItemAsync<int> ( "self" );
+            myid = await oLocalStore.GetItemAsync<int> ( "myID" );
+            mm.firstPlayerID = await oLocalStore.GetItemAsync<int> ( "firstPlayerID" );
+            mm.secondPlayerID = await oLocalStore.GetItemAsync<int> ( "secondPlayerID" );
+            await Task.Run ( ( ) => connect.getInfoFromId ( mm.firstPlayerID ) );
             firstplayer = connect.secondstudent;
-            await Task.Run(() => connect.getInfoFromId(mm.secondPlayerID));
+            await Task.Run ( ( ) => connect.getInfoFromId ( mm.secondPlayerID ) );
             secondplayer = connect.secondstudent;
-            mm.firstQuestionID = await oLocalStore.GetItemAsync<int>("q1");
-            mm.secondQuestionID = await oLocalStore.GetItemAsync<int>("q2");
-            mm.thirdQuestionID = await oLocalStore.GetItemAsync<int>("q3");
-            mm.forthQuestionID = await oLocalStore.GetItemAsync<int>("q4");
-            mm.fifthQuestionID = await oLocalStore.GetItemAsync<int>("q5");
-            mm.matchID = await oLocalStore.GetItemAsync<string>("mmid");
-            QuestionMaker qm = new QuestionMaker();
+            mm.firstQuestionID = await oLocalStore.GetItemAsync<int> ( "q1" );
+            mm.secondQuestionID = await oLocalStore.GetItemAsync<int> ( "q2" );
+            mm.thirdQuestionID = await oLocalStore.GetItemAsync<int> ( "q3" );
+            mm.forthQuestionID = await oLocalStore.GetItemAsync<int> ( "q4" );
+            mm.fifthQuestionID = await oLocalStore.GetItemAsync<int> ( "q5" );
+            mm.matchID = await oLocalStore.GetItemAsync<string> ( "mmid" );
+            QuestionMaker qm = new QuestionMaker ();
             qm.firstqsID = mm.firstQuestionID;
             qm.secondID = mm.secondQuestionID;
             qm.thirdID = mm.thirdQuestionID;
             qm.forthID = mm.forthQuestionID;
             qm.fifthID = mm.fifthQuestionID;
-            await Task.Run(() => GetQuestiob(qm));
+            await Task.Run ( ( ) => GetQuestiob ( qm ) );
             ph.matchID = mm.matchID;
             mh.matchID = mm.matchID;
-            if (self == 0)
+            if ( self == 0 )
             {
                 myPoint = firstplayer.point;
                 meFirstPlayer = true;
                 playerColor1 = "#3498DB";
                 playerColor2 = "#723CCB";
-                await InvokeAsync(() =>
+                await InvokeAsync ( ( ) =>
                 {
-                    StateHasChanged();
-                });
+                    StateHasChanged ();
+                } );
 
                 display = "block";
-                connect.sendmatchInfo(mm.secondPlayerID, mm.firstPlayerID, mm.matchID);
+                connect.sendmatchInfo ( mm.secondPlayerID , mm.firstPlayerID , mm.matchID );
                 otherplayerID = mm.secondPlayerID;
                 otherPlayerName = secondplayer.name;
                 myName = firstplayer.name;
-                await Task.Run(() => showquestioninWindow(allqs[0].question, allqs[0].first_choice, allqs[0].second_choice, allqs[0].third_choice, allqs[0].forth_choice, allqs[0].right_answer));
-                timer = new Timer();
+                await Task.Run ( ( ) => showquestioninWindow ( allqs [ 0 ].question , allqs [ 0 ].first_choice , allqs [ 0 ].second_choice , allqs [ 0 ].third_choice , allqs [ 0 ].forth_choice , allqs [ 0 ].right_answer ) );
+                timer = new Timer ();
                 timer.Interval = 1000;
                 timer.Elapsed += startquiztimer;
-                timer.Start();
+                timer.Start ();
 
             }
             else
@@ -195,60 +213,101 @@
                 playerColor1 = "#ADADAD";
                 playerColor2 = "#723CCB";
                 otherplayerID = mm.firstPlayerID;
-                timer = new Timer();
+                timer = new Timer ();
                 timer.Interval = 1000;
                 timer.Elapsed += waitfor2ndplayer;
-                timer.Start();
+                timer.Start ();
             }
         }
 
     }
+    //
+    //Inital Method End----------------------------------------------------------------------------------------------------------------------
+    //
 
-    private async void waitfor2ndplayer(object sender, ElapsedEventArgs e)
+
+
+
+
+
+
+
+    //
+    //Wait For Second Player Timer Start----------------------------------------------------------------------------------------------------------------------
+    //
+
+    private async void waitfor2ndplayer ( object sender , ElapsedEventArgs e )
     {
         secondplayertimer = secondplayertimer - 1;
-        if (secondplayertimer < 4 && playeron == false)
+        if ( secondplayertimer < 4 && playeron == false )
         {
             connectColor = "#E32F2F";
             waittext = firstplayer.name + " could not connect in match ";
 
         }
-        else if (playeron == false)
+        else if ( playeron == false )
         {
-            waittext = "Waiting for " + firstplayer.name + " to connect in match in " + (secondplayertimer - 3);
+            waittext = "Waiting for " + firstplayer.name + " to connect in match in " + ( secondplayertimer - 3 );
         }
-        else if (playeron == true)
+        else if ( playeron == true )
         {
             waittext = null;
         }
-        if (secondplayertimer == 0 && playeron == false)
+        if ( secondplayertimer == 0 && playeron == false )
         {
-            await oLocalStore.SetItemAsync("mmid", null);
-            await oLocalStore.SetItemAsync("firstPlayerID", 0);
-            await oLocalStore.SetItemAsync("secondPlayerID", 0);
-            await oLocalStore.SetItemAsync("q1", 0);
-            await oLocalStore.SetItemAsync("q2", 0);
-            await oLocalStore.SetItemAsync("q3", 0);
-            await oLocalStore.SetItemAsync("q4", 0);
-            await oLocalStore.SetItemAsync("q5", 0);
-            await oLocalStore.SetItemAsync("self", null);
-            await oLocalStore.SetItemAsync("myID", 0);
-            timer.Stop();
-            NavigationManager.NavigateTo("/dashboard");
+            await oLocalStore.SetItemAsync ( "mmid" , null );
+            await oLocalStore.SetItemAsync ( "firstPlayerID" , 0 );
+            await oLocalStore.SetItemAsync ( "secondPlayerID" , 0 );
+            await oLocalStore.SetItemAsync ( "q1" , 0 );
+            await oLocalStore.SetItemAsync ( "q2" , 0 );
+            await oLocalStore.SetItemAsync ( "q3" , 0 );
+            await oLocalStore.SetItemAsync ( "q4" , 0 );
+            await oLocalStore.SetItemAsync ( "q5" , 0 );
+            await oLocalStore.SetItemAsync ( "self" , null );
+            await oLocalStore.SetItemAsync ( "myID" , 0 );
+            timer.Stop ();
+            NavigationManager.NavigateTo ( "/dashboard" );
         }
 
-        await InvokeAsync(() =>
+        await InvokeAsync ( ( ) =>
         {
-            StateHasChanged();
-        });
+            StateHasChanged ();
+        } );
     }
-    public async Task GetQuestiob(QuestionMaker qm)
+    //
+    //Wait For Second Player Timer End----------------------------------------------------------------------------------------------------------------------
+    //
+
+
+
+
+
+
+
+
+    //
+    //Get All Question From Server----------------------------------------------------------------------------------------------------------------------
+    //
+    public async Task GetQuestiob ( QuestionMaker qm )
     {
-        await Task.Run(() => connect.MakeQuestion(qm));
+        await Task.Run ( ( ) => connect.MakeQuestion ( qm ) );
         allqs = connect.allqs;
     }
+    //
+    //Get All Question From Server End----------------------------------------------------------------------------------------------------------------------
+    //
 
-    public async Task showquestioninWindow(string qs, string c1, string c2, string c3, string c4, int r)
+
+
+
+
+
+
+
+    //
+    //Show Question on Window----------------------------------------------------------------------------------------------------------------------
+    //
+    public async Task showquestioninWindow ( string qs , string c1 , string c2 , string c3 , string c4 , int r )
     {
         showqs = qs;
         ch1 = c1;
@@ -256,98 +315,39 @@
         ch3 = c3;
         ch4 = c4;
         right = r;
-        await InvokeAsync(() =>
+        await InvokeAsync ( ( ) =>
         {
-            StateHasChanged();
-        });
+            StateHasChanged ();
+        } );
     }
+    //
+    //Show Question on Window End----------------------------------------------------------------------------------------------------------------------
+    //
 
-    private async Task ConnectToServer()
-    {
-        _connection = new HubConnectionBuilder()
-            .WithUrl(url)
-            .Build();
 
-        await _connection.StartAsync();
-        isConnected = true;
-        connectionStatus = "Connected";
 
-        _connection.Closed += async (s) =>
-        {
-            isConnected = false;
-            connectionStatus = "Disconnected";
-            await _connection.StartAsync();
-            isConnected = true;
 
-        };
-        _connection.On<int, int, int>("QuizInfo", (receiverID, qn, qa) =>
-        {
-            if(receiverID == myid)
-            {
-                placewriteorwrong(qn, qa, 1);
-            }
-        });
-        _connection.On<int, int, int,int>("donemsg", async (receiverID, studentID, ra, time) =>
-        {
-            if (receiverID == myid)
-            {
-                if(meRight > ra)
-                {
-                    otherTime = time;
-                    otherRight = ra;
-                    await oLocalStore.SetItemAsync("lRa", ra);
-                    await oLocalStore.SetItemAsync("lT", time / 60 + "Minute" + time % 60 + "Second");
-                    callALLDone(1);
-                }
-                else
-                {
-                    otherTime = time;
-                    otherRight = ra;
-                    await oLocalStore.SetItemAsync("wRa", ra);
-                    await oLocalStore.SetItemAsync("wT", time / 60 + " Minute " + time % 60 + " Second");
-                    callALLDone(1);
-                }
 
-            }
-        });
 
-        _connection.On<int, int, string>("mcr", async (receiverID, studentID, matchID) =>
-        {
-            if (receiverID == myid)
-            {
-                otherplayerID = studentID;
-                playeron = true;
-                waittext = null;
-                mm.matchID = matchID;
-                playerColor1 = "#3498DB";
-                display = "block";
-                await Task.Run(() => showquestioninWindow(allqs[0].question, allqs[0].first_choice, allqs[0].second_choice, allqs[0].third_choice, allqs[0].forth_choice, allqs[0].right_answer));
-                await InvokeAsync(() =>
-                {
-                    StateHasChanged();
-                });
 
-                timer = new Timer();
-                timer.Interval = 1000;
-                timer.Elapsed += startquiztimer;
-                timer.Start();
 
-            }
-        });
 
-    }
-    int qtimer = 0, qmin;
-    private async void startquiztimer(object sender, ElapsedEventArgs e)
+
+
+    //
+    //Quiz Timer----------------------------------------------------------------------------------------------------------------------
+    //
+    private async void startquiztimer ( object sender , ElapsedEventArgs e )
     {
         qtimer = qtimer + 1;
-        if (qtimer == 60)
+        if ( qtimer == 60 )
         {
             qmin = qmin + 1;
             qtimer = 0;
         }
-        if (qtimer < 10)
+        if ( qtimer < 10 )
         {
-            if (qmin < 10)
+            if ( qmin < 10 )
             {
                 quizTimer = "0" + qmin + ":" + "0" + qtimer;
             }
@@ -359,7 +359,7 @@
         }
         else
         {
-            if (qmin < 10)
+            if ( qmin < 10 )
             {
                 quizTimer = "0" + qmin + ":" + qtimer;
             }
@@ -369,20 +369,33 @@
             }
 
         }
-        await InvokeAsync(() =>
+        await InvokeAsync ( ( ) =>
         {
-            StateHasChanged();
-        });
+            StateHasChanged ();
+        } );
 
     }
+    //
+    //Quiz Timer End----------------------------------------------------------------------------------------------------------------------
+    //
 
-    public async void check()
+
+
+
+
+
+
+
+    //
+    //Check Button Click----------------------------------------------------------------------------------------------------------------------
+    //
+    public async void check ( )
     {
-        if (counter < 5)
+        if ( counter < 5 )
         {
-            checkWrightWrong();
-            connect.passans(otherplayerID, counter, givnans);
-            placewriteorwrong( counter,givnans,0);
+            checkWrightWrong ();
+            connect.passans ( otherplayerID , counter , givnans );
+            placewriteorwrong ( counter , givnans , 0 );
 
             c = c + 20;
             value = c + "%";
@@ -391,68 +404,90 @@
             op3 = false;
             op4 = false;
             counter++;
-            if(counter < 5)
+            if ( counter < 5 )
             {
-                await Task.Run(() => showquestioninWindow(allqs[counter].question, allqs[counter].first_choice, allqs[counter].second_choice, allqs[counter].third_choice, allqs[counter].forth_choice, allqs[counter].right_answer));
+                await Task.Run ( ( ) => showquestioninWindow ( allqs [ counter ].question , allqs [ counter ].first_choice , allqs [ counter ].second_choice , allqs [ counter ].third_choice , allqs [ counter ].forth_choice , allqs [ counter ].right_answer ) );
             }
-            await InvokeAsync(() =>
+            await InvokeAsync ( ( ) =>
             {
-                StateHasChanged();
-            });
+                StateHasChanged ();
+            } );
         }
 
     }
+    //
+    //Check Button Click end----------------------------------------------------------------------------------------------------------------------
+    //
 
 
 
-    int givnans = 0;
-    public void checkWrightWrong()
+
+
+
+
+    //
+    //Check Write or Wrogn Answer----------------------------------------------------------------------------------------------------------------------
+    //
+    public void checkWrightWrong ( )
     {
 
-        if (op1 == true)
+        if ( op1 == true )
         {
             givnans = 1;
         }
-        else if (op2 == true)
+        else if ( op2 == true )
         {
             givnans = 2;
         }
-        else if (op3 == true)
+        else if ( op3 == true )
         {
             givnans = 3;
         }
-        else if (op4 == true)
+        else if ( op4 == true )
         {
             givnans = 4;
         }
 
     }
+    //
+    //Check Write or Wrogn Answer end----------------------------------------------------------------------------------------------------------------------
+    //
 
-    public async void placewriteorwrong(int qn, int qa,int fromwhere)
+
+
+
+
+
+
+
+    //
+    //Place write or wrong in veriable for server----------------------------------------------------------------------------------------------------------------------
+    //
+    public async void placewriteorwrong ( int qn , int qa , int fromwhere )
     {
         int go = 0;
-        if(meFirstPlayer == true && fromwhere == 0)
+        if ( meFirstPlayer == true && fromwhere == 0 )
         {
             go = 0;
         }
-        else if (meFirstPlayer == true && fromwhere == 1)
+        else if ( meFirstPlayer == true && fromwhere == 1 )
         {
             go = 1;
         }
-        else if (meFirstPlayer == false && fromwhere == 0)
+        else if ( meFirstPlayer == false && fromwhere == 0 )
         {
             go = 1;
         }
-        else if (meFirstPlayer == false && fromwhere == 1)
+        else if ( meFirstPlayer == false && fromwhere == 1 )
         {
             go = 0;
         }
-        if (go == 0)
+        if ( go == 0 )
         {
-            if (qn == 0)
+            if ( qn == 0 )
 
             {
-                if (allqs[qn].right_answer == qa)
+                if ( allqs [ qn ].right_answer == qa )
                 {
                     p1q1 = rightans;
 
@@ -462,9 +497,9 @@
                     p1q1 = wrongans;
                 }
             }
-            else if (qn == 1)
+            else if ( qn == 1 )
             {
-                if (allqs[qn].right_answer == qa)
+                if ( allqs [ qn ].right_answer == qa )
                 {
                     p1q2 = rightans;
                 }
@@ -473,9 +508,9 @@
                     p1q2 = wrongans;
                 }
             }
-            else if (qn == 2)
+            else if ( qn == 2 )
             {
-                if (allqs[qn].right_answer == qa)
+                if ( allqs [ qn ].right_answer == qa )
                 {
                     p1q3 = rightans;
                 }
@@ -484,9 +519,9 @@
                     p1q3 = wrongans;
                 }
             }
-            else if (qn == 3)
+            else if ( qn == 3 )
             {
-                if (allqs[qn].right_answer == qa)
+                if ( allqs [ qn ].right_answer == qa )
                 {
                     p1q4 = rightans;
                 }
@@ -495,9 +530,9 @@
                     p1q4 = wrongans;
                 }
             }
-            else if (qn == 4)
+            else if ( qn == 4 )
             {
-                if (allqs[qn].right_answer == qa)
+                if ( allqs [ qn ].right_answer == qa )
                 {
                     p1q5 = rightans;
                 }
@@ -507,11 +542,11 @@
                 }
             }
         }
-        else if(go == 1)
+        else if ( go == 1 )
         {
-            if (qn == 0)
+            if ( qn == 0 )
             {
-                if (allqs[qn].right_answer == qa)
+                if ( allqs [ qn ].right_answer == qa )
                 {
                     p2q1 = rightans;
                 }
@@ -520,9 +555,9 @@
                     p2q1 = wrongans;
                 }
             }
-            else if (qn == 1)
+            else if ( qn == 1 )
             {
-                if (allqs[qn].right_answer == qa)
+                if ( allqs [ qn ].right_answer == qa )
                 {
                     p2q2 = rightans;
                 }
@@ -531,9 +566,9 @@
                     p2q2 = wrongans;
                 }
             }
-            else if (qn == 2)
+            else if ( qn == 2 )
             {
-                if (allqs[qn].right_answer == qa)
+                if ( allqs [ qn ].right_answer == qa )
                 {
                     p2q3 = rightans;
                 }
@@ -542,9 +577,9 @@
                     p2q3 = wrongans;
                 }
             }
-            else if (qn == 3)
+            else if ( qn == 3 )
             {
-                if (allqs[qn].right_answer == qa)
+                if ( allqs [ qn ].right_answer == qa )
                 {
                     p2q4 = rightans;
                 }
@@ -553,9 +588,9 @@
                     p2q4 = wrongans;
                 }
             }
-            else if (qn == 4)
+            else if ( qn == 4 )
             {
-                if (allqs[qn].right_answer == qa)
+                if ( allqs [ qn ].right_answer == qa )
                 {
                     p2q5 = rightans;
                 }
@@ -566,103 +601,130 @@
             }
         }
 
-        if (fromwhere == 0)
+
+
+        if ( fromwhere == 0 )
         {
-            if(allqs[qn].right_answer == qa)
+            if ( allqs [ qn ].right_answer == qa )
             {
                 meRight++;
-                if (qn == 0)
+                if ( qn == 0 )
                 {
                     ph.q1 = 0;
                 }
-                if (qn == 1)
+                if ( qn == 1 )
                 {
                     ph.q2 = 0;
                 }
-                if (qn == 2)
+                if ( qn == 2 )
                 {
                     ph.q3 = 0;
                 }
-                if (qn == 3)
+                if ( qn == 3 )
                 {
                     ph.q4 = 0;
                 }
-                if (qn == 4)
+                if ( qn == 4 )
                 {
                     ph.q5 = 0;
                 }
             }
             else
             {
-                if(qn == 0)
+                if ( qn == 0 )
                 {
                     ph.q1 = 1;
                 }
-                if (qn == 1)
+                if ( qn == 1 )
                 {
                     ph.q2 = 1;
                 }
-                if (qn == 2)
+                if ( qn == 2 )
                 {
                     ph.q3 = 1;
                 }
-                if (qn == 3)
+                if ( qn == 3 )
                 {
                     ph.q4 = 1;
                 }
-                if (qn == 4)
+                if ( qn == 4 )
                 {
                     ph.q5 = 1;
                 }
             }
 
         }
-        if(qn == 4 && fromwhere == 0)
+        if ( qn == 4 && fromwhere == 0 )
         {
             display = "none";
             myTime = qmin * 60 + qtimer;
-            callALLDone(0);
+            connect.senddone ( otherplayerID , myid , meRight , myTime );
+            callALLDone ( 0 );
             waittext = "Wait for other player to end the match";
-            await InvokeAsync(() =>
+            await InvokeAsync ( ( ) =>
             {
-                StateHasChanged();
-            });
-            connect.senddone(otherplayerID, myid, meRight, myTime);
+                StateHasChanged ();
+            } );
+
         }
 
     }
-    int meRight, otherRight;
-    PlayerHistory ph = new PlayerHistory();
-    MatchHistory mh = new MatchHistory();
-    bool medone, otherDone;
-    public async void callALLDone(int call)
+    //
+    //Place write or wrong in veriable for server end----------------------------------------------------------------------------------------------------------------------
+    //
+
+
+
+
+
+
+
+
+
+    //
+    //See 2 players are done or not----------------------------------------------------------------------------------------------------------------------
+    //
+    public async void callALLDone ( int call )
     {
-        if(call == 0)
+        if ( call == 0 )
         {
             medone = true;
         }
-        if(call == 1)
+        if ( call == 1 )
         {
             otherDone = true;
         }
-        if(medone == true && otherDone == true)
+        if ( medone == true && otherDone == true )
         {
-            await decideWinner();
+            await decideWinner ();
         }
 
     }
-    public async Task decideWinner()
+    //
+    //See 2 players are done or not end----------------------------------------------------------------------------------------------------------------------
+    //
+
+
+
+
+
+
+
+    //
+    //Decide Winner----------------------------------------------------------------------------------------------------------------------
+    //
+    public async Task decideWinner ( )
     {
-        if(meRight > otherRight)
+        if ( meRight > otherRight )
         {
-            await oLocalStore.SetItemAsync("wname", myName);
-            await oLocalStore.SetItemAsync("lname", otherPlayerName);
+            await oLocalStore.SetItemAsync ( "wname" , myName );
+            await oLocalStore.SetItemAsync ( "lname" , otherPlayerName );
             mh.winnerPlayerID = myid;
-            await oLocalStore.SetItemAsync("wRa", meRight);
-            await oLocalStore.SetItemAsync("wT", qmin+ " Minute " + qtimer + " Second");
-            await oLocalStore.SetItemAsync("wID", myid);
-            await oLocalStore.SetItemAsync("lID", otherplayerID);
-            await oLocalStore.SetItemAsync("win", true);
+            await oLocalStore.SetItemAsync ( "wRa" , meRight );
+            await oLocalStore.SetItemAsync ( "wT" , qmin + " Minute " + qtimer + " Second" );
+            await oLocalStore.SetItemAsync ( "wID" , myid );
+            await oLocalStore.SetItemAsync ( "lID" , otherplayerID );
+            await oLocalStore.SetItemAsync ( "win" , true );
             mh.looserPlayerID = otherplayerID;
             mh.q1 = mm.firstQuestionID;
             mh.q2 = mm.secondQuestionID;
@@ -675,23 +737,24 @@
             ph.whatToDO = 0;
             ph.playerID = myid;
 
-            await Task.Run(() => connect.EditMatchHistory(mh));
-            await Task.Run(() => connect.EditPlayerHistory(ph));
-            updateInfo();
-
-            NavigationManager.NavigateTo("/result");
+            await Task.Run ( ( ) => connect.EditMatchHistory ( mh ) );
+            await Task.Run ( ( ) => connect.EditPlayerHistory ( ph ) );
+            updateInfo ();
+            medone = false;
+            otherDone = false;
+            NavigationManager.NavigateTo ( "/result" );
 
         }
-        else if(meRight < otherRight)
+        else if ( meRight < otherRight )
         {
             mh.looserPlayerID = myid;
-            await oLocalStore.SetItemAsync("lname", myName);
-            await oLocalStore.SetItemAsync("wname", otherPlayerName);
-            await oLocalStore.SetItemAsync("lRa", meRight);
-            await oLocalStore.SetItemAsync("lT", qmin + " Minute " + qtimer + " Second ");
-            await oLocalStore.SetItemAsync("lID", myid);
-            await oLocalStore.SetItemAsync("wID", otherplayerID);
-            await oLocalStore.SetItemAsync("win", false);
+            await oLocalStore.SetItemAsync ( "lname" , myName );
+            await oLocalStore.SetItemAsync ( "wname" , otherPlayerName );
+            await oLocalStore.SetItemAsync ( "lRa" , meRight );
+            await oLocalStore.SetItemAsync ( "lT" , qmin + " Minute " + qtimer + " Second " );
+            await oLocalStore.SetItemAsync ( "lID" , myid );
+            await oLocalStore.SetItemAsync ( "wID" , otherplayerID );
+            await oLocalStore.SetItemAsync ( "win" , false );
             mh.looserPlayerID = myid;
             mh.q1 = mm.firstQuestionID;
             mh.q2 = mm.secondQuestionID;
@@ -703,23 +766,24 @@
             ph.matchStatus = "lose";
             ph.whatToDO = 0;
             ph.playerID = myid;
-            await Task.Run(() => connect.EditPlayerHistory(ph));
-            updateInfo();
-
-            NavigationManager.NavigateTo("/result");
+            await Task.Run ( ( ) => connect.EditPlayerHistory ( ph ) );
+            updateInfo ();
+            medone = false;
+            otherDone = false;
+            NavigationManager.NavigateTo ( "/result" );
         }
-        else if(meRight == otherRight)
+        else if ( meRight == otherRight )
         {
-            if(myTime > otherTime)
+            if ( myTime > otherTime )
             {
-                await oLocalStore.SetItemAsync("wname", myName);
-                await oLocalStore.SetItemAsync("lname", otherPlayerName);
+                await oLocalStore.SetItemAsync ( "wname" , myName );
+                await oLocalStore.SetItemAsync ( "lname" , otherPlayerName );
                 mh.winnerPlayerID = myid;
-                await oLocalStore.SetItemAsync("wRa", meRight);
-                await oLocalStore.SetItemAsync("wT", qmin + " Minute " + qtimer + " Second");
-                await oLocalStore.SetItemAsync("wID", myid);
-                await oLocalStore.SetItemAsync("lID", otherplayerID);
-                await oLocalStore.SetItemAsync("win", true);
+                await oLocalStore.SetItemAsync ( "wRa" , meRight );
+                await oLocalStore.SetItemAsync ( "wT" , qmin + " Minute " + qtimer + " Second" );
+                await oLocalStore.SetItemAsync ( "wID" , myid );
+                await oLocalStore.SetItemAsync ( "lID" , otherplayerID );
+                await oLocalStore.SetItemAsync ( "win" , true );
                 mh.looserPlayerID = otherplayerID;
                 mh.q1 = mm.firstQuestionID;
                 mh.q2 = mm.secondQuestionID;
@@ -732,22 +796,22 @@
                 ph.whatToDO = 0;
                 ph.playerID = myid;
 
-                await Task.Run(() => connect.EditMatchHistory(mh));
-                await Task.Run(() => connect.EditPlayerHistory(ph));
-                updateInfo();
+                await Task.Run ( ( ) => connect.EditMatchHistory ( mh ) );
+                await Task.Run ( ( ) => connect.EditPlayerHistory ( ph ) );
+                updateInfo ();
 
-                NavigationManager.NavigateTo("/result");
+                NavigationManager.NavigateTo ( "/result" );
             }
-            else if(myTime < otherTime)
+            else if ( myTime < otherTime )
             {
                 mh.looserPlayerID = myid;
-                await oLocalStore.SetItemAsync("lname", myName);
-                await oLocalStore.SetItemAsync("wname", otherPlayerName);
-                await oLocalStore.SetItemAsync("lRa", meRight);
-                await oLocalStore.SetItemAsync("lT", qmin + " Minute " + qtimer + " Second ");
-                await oLocalStore.SetItemAsync("lID", myid);
-                await oLocalStore.SetItemAsync("wID", otherplayerID);
-                await oLocalStore.SetItemAsync("win", false);
+                await oLocalStore.SetItemAsync ( "lname" , myName );
+                await oLocalStore.SetItemAsync ( "wname" , otherPlayerName );
+                await oLocalStore.SetItemAsync ( "lRa" , meRight );
+                await oLocalStore.SetItemAsync ( "lT" , qmin + " Minute " + qtimer + " Second " );
+                await oLocalStore.SetItemAsync ( "lID" , myid );
+                await oLocalStore.SetItemAsync ( "wID" , otherplayerID );
+                await oLocalStore.SetItemAsync ( "win" , false );
                 mh.looserPlayerID = myid;
                 mh.q1 = mm.firstQuestionID;
                 mh.q2 = mm.secondQuestionID;
@@ -759,19 +823,35 @@
                 ph.matchStatus = "lose";
                 ph.whatToDO = 0;
                 ph.playerID = myid;
-                await Task.Run(() => connect.EditPlayerHistory(ph));
-                updateInfo();
+                await Task.Run ( ( ) => connect.EditPlayerHistory ( ph ) );
+                updateInfo ();
 
-                NavigationManager.NavigateTo("/result");
+                NavigationManager.NavigateTo ( "/result" );
             }
         }
     }
+    //
+    //Decide Winner end----------------------------------------------------------------------------------------------------------------------
+    //
 
-    public async void updateInfo() {
+
+
+
+
+
+
+
+
+
+    //
+    //Update Info in server----------------------------------------------------------------------------------------------------------------------
+    //
+    public async void updateInfo ( )
+    {
         int totalPoint; ;
         string rank = "null";
 
-        if(meRight == 5)
+        if ( meRight == 5 )
         {
             totalPoint = meRight + 5 + myPoint;
         }
@@ -780,38 +860,128 @@
             totalPoint = meRight + myPoint;
         }
 
-        if(totalPoint> 0 && totalPoint<= 99)
+        if ( totalPoint > 0 && totalPoint <= 99 )
         {
             rank = "BEGINNER";
         }
-        else if (totalPoint >= 100 && totalPoint <= 299)
+        else if ( totalPoint >= 100 && totalPoint <= 299 )
         {
             rank = "PASSIONATE";
         }
-        else if (totalPoint >= 300 && totalPoint <= 599)
+        else if ( totalPoint >= 300 && totalPoint <= 599 )
         {
             rank = "SKILLED";
         }
-        else if (totalPoint >= 600 && totalPoint <= 1099)
+        else if ( totalPoint >= 600 && totalPoint <= 1099 )
         {
             rank = "ASSIDUOUS";
         }
-        else if (totalPoint >= 1100 && totalPoint <= 1899)
+        else if ( totalPoint >= 1100 && totalPoint <= 1899 )
         {
             rank = "LEGEND";
         }
-        else if(totalPoint >= 1900)
+        else if ( totalPoint >= 1900 )
         {
             rank = "THE PRODIGY";
         }
 
-        Student s = new Student();
+        Student s = new Student ();
         s.studentID = myid;
         s.total_right_answer = meRight;
         s.total_question_answered = 5;
         s.point = totalPoint;
         s.rank = rank;
-        await Task.Run(() => connect.UpdateInfo(s));
+        await Task.Run ( ( ) => connect.UpdateInfo ( s ) );
     }
+    //
+    //Update Info in server end----------------------------------------------------------------------------------------------------------------------
+    //
 
+
+
+
+
+
+
+
+    //
+    //Connect With Real Time Api server----------------------------------------------------------------------------------------------------------------------
+    //
+    private async Task ConnectToServer ( )
+    {
+        _connection = new HubConnectionBuilder ()
+            .WithUrl ( url )
+            .Build ();
+
+        await _connection.StartAsync ();
+        isConnected = true;
+        connectionStatus = "Connected";
+
+        _connection.Closed += async ( s ) =>
+        {
+            isConnected = false;
+            connectionStatus = "Disconnected";
+            await _connection.StartAsync ();
+            isConnected = true;
+
+        };
+        _connection.On<int , int , int> ( "QuizInfo" , ( receiverID , qn , qa ) =>
+        {
+            if ( receiverID == myid )
+            {
+                placewriteorwrong ( qn , qa , 1 );
+            }
+        } );
+        _connection.On<int , int , int , int> ( "donemsg" , async ( receiverID , studentID , ra , time ) =>
+        {
+            if ( receiverID == myid )
+            {
+                if ( meRight > ra )
+                {
+                    otherTime = time;
+                    otherRight = ra;
+                    await oLocalStore.SetItemAsync ( "lRa" , ra );
+                    await oLocalStore.SetItemAsync ( "lT" , time / 60 + "Minute" + time % 60 + "Second" );
+                    callALLDone ( 1 );
+                }
+                else
+                {
+                    otherTime = time;
+                    otherRight = ra;
+                    await oLocalStore.SetItemAsync ( "wRa" , ra );
+                    await oLocalStore.SetItemAsync ( "wT" , time / 60 + " Minute " + time % 60 + " Second" );
+                    callALLDone ( 1 );
+                }
+
+            }
+        } );
+
+        _connection.On<int , int , string> ( "mcr" , async ( receiverID , studentID , matchID ) =>
+        {
+            if ( receiverID == myid )
+            {
+                otherplayerID = studentID;
+                playeron = true;
+                waittext = null;
+                mm.matchID = matchID;
+                playerColor1 = "#3498DB";
+                display = "block";
+                await Task.Run ( ( ) => showquestioninWindow ( allqs [ 0 ].question , allqs [ 0 ].first_choice , allqs [ 0 ].second_choice , allqs [ 0 ].third_choice , allqs [ 0 ].forth_choice , allqs [ 0 ].right_answer ) );
+                await InvokeAsync ( ( ) =>
+                {
+                    StateHasChanged ();
+                } );
+
+                timer = new Timer ();
+                timer.Interval = 1000;
+                timer.Elapsed += startquiztimer;
+                timer.Start ();
+
+            }
+        } );
+
+    }
+    //
+    //Connect With Real Time Api server end----------------------------------------------------------------------------------------------------------------------
+    //
 }
