@@ -1,3 +1,12 @@
+body {
+	font-family: 'Circular Std Book';
+	font-style: normal;
+	font-weight: normal;
+	font-size: 14px;
+	color: #71748d;
+	background-color: #efeff6;
+	-webkit-font-smoothing: antialiased;
+}
 
 
 .particle {
@@ -642,31 +651,44 @@
 	font-size: 16px;
 	
 }
-
-@media (max-width: 576px) {
+@media (max-width: 1200px) {
 	.wrap-login99 {
 		background: #fff;
 		border-radius: 10px;
 		text-align: center;
-		justify-content: space-between;
-		font-size: 20px;
+		font-size: 15px;
 		flex-wrap: nowrap;
-		width: 150px;
-		height: 300px
+		width: 330px;
+		height: 150px;
+		align-self: center;
+	}
+
+	.resultText {
+		text-align: center;
+		margin-bottom: 0px;
+		font-size: 12px;
+	}
+}
+
+@media (max-width: 600px) {
+	.wrap-login99 {
+		background: #fff;
+		border-radius: 10px;
+		text-align: center;
+		font-size: 15px;
+		flex-wrap: nowrap;
+		width: 300px;
+		height: 150px;
+		align-self: center;
 	}
 	.resultText {
 		text-align: center;
+		margin-bottom: 0px;
 		font-size: 12px;
 	}
 }
 
 @import url(https://fonts.googleapis.com/css?family=Montserrat);
-
-html, body {
-	height: 100%;
-	font-weight: 800;
-}
-
 
 
 svg {

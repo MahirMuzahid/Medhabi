@@ -6,7 +6,10 @@
 @page "/dashboard"
 @using login.Data
 @using System.Timers
-
+@using ChartJs.Blazor.Charts
+@using ChartJs.Blazor.ChartJS.PieChart
+@using ChartJs.Blazor.ChartJS.Common.Properties
+@using ChartJs.Blazor.Util
 <div class="dashboard-main-wrapper">
     <!-- ============================================================== -->
     <!-- navbar -->
@@ -51,7 +54,7 @@
     <!-- ============================================================== -->
     <!-- wrapper  -->
     <!-- ============================================================== -->
-    @if (@student.name == null)
+    @if ( @student.name == null )
     {
         <div class="dashboard-wrapper">
 
@@ -82,7 +85,7 @@
                                 <a style="color: @textcolor">@showTxt</a>
                                 <a style="color: white; display: @display" @onclick="(async() => await sendSecondPlayer())" class="myButton1">Accept</a><br />
                                 <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width:@value%">
-                                    
+
                                 </div>
                                 <br /><a style="color: crimson; text-align: center;Display: @display"> [If you don't accept in 20 second, 10 points will be didacted from you(minimum point: 10)]</a>
                             </div>
@@ -189,9 +192,9 @@
                                                 </thead>
                                                 <tbody>
 
-                                                    @foreach (var studentlist in TopStudentList)
+                                                    @foreach ( var studentlist in TopStudentList )
                                                     {
-                                                        if (studentlist.position <= 10)
+                                                        if ( studentlist.position <= 10 )
                                                         {
                                                             <tr style="background: @studentlist.color; color: @studentlist.txtColor">
                                                                 <td>@studentlist.position</td>
@@ -260,7 +263,7 @@
                                                 </thead>
                                                 <tbody>
 
-                                                    @foreach (var teachertlist in TopTeacherList)
+                                                    @foreach ( var teachertlist in TopTeacherList )
                                                     {
                                                         <tr style="background: @teachertlist.color; color: @teachertlist.txtColor">
                                                             <td>@teachertlist.position</td>
@@ -277,7 +280,9 @@
                                 </div>
                             </div>
                             <!-- ============================================================== -->
-                            <!-- end recent orders  -->
+                            <!-- end Top Teacher -->
+
+
                             <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12">
                                 <!-- ============================================================== -->
                                 <!-- Number of Question  -->
@@ -334,7 +339,16 @@
                                 <!-- ============================================================== -->
                                 <!-- ============================================================== -->
                             </div>
+                            <!-- ============================================================== -->
+                            <!-- Top Teacher  -->
+                            <!-- ============================================================== -->
+                            <!-- ============================================================== -->
+                            <div class="col-xl-6 col-lg-12 col-md-6 col-sm-12 col-12 card" style="background: #ffffff; border-color:aquamarine;  border: 10px; border-radius: 10px">
+                                <SubjectWiseAns />
 
+                            </div>
+                            <!-- ============================================================== -->
+                            <!-- end Top Teacher -->
                             <!-- ============================================================== -->
                             <!-- product category  -->
                             <!-- ============================================================== -->
@@ -384,34 +398,34 @@
 
 @code {
 
-    Student student = new Student();
-    public List<Teacher> TopTeacherList = new List<Teacher>();
-    public List<Student> TopStudentList = new List<Student>();
+    Student student = new Student ();
+    public List<Teacher> TopTeacherList = new List<Teacher> ();
+    public List<Student> TopStudentList = new List<Student> ();
     int accuracy = 0, value;
     int positionCounter = 0, totalStudent = 0;
     string color, play;
     int min = 0, sec = 0;
     string modelController;
-    Timer timer,send;
+    Timer timer, send;
     public bool on, otherPlayerReject;
-    MatchMaking matchmaking = new MatchMaking();
+    MatchMaking matchmaking = new MatchMaking ();
     string url = "https://medhabiapi.shikkhanobish.com/QuizHub";
     public int connectedStudentID { get; set; }
     int senderID;
     HubConnection _connection = null;
     bool isConnected = false;
     string connectionStatus = "Closed";
-    List<QuizInfo> quizinfo = new List<QuizInfo>();
+    List<QuizInfo> quizinfo = new List<QuizInfo> ();
     string acceptedColor, textcolor, showTxt, display;
     public MatchMaking connectedMatch { get; set; }
     public bool selforNor = false;
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync ( )
     {
         modelController = "modalClose";
         play = "Play";
         on = false;
-        await Task.Run(() => AuthenticateUser());
+        await Task.Run ( ( ) => AuthenticateUser () );
         acceptedColor = "#ffffff";
         textcolor = "black";
         showTxt = "Click to accept chalange";
@@ -425,121 +439,121 @@
     //Before Connecting To Server----------------------------------------------------------
     //-------------------------------------------------------------------------------------
 
-    public async Task AuthenticateUser()
+    public async Task AuthenticateUser ( )
     {
 
-        student.mail = await oLocalStore.GetItemAsync<string>("mail");
-        student.password = await oLocalStore.GetItemAsync<string>("password");
+        student.mail = await oLocalStore.GetItemAsync<string> ( "mail" );
+        student.password = await oLocalStore.GetItemAsync<string> ( "password" );
 
-        if (student.mail == null || student.password == null)
+        if ( student.mail == null || student.password == null )
         {
-            NavigationManager.NavigateTo("/");
+            NavigationManager.NavigateTo ( "/" );
         }
         else
         {
-            await Task.Run(() => connect.SignIn(student.mail, student.password));
-            await Task.Run(() => connect.GetTopStudent());
-            await Task.Run(() => connect.GetTopTeacher());
+            await Task.Run ( ( ) => connect.SignIn ( student.mail , student.password ) );
+            await Task.Run ( ( ) => connect.GetTopStudent () );
+            await Task.Run ( ( ) => connect.GetTopTeacher () );
 
             student = connect.student;
             TopStudentList = connect.TopStudentList;
             TopTeacherList = connect.TopTeacherList;
-            if (student.total_question_answered == 0)
+            if ( student.total_question_answered == 0 )
             {
                 accuracy = 0;
             }
             else
             {
-                float div = ((float)student.total_right_answer / (float)student.total_question_answered);
-                accuracy = (int)(div * 100f);
+                float div = ( ( float ) student.total_right_answer / ( float ) student.total_question_answered );
+                accuracy = ( int ) ( div * 100f );
             }
 
-            PositionCounter();
-            AccuracyCounter();
+            PositionCounter ();
+            AccuracyCounter ();
         }
     }
-    public void LogOut()
+    public void LogOut ( )
     {
-        oLocalStore.ClearAsync();
-        NavigationManager.NavigateTo("/");
+        oLocalStore.ClearAsync ();
+        NavigationManager.NavigateTo ( "/" );
     }
-    public void PositionCounter()
+    public void PositionCounter ( )
     {
-        for (int i = 0; i < TopStudentList.Count; i++)
+        for ( int i = 0; i < TopStudentList.Count; i++ )
         {
-            TopStudentList[i].position = i + 1;
-            if (i == 10)
+            TopStudentList [ i ].position = i + 1;
+            if ( i == 10 )
             {
                 break;
             }
             else
             {
-                if (i == 0)
+                if ( i == 0 )
                 {
-                    TopStudentList[i].color = "#65239A";
-                    TopStudentList[i].txtColor = "white";
+                    TopStudentList [ i ].color = "#65239A";
+                    TopStudentList [ i ].txtColor = "white";
                 }
-                if (i == 1)
+                if ( i == 1 )
                 {
-                    TopStudentList[i].color = "#19BD50";
-                    TopStudentList[i].txtColor = "white";
+                    TopStudentList [ i ].color = "#19BD50";
+                    TopStudentList [ i ].txtColor = "white";
                 }
-                if (i == 2)
+                if ( i == 2 )
                 {
-                    TopStudentList[i].color = "#1C88E3";
-                    TopStudentList[i].txtColor = "white";
+                    TopStudentList [ i ].color = "#1C88E3";
+                    TopStudentList [ i ].txtColor = "white";
                 }
             }
 
         }
-        for (int j = 0; j < TopTeacherList.Count; j++)
+        for ( int j = 0; j < TopTeacherList.Count; j++ )
         {
-            if (j == 10)
+            if ( j == 10 )
             {
                 break;
             }
             else
             {
-                TopTeacherList[j].position = j + 1;
-                if (j == 0)
+                TopTeacherList [ j ].position = j + 1;
+                if ( j == 0 )
                 {
-                    TopTeacherList[j].color = "#65239A";
-                    TopTeacherList[j].txtColor = "white";
+                    TopTeacherList [ j ].color = "#65239A";
+                    TopTeacherList [ j ].txtColor = "white";
                 }
-                if (j == 1)
+                if ( j == 1 )
                 {
-                    TopTeacherList[j].color = "#19BD50";
-                    TopTeacherList[j].txtColor = "white";
+                    TopTeacherList [ j ].color = "#19BD50";
+                    TopTeacherList [ j ].txtColor = "white";
 
                 }
-                if (j == 2)
+                if ( j == 2 )
                 {
-                    TopTeacherList[j].color = "#1C88E3";
-                    TopTeacherList[j].txtColor = "white";
+                    TopTeacherList [ j ].color = "#1C88E3";
+                    TopTeacherList [ j ].txtColor = "white";
                 }
             }
 
         }
-        for (int k = 0; k < connect.allStudent.Count; k++)
+        for ( int k = 0; k < connect.allStudent.Count; k++ )
         {
-            if (connect.allStudent[k].name == student.name)
+            if ( connect.allStudent [ k ].name == student.name )
             {
                 student.position = k + 1;
             }
         }
         totalStudent = connect.allStudent.Count;
     }
-    public void AccuracyCounter()
+    public void AccuracyCounter ( )
     {
-        for (int i = 0; i < TopStudentList.Count; i++)
+        for ( int i = 0; i < TopStudentList.Count; i++ )
         {
-            if (TopStudentList[i].total_question_answered == 0)
+            if ( TopStudentList [ i ].total_question_answered == 0 )
             {
-                TopStudentList[i].accureacy = 0;
+                TopStudentList [ i ].accureacy = 0;
             }
             else
             {
-                TopStudentList[i].accureacy = (int)(100f * ((float)TopStudentList[i].total_right_answer / (float)TopStudentList[i].total_question_answered));
+                TopStudentList [ i ].accureacy = ( int ) ( 100f * ( ( float ) TopStudentList [ i ].total_right_answer / ( float ) TopStudentList [ i ].total_question_answered ) );
             }
 
         }
@@ -550,306 +564,305 @@
     //Match Timer--------------------------------------------------------------------------
     //-------------------------------------------------------------------------------------
 
-    public async Task Play()
+    public async Task Play ( )
     {
         on = !on;
-        if (on == true)
+        if ( on == true )
         {
             play = "Searching... ";
-            timer = new Timer();
+            timer = new Timer ();
             timer.Interval = 1000;
             timer.Elapsed += counter;
-            timer.Start();
-            await Task.Run(() => MatchmakingInfo());
+            timer.Start ();
+            await Task.Run ( ( ) => MatchmakingInfo () );
         }
         else
         {
-            timer.Stop();
+            timer.Stop ();
             sec = 0;
             min = 0;
             timer.Enabled = false;
-            timer.Close();
+            timer.Close ();
             play = "Play";
-            await Task.Run(() => connect.DeleteIfFound(student.studentID));
-            await _connection.StopAsync();
-            await InvokeAsync(() =>
-            {
-                StateHasChanged();
-            });
+            await Task.Run ( ( ) => connect.DeleteIfFound ( student.studentID ) );
+            await _connection.StopAsync ();
+            await InvokeAsync ( ( ) =>
+              {
+                  StateHasChanged ();
+              } );
         }
 
     }
-    private void counter(object sender, ElapsedEventArgs e)
+    private void counter ( object sender , ElapsedEventArgs e )
     {
         sec = sec + 1;
         play = "Searching... " + min + ":" + sec;
-        if (sec == 59)
+        if ( sec == 59 )
         {
             min = min + 1;
             sec = 0;
         }
-        InvokeAsync(() =>
-        {
-            StateHasChanged();
-        });
+        InvokeAsync ( ( ) =>
+          {
+              StateHasChanged ();
+          } );
     }
 
     //------------------------------------------------------------------------------
     //Match Making------------------------------------------------------------------
     //------------------------------------------------------------------------------
 
-    public void Dispose()
+    public void Dispose ( )
     {
-        if (timer != null)
+        if ( timer != null )
         {
-            timer.Dispose();
+            timer.Dispose ();
         }
     }
 
-    public async Task MatchmakingInfo()
+    public async Task MatchmakingInfo ( )
     {
-        await Task.Run(() => ConnectToServer());
-        await Task.Run(() => connect.GetMatchMaking());
-        if (connect.matchmakingList.Count == 0)
+        await Task.Run ( ( ) => ConnectToServer () );
+        await Task.Run ( ( ) => connect.GetMatchMaking () );
+        if ( connect.matchmakingList.Count == 0 )
         {
-            await Task.Run(() => SetInMatchmaking());
+            await Task.Run ( ( ) => SetInMatchmaking () );
         }
         else
         {
             //If I found match--------------------------------------------------------------------------
-            for (int i = 0; i < connect.matchmakingList.Count; i++)
+            for ( int i = 0; i < connect.matchmakingList.Count; i++ )
             {
-                if (connect.matchmakingList[i].secondPlayerID == 0)
+                if ( connect.matchmakingList [ i ].secondPlayerID == 0 )
                 {
-                    send = new Timer();
+                    send = new Timer ();
                     send.Interval = 1000;
                     send.Elapsed += timecounter;
-                    send.Start();
+                    send.Start ();
                     showTxt = "Click to accept chalange";
                     acceptedColor = "#ffffff";
                     textcolor = "black";
                     selforNor = true;
                     modelController = "modalOpen";
-                    matchmaking = connect.matchmakingList[i];
-                    await Task.Run(() => connect.getInfoFromId(connect.matchmakingList[i].firstPlayerID));
+                    matchmaking = connect.matchmakingList [ i ];
+                    await Task.Run ( ( ) => connect.getInfoFromId ( connect.matchmakingList [ i ].firstPlayerID ) );
                     connectedStudent = connect.secondstudent;
 
-                    await InvokeAsync(() =>
-                    {
-                        StateHasChanged();
-                    });
+                    await InvokeAsync ( ( ) =>
+                      {
+                          StateHasChanged ();
+                      } );
                     break;
                 }
-                else if (i == (connect.matchmakingList.Count - 1))
+                else if ( i == ( connect.matchmakingList.Count - 1 ) )
                 {
-                    await Task.Run(() => SetInMatchmaking());
+                    await Task.Run ( ( ) => SetInMatchmaking () );
                     break;
                 }
             }
         }
 
     }
-    public async Task SetInMatchmaking()
+    public async Task SetInMatchmaking ( )
     {
-        Random r = new Random();
-        int random,j = 0;
-        for (int i = 0; j >= 0; i++)
+        Random r = new Random ();
+        int random, j = 0;
+        for ( int i = 0; j >= 0; i++ )
         {
-            random = r.Next(0, 1000);
-            await Task.Run(() => connect.ConfirmQs(random));
-            if(connect.submitted == 1)
+            random = r.Next ( 0 , 1000 );
+            await Task.Run ( ( ) => connect.ConfirmQs ( random ) );
+            if ( connect.submitted == 1 )
             {
                 j++;
             }
 
-            if (j == 1)
+            if ( j == 1 )
             {
                 matchmaking.firstQuestionID = random;
             }
-            else if (j == 2)
+            else if ( j == 2 )
             {
                 matchmaking.secondQuestionID = random;
             }
-            else if (j == 3)
+            else if ( j == 3 )
             {
                 matchmaking.thirdQuestionID = random;
             }
-            else if (j == 4)
+            else if ( j == 4 )
             {
                 matchmaking.forthQuestionID = random;
             }
-            else if (j == 5)
+            else if ( j == 5 )
             {
                 matchmaking.fifthQuestionID = random;
                 break;
             }
         }
         matchmaking.firstPlayerID = student.studentID;
-        matchmaking.matchID = Guid.NewGuid().ToString();
-        await Task.Run(() => connect.SetMachMaking(matchmaking));
+        matchmaking.matchID = Guid.NewGuid ().ToString ();
+        await Task.Run ( ( ) => connect.SetMachMaking ( matchmaking ) );
 
     }
 
 
     //----------------------------------------------------------------------
-    //Real Time Server Connection With 2nd Player---------------------------
+    //Real Time Server Connection With 2nd Player---------------
     //----------------------------------------------------------------------
 
-    private async Task ConnectToServer()
+    private async Task ConnectToServer ( )
     {
-        _connection = new HubConnectionBuilder()
-            .WithUrl(url)
-            .Build();
+        _connection = new HubConnectionBuilder ()
+            .WithUrl ( url )
+            .Build ();
 
-        await _connection.StartAsync();
+        await _connection.StartAsync ();
         isConnected = true;
         connectionStatus = "Connected";
 
-        _connection.Closed += async (s) =>
+        _connection.Closed += async ( s ) =>
         {
             isConnected = false;
             connectionStatus = "Disconnected";
-            await _connection.StartAsync();
+            await _connection.StartAsync ();
             isConnected = true;
 
         };
-        _connection.On<int, int>("Rejected", async (receiverID, studentID) =>
-        {
-            if (receiverID == student.studentID)
+        _connection.On<int , int> ( "Rejected" , async ( receiverID , studentID ) =>
             {
-                selforNor = false;
-                otherPlayerReject = true;
-                await Task.Run(() => connect.getInfoFromId(studentID));
-                connectedStudent = connect.secondstudent;
-                showTxt = connectedStudent.name + " is disconnected";
-                await Task.Run(() => close());
+                if ( receiverID == student.studentID )
+                {
+                    selforNor = false;
+                    otherPlayerReject = true;
+                    await Task.Run ( ( ) => connect.getInfoFromId ( studentID ) );
+                    connectedStudent = connect.secondstudent;
+                    showTxt = connectedStudent.name + " is disconnected";
+                    await Task.Run ( ( ) => close () );
 
-            }
-        });
-        _connection.On<int, int>("Connected", async (receiverID, studentID) =>
-        {
-            if (receiverID == student.studentID)
+                }
+            } );
+        _connection.On<int , int> ( "Connected" , async ( receiverID , studentID ) =>
             {
-                selforNor = false;
+                if ( receiverID == student.studentID )
+                {
+                    selforNor = false;
 
-                connectedStudentID = studentID;
-                await Task.Run(() => showplayer());
-            }
-        });
+                    connectedStudentID = studentID;
+                    await Task.Run ( ( ) => showplayer () );
+                }
+            } );
 
     }
-    public Student connectedStudent = new Student();
-    public async Task showplayer()
+    public Student connectedStudent = new Student ();
+    public async Task showplayer ( )
     {
-        if (connectedStudentID > 0)
+        if ( connectedStudentID > 0 )
         {
-            await Task.Run(() => connect.getInfoFromId(connectedStudentID));
+            await Task.Run ( ( ) => connect.getInfoFromId ( connectedStudentID ) );
             connectedStudent = connect.secondstudent;
             modelController = "modalOpen";
-            send = new Timer();
+            send = new Timer ();
             send.Interval = 1000;
             send.Elapsed += timecounter;
-            send.Start();
-            await InvokeAsync(() =>
-            {
-                StateHasChanged();
-            });
+            send.Start ();
+            await InvokeAsync ( ( ) =>
+              {
+                  StateHasChanged ();
+              } );
         }
     }
 
-    public async Task close()
+    public async Task close ( )
     {
-        if (otherPlayerReject == false)
+        if ( otherPlayerReject == false )
         {
-            await Task.Run(() => connect.sendIfReject(connectedStudent.studentID, student.studentID));
+            await Task.Run ( ( ) => connect.sendIfReject ( connectedStudent.studentID , student.studentID ) );
         }
 
         on = !on;
         modelController = "modalClose";
-        timer.Stop();
+        timer.Stop ();
         sec = 0;
         min = 0;
         play = "Play";
-        await Task.Run(() => connect.DeleteIfFound(connectedStudent.studentID));
+        await Task.Run ( ( ) => connect.DeleteIfFound ( connectedStudent.studentID ) );
 
         connectedStudentID = 0;
-        if (student.point > 11 && otherPlayerReject == false)
+        if ( student.point > 11 && otherPlayerReject == false )
         {
-            await Task.Run(() => connect.DidactPoint(student.studentID));
-            await Task.Run(() => connect.getInfoFromId(student.studentID));
+            await Task.Run ( ( ) => connect.DidactPoint ( student.studentID ) );
+            await Task.Run ( ( ) => connect.getInfoFromId ( student.studentID ) );
             student = connect.secondstudent;
         }
 
-        await InvokeAsync(() =>
-        {
-            StateHasChanged();
-        });
-        //await Task.Run(() => Play());
+        await InvokeAsync ( ( ) =>
+          {
+              StateHasChanged ();
+          } );
 
     }
-    public async Task sendSecondPlayer()
+    public async Task sendSecondPlayer ( )
     {
 
-        if (selforNor == false)
+        if ( selforNor == false )
         {
 
             matchmaking.secondPlayerID = connectedStudentID;
-            await oLocalStore.SetItemAsync("mmid", matchmaking.matchID);
-            await oLocalStore.SetItemAsync("firstPlayerID", student.studentID);
-            await oLocalStore.SetItemAsync("secondPlayerID", matchmaking.secondPlayerID);
-            await oLocalStore.SetItemAsync("q1", matchmaking.firstQuestionID);
-            await oLocalStore.SetItemAsync("q2", matchmaking.secondQuestionID);
-            await oLocalStore.SetItemAsync("q3", matchmaking.thirdQuestionID);
-            await oLocalStore.SetItemAsync("q4", matchmaking.forthQuestionID);
-            await oLocalStore.SetItemAsync("q5", matchmaking.fifthQuestionID);
-            await oLocalStore.SetItemAsync("myID", student.studentID);
-            await oLocalStore.SetItemAsync("self", "0");
-            send.Stop();
+            await oLocalStore.SetItemAsync ( "mmid" , matchmaking.matchID );
+            await oLocalStore.SetItemAsync ( "firstPlayerID" , student.studentID );
+            await oLocalStore.SetItemAsync ( "secondPlayerID" , matchmaking.secondPlayerID );
+            await oLocalStore.SetItemAsync ( "q1" , matchmaking.firstQuestionID );
+            await oLocalStore.SetItemAsync ( "q2" , matchmaking.secondQuestionID );
+            await oLocalStore.SetItemAsync ( "q3" , matchmaking.thirdQuestionID );
+            await oLocalStore.SetItemAsync ( "q4" , matchmaking.forthQuestionID );
+            await oLocalStore.SetItemAsync ( "q5" , matchmaking.fifthQuestionID );
+            await oLocalStore.SetItemAsync ( "myID" , student.studentID );
+            await oLocalStore.SetItemAsync ( "self" , "0" );
+            send.Stop ();
         }
-        if (selforNor == true)
+        if ( selforNor == true )
         {
 
-            await Task.Run(() => connect.DeleteIfFound(connectedStudent.studentID));
+            await Task.Run ( ( ) => connect.DeleteIfFound ( connectedStudent.studentID ) );
             connectedMatch = connect.ConnectedMatch;
             connectedMatch.secondPlayerID = student.studentID;
             connectedStudentID = connectedMatch.firstPlayerID;
-            await oLocalStore.SetItemAsync("mmid", matchmaking.matchID);
-            await oLocalStore.SetItemAsync("firstPlayerID", connectedStudent.studentID);
-            await oLocalStore.SetItemAsync("secondPlayerID", student.studentID);
-            await oLocalStore.SetItemAsync("q1", matchmaking.firstQuestionID);
-            await oLocalStore.SetItemAsync("q2", matchmaking.secondQuestionID);
-            await oLocalStore.SetItemAsync("q3", matchmaking.thirdQuestionID);
-            await oLocalStore.SetItemAsync("q4", matchmaking.forthQuestionID);
-            await oLocalStore.SetItemAsync("q5", matchmaking.fifthQuestionID);
-            await oLocalStore.SetItemAsync("self", "1");
-            await oLocalStore.SetItemAsync("myID", student.studentID);
-            connect.ConnectWith2ndStudent(connectedMatch.firstPlayerID, student.studentID);
-            send.Stop();
+            await oLocalStore.SetItemAsync ( "mmid" , matchmaking.matchID );
+            await oLocalStore.SetItemAsync ( "firstPlayerID" , connectedStudent.studentID );
+            await oLocalStore.SetItemAsync ( "secondPlayerID" , student.studentID );
+            await oLocalStore.SetItemAsync ( "q1" , matchmaking.firstQuestionID );
+            await oLocalStore.SetItemAsync ( "q2" , matchmaking.secondQuestionID );
+            await oLocalStore.SetItemAsync ( "q3" , matchmaking.thirdQuestionID );
+            await oLocalStore.SetItemAsync ( "q4" , matchmaking.forthQuestionID );
+            await oLocalStore.SetItemAsync ( "q5" , matchmaking.fifthQuestionID );
+            await oLocalStore.SetItemAsync ( "self" , "1" );
+            await oLocalStore.SetItemAsync ( "myID" , student.studentID );
+            connect.ConnectWith2ndStudent ( connectedMatch.firstPlayerID , student.studentID );
+            send.Stop ();
         }
 
-        NavigationManager.NavigateTo("/quiz");
+        NavigationManager.NavigateTo ( "/quiz" );
     }
 
-    private async void timecounter(object sender, System.Timers.ElapsedEventArgs e)
+    private async void timecounter ( object sender , System.Timers.ElapsedEventArgs e )
     {
-        if (value < 0)
+        if ( value < 0 )
         {
-            send.Stop();
-            timer.Stop();
+            send.Stop ();
+            timer.Stop ();
             send.Enabled = false;
-            send.Close();
+            send.Close ();
             timer.Enabled = false;
-            timer.Close();
+            timer.Close ();
             modelController = "modalClose";
             on = !on;
             sec = 0;
             min = 0;
             play = "Play";
-            await _connection.StopAsync();
-            await InvokeAsync(() =>
-            {
-                StateHasChanged();
-            });
+            await _connection.StopAsync ();
+            await InvokeAsync ( ( ) =>
+              {
+                  StateHasChanged ();
+              } );
             value = 100;
         }
         else
