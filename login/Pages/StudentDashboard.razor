@@ -1,6 +1,8 @@
-﻿@inject Blazored.LocalStorage.ILocalStorageService oLocalStore
+﻿
+@inject Blazored.LocalStorage.ILocalStorageService oLocalStore
 @inject NavigationManager NavigationManager
 @inject ServerConnection connect
+
 @using Microsoft.AspNetCore.SignalR.Client
 @implements IDisposable
 @page "/dashboard"
@@ -10,6 +12,10 @@
 @using ChartJs.Blazor.ChartJS.PieChart
 @using ChartJs.Blazor.ChartJS.Common.Properties
 @using ChartJs.Blazor.Util
+
+
+
+
 <div class="dashboard-main-wrapper">
     <!-- ============================================================== -->
     <!-- navbar -->
@@ -344,7 +350,7 @@
                             <!-- ============================================================== -->
                             <!-- ============================================================== -->
                             <div class="col-xl-6 col-lg-12 col-md-6 col-sm-12 col-12 card" style="background: #ffffff; border-color:aquamarine;  border: 10px; border-radius: 10px">
-                                <SubjectWiseAns />
+                                <login.Pages.SubjectWiseAns/>
 
                             </div>
                             <!-- ============================================================== -->
@@ -587,9 +593,9 @@
             await Task.Run ( ( ) => connect.DeleteIfFound ( student.studentID ) );
             await _connection.StopAsync ();
             await InvokeAsync ( ( ) =>
-              {
-                  StateHasChanged ();
-              } );
+            {
+                StateHasChanged ();
+            } );
         }
 
     }
@@ -603,9 +609,9 @@
             sec = 0;
         }
         InvokeAsync ( ( ) =>
-          {
-              StateHasChanged ();
-          } );
+        {
+            StateHasChanged ();
+        } );
     }
 
     //------------------------------------------------------------------------------
@@ -649,9 +655,9 @@
                     connectedStudent = connect.secondstudent;
 
                     await InvokeAsync ( ( ) =>
-                      {
-                          StateHasChanged ();
-                      } );
+                    {
+                        StateHasChanged ();
+                    } );
                     break;
                 }
                 else if ( i == ( connect.matchmakingList.Count - 1 ) )
@@ -665,6 +671,7 @@
     }
     public async Task SetInMatchmaking ( )
     {
+        List<string> qsCodeList = new List<string> ();
         Random r = new Random ();
         int random, j = 0;
         for ( int i = 0; j >= 0; i++ )
@@ -674,11 +681,13 @@
             if ( connect.submitted == 1 )
             {
                 j++;
+                qsCodeList.Add (connect.QuestionCode);
             }
 
             if ( j == 1 )
             {
                 matchmaking.firstQuestionID = random;
+
             }
             else if ( j == 2 )
             {
@@ -728,28 +737,28 @@
 
         };
         _connection.On<int , int> ( "Rejected" , async ( receiverID , studentID ) =>
+        {
+            if ( receiverID == student.studentID )
             {
-                if ( receiverID == student.studentID )
-                {
-                    selforNor = false;
-                    otherPlayerReject = true;
-                    await Task.Run ( ( ) => connect.getInfoFromId ( studentID ) );
-                    connectedStudent = connect.secondstudent;
-                    showTxt = connectedStudent.name + " is disconnected";
-                    await Task.Run ( ( ) => close () );
+                selforNor = false;
+                otherPlayerReject = true;
+                await Task.Run ( ( ) => connect.getInfoFromId ( studentID ) );
+                connectedStudent = connect.secondstudent;
+                showTxt = connectedStudent.name + " is disconnected";
+                await Task.Run ( ( ) => close () );
 
-                }
-            } );
+            }
+        } );
         _connection.On<int , int> ( "Connected" , async ( receiverID , studentID ) =>
+        {
+            if ( receiverID == student.studentID )
             {
-                if ( receiverID == student.studentID )
-                {
-                    selforNor = false;
+                selforNor = false;
 
-                    connectedStudentID = studentID;
-                    await Task.Run ( ( ) => showplayer () );
-                }
-            } );
+                connectedStudentID = studentID;
+                await Task.Run ( ( ) => showplayer () );
+            }
+        } );
 
     }
     public Student connectedStudent = new Student ();
@@ -765,9 +774,9 @@
             send.Elapsed += timecounter;
             send.Start ();
             await InvokeAsync ( ( ) =>
-              {
-                  StateHasChanged ();
-              } );
+            {
+                StateHasChanged ();
+            } );
         }
     }
 
@@ -795,9 +804,9 @@
         }
 
         await InvokeAsync ( ( ) =>
-          {
-              StateHasChanged ();
-          } );
+        {
+            StateHasChanged ();
+        } );
 
     }
     public async Task sendSecondPlayer ( )
@@ -860,9 +869,9 @@
             play = "Play";
             await _connection.StopAsync ();
             await InvokeAsync ( ( ) =>
-              {
-                  StateHasChanged ();
-              } );
+            {
+                StateHasChanged ();
+            } );
             value = 100;
         }
         else

@@ -9,6 +9,7 @@ namespace login.Data
 {
     public class ServerConnection
     {
+        public string QuestionCode { get; set; }
         public int qsNumber { get; set; }
         public int submitted { get; set; }
         public Student student { get; set; }
@@ -283,14 +284,23 @@ namespace login.Data
 
         public async Task ConfirmQs(int questionID)
         {
+            QuestionCode = null;
             string url = "https://api.shikkhanobish.com/api/Medhabi/ConfirmQs";
             HttpClient client = new HttpClient();
             string jsonData = JsonConvert.SerializeObject(new { questionID= questionID });
             StringContent content = new StringContent(jsonData, Encoding.UTF8, "application/json");
             HttpResponseMessage response = await client.PostAsync(url, content).ConfigureAwait(true);
             string result = await response.Content.ReadAsStringAsync().ConfigureAwait(true);
-            var r = JsonConvert.DeserializeObject<Response>(result);
-            submitted = r.Status;
+            var r = JsonConvert.DeserializeObject<Question>(result);
+            QuestionCode = r.question_code;
+            if(QuestionCode != null)
+            {
+                submitted = 1;
+            }
+            else
+            {
+                submitted = 0;
+            }
             
         }
         public async Task passans(int receiverID, int qn, int qa)

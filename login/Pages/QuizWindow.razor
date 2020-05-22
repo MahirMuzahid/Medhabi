@@ -121,14 +121,6 @@
     //ALl Veriable End----------------------------------------------------------------------------------------------------------------------
     //
 
-
-
-
-
-
-
-
-
     //
     //Inital M3thod----------------------------------------------------------------------------------------------------------------------
     //
@@ -225,13 +217,6 @@
     //Inital Method End----------------------------------------------------------------------------------------------------------------------
     //
 
-
-
-
-
-
-
-
     //
     //Wait For Second Player Timer Start----------------------------------------------------------------------------------------------------------------------
     //
@@ -255,7 +240,7 @@
         }
         if ( secondplayertimer == 0 && playeron == false )
         {
-            await oLocalStore.SetItemAsync ( "mmid" , null );
+            await oLocalStore.SetItemAsync ( "mmid" , "" );
             await oLocalStore.SetItemAsync ( "firstPlayerID" , 0 );
             await oLocalStore.SetItemAsync ( "secondPlayerID" , 0 );
             await oLocalStore.SetItemAsync ( "q1" , 0 );
@@ -263,7 +248,7 @@
             await oLocalStore.SetItemAsync ( "q3" , 0 );
             await oLocalStore.SetItemAsync ( "q4" , 0 );
             await oLocalStore.SetItemAsync ( "q5" , 0 );
-            await oLocalStore.SetItemAsync ( "self" , null );
+            await oLocalStore.SetItemAsync ( "self" , "" );
             await oLocalStore.SetItemAsync ( "myID" , 0 );
             timer.Stop ();
             NavigationManager.NavigateTo ( "/dashboard" );
@@ -278,13 +263,6 @@
     //Wait For Second Player Timer End----------------------------------------------------------------------------------------------------------------------
     //
 
-
-
-
-
-
-
-
     //
     //Get All Question From Server----------------------------------------------------------------------------------------------------------------------
     //
@@ -296,13 +274,6 @@
     //
     //Get All Question From Server End----------------------------------------------------------------------------------------------------------------------
     //
-
-
-
-
-
-
-
 
     //
     //Show Question on Window----------------------------------------------------------------------------------------------------------------------
@@ -323,16 +294,6 @@
     //
     //Show Question on Window End----------------------------------------------------------------------------------------------------------------------
     //
-
-
-
-
-
-
-
-
-
-
 
     //
     //Quiz Timer----------------------------------------------------------------------------------------------------------------------
@@ -379,13 +340,6 @@
     //Quiz Timer End----------------------------------------------------------------------------------------------------------------------
     //
 
-
-
-
-
-
-
-
     //
     //Check Button Click----------------------------------------------------------------------------------------------------------------------
     //
@@ -419,12 +373,6 @@
     //Check Button Click end----------------------------------------------------------------------------------------------------------------------
     //
 
-
-
-
-
-
-
     //
     //Check Write or Wrogn Answer----------------------------------------------------------------------------------------------------------------------
     //
@@ -453,19 +401,13 @@
     //Check Write or Wrogn Answer end----------------------------------------------------------------------------------------------------------------------
     //
 
-
-
-
-
-
-
-
     //
     //Place write or wrong in veriable for server----------------------------------------------------------------------------------------------------------------------
     //
     public async void placewriteorwrong ( int qn , int qa , int fromwhere )
     {
         int go = 0;
+        myTime = qmin * 60 + qtimer;
         if ( meFirstPlayer == true && fromwhere == 0 )
         {
             go = 0;
@@ -601,8 +543,6 @@
             }
         }
 
-
-
         if ( fromwhere == 0 )
         {
             if ( allqs [ qn ].right_answer == qa )
@@ -610,46 +550,46 @@
                 meRight++;
                 if ( qn == 0 )
                 {
-                    ph.q1 = 0;
+                    ph.q1 = "1 " + mm.firstQuestionID;
                 }
                 if ( qn == 1 )
                 {
-                    ph.q2 = 0;
+                    ph.q2 = "1 " + mm.secondQuestionID;
                 }
                 if ( qn == 2 )
                 {
-                    ph.q3 = 0;
+                    ph.q3 = "1 " + mm.thirdQuestionID;
                 }
                 if ( qn == 3 )
                 {
-                    ph.q4 = 0;
+                    ph.q4 = "1 " + mm.forthQuestionID;
                 }
                 if ( qn == 4 )
                 {
-                    ph.q5 = 0;
+                    ph.q5 = "1 " + mm.fifthQuestionID;
                 }
             }
             else
             {
                 if ( qn == 0 )
                 {
-                    ph.q1 = 1;
+                    ph.q1 = "0 " + mm.firstQuestionID;
                 }
                 if ( qn == 1 )
                 {
-                    ph.q2 = 1;
+                    ph.q2 = "0 " + mm.secondQuestionID;
                 }
                 if ( qn == 2 )
                 {
-                    ph.q3 = 1;
+                    ph.q3 = "0 " + mm.thirdQuestionID;
                 }
                 if ( qn == 3 )
                 {
-                    ph.q4 = 1;
+                    ph.q4 = "0 " + mm.forthQuestionID;
                 }
                 if ( qn == 4 )
                 {
-                    ph.q5 = 1;
+                    ph.q5 = "0 " + mm.fifthQuestionID;
                 }
             }
 
@@ -672,14 +612,6 @@
     //
     //Place write or wrong in veriable for server end----------------------------------------------------------------------------------------------------------------------
     //
-
-
-
-
-
-
-
-
 
     //
     //See 2 players are done or not----------------------------------------------------------------------------------------------------------------------
@@ -704,12 +636,6 @@
     //See 2 players are done or not end----------------------------------------------------------------------------------------------------------------------
     //
 
-
-
-
-
-
-
     //
     //Decide Winner----------------------------------------------------------------------------------------------------------------------
     //
@@ -717,116 +643,33 @@
     {
         if ( meRight > otherRight )
         {
-            await oLocalStore.SetItemAsync ( "wname" , myName );
-            await oLocalStore.SetItemAsync ( "lname" , otherPlayerName );
-            mh.winnerPlayerID = myid;
-            await oLocalStore.SetItemAsync ( "wRa" , meRight );
-            await oLocalStore.SetItemAsync ( "wT" , qmin + " Minute " + qtimer + " Second" );
-            await oLocalStore.SetItemAsync ( "wID" , myid );
-            await oLocalStore.SetItemAsync ( "lID" , otherplayerID );
-            await oLocalStore.SetItemAsync ( "win" , true );
-            mh.looserPlayerID = otherplayerID;
-            mh.q1 = mm.firstQuestionID;
-            mh.q2 = mm.secondQuestionID;
-            mh.q3 = mm.thirdQuestionID;
-            mh.q4 = mm.forthQuestionID;
-            mh.q5 = mm.fifthQuestionID;
-            mh.whatToDO = 0;
-
-            ph.matchStatus = "Win";
-            ph.whatToDO = 0;
-            ph.playerID = myid;
-
-            await Task.Run ( ( ) => connect.EditMatchHistory ( mh ) );
-            await Task.Run ( ( ) => connect.EditPlayerHistory ( ph ) );
-            updateInfo ();
-            medone = false;
-            otherDone = false;
-            NavigationManager.NavigateTo ( "/result" );
-
+            await winnerSave ();
         }
         else if ( meRight < otherRight )
         {
-            mh.looserPlayerID = myid;
-            await oLocalStore.SetItemAsync ( "lname" , myName );
-            await oLocalStore.SetItemAsync ( "wname" , otherPlayerName );
-            await oLocalStore.SetItemAsync ( "lRa" , meRight );
-            await oLocalStore.SetItemAsync ( "lT" , qmin + " Minute " + qtimer + " Second " );
-            await oLocalStore.SetItemAsync ( "lID" , myid );
-            await oLocalStore.SetItemAsync ( "wID" , otherplayerID );
-            await oLocalStore.SetItemAsync ( "win" , false );
-            mh.looserPlayerID = myid;
-            mh.q1 = mm.firstQuestionID;
-            mh.q2 = mm.secondQuestionID;
-            mh.q3 = mm.thirdQuestionID;
-            mh.q4 = mm.forthQuestionID;
-            mh.q5 = mm.fifthQuestionID;
-            mh.whatToDO = 0;
-
-            ph.matchStatus = "lose";
-            ph.whatToDO = 0;
-            ph.playerID = myid;
-            await Task.Run ( ( ) => connect.EditPlayerHistory ( ph ) );
-            updateInfo ();
-            medone = false;
-            otherDone = false;
-            NavigationManager.NavigateTo ( "/result" );
+            await loserSave ();
         }
         else if ( meRight == otherRight )
         {
-            if ( myTime > otherTime )
+            if ( myTime < otherTime )
             {
-                await oLocalStore.SetItemAsync ( "wname" , myName );
-                await oLocalStore.SetItemAsync ( "lname" , otherPlayerName );
-                mh.winnerPlayerID = myid;
-                await oLocalStore.SetItemAsync ( "wRa" , meRight );
-                await oLocalStore.SetItemAsync ( "wT" , qmin + " Minute " + qtimer + " Second" );
-                await oLocalStore.SetItemAsync ( "wID" , myid );
-                await oLocalStore.SetItemAsync ( "lID" , otherplayerID );
-                await oLocalStore.SetItemAsync ( "win" , true );
-                mh.looserPlayerID = otherplayerID;
-                mh.q1 = mm.firstQuestionID;
-                mh.q2 = mm.secondQuestionID;
-                mh.q3 = mm.thirdQuestionID;
-                mh.q4 = mm.forthQuestionID;
-                mh.q5 = mm.fifthQuestionID;
-                mh.whatToDO = 0;
-
-                ph.matchStatus = "Win";
-                ph.whatToDO = 0;
-                ph.playerID = myid;
-
-                await Task.Run ( ( ) => connect.EditMatchHistory ( mh ) );
-                await Task.Run ( ( ) => connect.EditPlayerHistory ( ph ) );
-                updateInfo ();
-
-                NavigationManager.NavigateTo ( "/result" );
+                await winnerSave ();
             }
-            else if ( myTime < otherTime )
+            else if ( myTime > otherTime )
             {
-                mh.looserPlayerID = myid;
-                await oLocalStore.SetItemAsync ( "lname" , myName );
-                await oLocalStore.SetItemAsync ( "wname" , otherPlayerName );
-                await oLocalStore.SetItemAsync ( "lRa" , meRight );
-                await oLocalStore.SetItemAsync ( "lT" , qmin + " Minute " + qtimer + " Second " );
-                await oLocalStore.SetItemAsync ( "lID" , myid );
-                await oLocalStore.SetItemAsync ( "wID" , otherplayerID );
-                await oLocalStore.SetItemAsync ( "win" , false );
-                mh.looserPlayerID = myid;
-                mh.q1 = mm.firstQuestionID;
-                mh.q2 = mm.secondQuestionID;
-                mh.q3 = mm.thirdQuestionID;
-                mh.q4 = mm.forthQuestionID;
-                mh.q5 = mm.fifthQuestionID;
-                mh.whatToDO = 0;
-
-                ph.matchStatus = "lose";
-                ph.whatToDO = 0;
-                ph.playerID = myid;
-                await Task.Run ( ( ) => connect.EditPlayerHistory ( ph ) );
-                updateInfo ();
-
-                NavigationManager.NavigateTo ( "/result" );
+                await loserSave ();
+            }
+            else if ( myTime == otherTime )
+            {
+                Random r = new Random ();
+                if ( ( r.Next ( 0 , 10 ) ) % 2 == 0 )
+                {
+                    await winnerSave ();
+                }
+                else
+                {
+                    await loserSave ();
+                }
             }
         }
     }
@@ -834,6 +677,42 @@
     //Decide Winner end----------------------------------------------------------------------------------------------------------------------
     //
 
+    //
+    //Save Winner Result----------------------------------------------------------------------------------------------------------------------
+    //
+    public async Task winnerSave ( )
+    {
+        await oLocalStore.SetItemAsync ( "wname" , myName );
+        await oLocalStore.SetItemAsync ( "lname" , otherPlayerName );
+        mh.winnerPlayerID = myid;
+        await oLocalStore.SetItemAsync ( "wRa" , meRight );
+        await oLocalStore.SetItemAsync ( "wT" , qmin + " Minute " + qtimer + " Second" );
+        await oLocalStore.SetItemAsync ( "wID" , myid );
+        await oLocalStore.SetItemAsync ( "lID" , otherplayerID );
+        await oLocalStore.SetItemAsync ( "win" , true );
+        mh.looserPlayerID = otherplayerID;
+        mh.q1 = mm.firstQuestionID;
+        mh.q2 = mm.secondQuestionID;
+        mh.q3 = mm.thirdQuestionID;
+        mh.q4 = mm.forthQuestionID;
+        mh.q5 = mm.fifthQuestionID;
+        mh.whatToDO = 0;
+
+        ph.matchStatus = "Win";
+        ph.whatToDO = 0;
+        ph.playerID = myid;
+        medone = false;
+        otherDone = false;
+
+        await Task.Run ( ( ) => connect.EditMatchHistory ( mh ) );
+        await Task.Run ( ( ) => connect.EditPlayerHistory ( ph ) );
+        updateInfo ();
+
+        NavigationManager.NavigateTo ( "/result" );
+    }
+    //
+    //Save Winner Result end----------------------------------------------------------------------------------------------------------------------
+    //
 
 
 
@@ -841,7 +720,39 @@
 
 
 
+    //
+    //Save Loser Result----------------------------------------------------------------------------------------------------------------------
+    //
+    public async Task loserSave ( )
+    {
+        mh.looserPlayerID = myid;
+        await oLocalStore.SetItemAsync ( "lname" , myName );
+        await oLocalStore.SetItemAsync ( "wname" , otherPlayerName );
+        await oLocalStore.SetItemAsync ( "lRa" , meRight );
+        await oLocalStore.SetItemAsync ( "lT" , qmin + " Minute " + qtimer + " Second " );
+        await oLocalStore.SetItemAsync ( "lID" , myid );
+        await oLocalStore.SetItemAsync ( "wID" , otherplayerID );
+        await oLocalStore.SetItemAsync ( "win" , false );
+        mh.looserPlayerID = myid;
+        mh.q1 = mm.firstQuestionID;
+        mh.q2 = mm.secondQuestionID;
+        mh.q3 = mm.thirdQuestionID;
+        mh.q4 = mm.forthQuestionID;
+        mh.q5 = mm.fifthQuestionID;
+        mh.whatToDO = 0;
 
+        ph.matchStatus = "Lose";
+        ph.whatToDO = 0;
+        ph.playerID = myid;
+        await Task.Run ( ( ) => connect.EditPlayerHistory ( ph ) );
+        updateInfo ();
+        medone = false;
+        otherDone = false;
+        NavigationManager.NavigateTo ( "/result" );
+    }
+    //
+    //Save Loser Result end----------------------------------------------------------------------------------------------------------------------
+    //
 
     //
     //Update Info in server----------------------------------------------------------------------------------------------------------------------
@@ -897,13 +808,6 @@
     //Update Info in server end----------------------------------------------------------------------------------------------------------------------
     //
 
-
-
-
-
-
-
-
     //
     //Connect With Real Time Api server----------------------------------------------------------------------------------------------------------------------
     //
@@ -936,22 +840,46 @@
         {
             if ( receiverID == myid )
             {
+                otherTime = time;
+                otherRight = ra;
                 if ( meRight > ra )
                 {
-                    otherTime = time;
-                    otherRight = ra;
                     await oLocalStore.SetItemAsync ( "lRa" , ra );
-                    await oLocalStore.SetItemAsync ( "lT" , time / 60 + "Minute" + time % 60 + "Second" );
-                    callALLDone ( 1 );
+                    await oLocalStore.SetItemAsync ( "lT" , time / 60 + " Minute " + time % 60 + " Second " );
                 }
-                else
+                else if ( meRight < ra )
                 {
-                    otherTime = time;
-                    otherRight = ra;
                     await oLocalStore.SetItemAsync ( "wRa" , ra );
                     await oLocalStore.SetItemAsync ( "wT" , time / 60 + " Minute " + time % 60 + " Second" );
-                    callALLDone ( 1 );
                 }
+                else if ( meRight == ra )
+                {
+                    if ( myTime > ra )
+                    {
+                        await oLocalStore.SetItemAsync ( "wRa" , ra );
+                        await oLocalStore.SetItemAsync ( "wT" , time / 60 + " Minute " + time % 60 + " Second" );
+                    }
+                    else if ( myTime < ra )
+                    {
+                        await oLocalStore.SetItemAsync ( "lRa" , ra );
+                        await oLocalStore.SetItemAsync ( "lT" , time / 60 + " Minute " + time % 60 + " Second " );
+                    }
+                    else if ( myTime == ra )
+                    {
+                        Random r = new Random ();
+                        if ( ( r.Next ( 0 , 10 ) ) % 2 == 0 )
+                        {
+                            await oLocalStore.SetItemAsync ( "wRa" , ra );
+                            await oLocalStore.SetItemAsync ( "wT" , time / 60 + " Minute " + time % 60 + " Second" );
+                        }
+                        else
+                        {
+                            await oLocalStore.SetItemAsync ( "lRa" , ra );
+                            await oLocalStore.SetItemAsync ( "lT" , time / 60 + " Minute " + time % 60 + " Second " );
+                        }
+                    }
+                }
+                callALLDone ( 1 );
 
             }
         } );

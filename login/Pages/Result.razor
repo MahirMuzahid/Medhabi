@@ -268,8 +268,8 @@
 
     public async void go()
     {
-        await oLocalStore.SetItemAsync("lname", null);
-        await oLocalStore.SetItemAsync("wname", null);
+        await oLocalStore.SetItemAsync("lname", "");
+        await oLocalStore.SetItemAsync("wname", "");
         await oLocalStore.SetItemAsync("lRa", 0);
         await oLocalStore.SetItemAsync("lT", 0);
         await oLocalStore.SetItemAsync("lID", 0);
@@ -285,7 +285,7 @@
         await oLocalStore.SetItemAsync("q4", 0);
         await oLocalStore.SetItemAsync("q5", 0);
         await oLocalStore.SetItemAsync("myID", 0);
-        await oLocalStore.SetItemAsync("self", null);
+        await oLocalStore.SetItemAsync("self", "");
 
         NavigationManager.NavigateTo("/dashboard");
     }

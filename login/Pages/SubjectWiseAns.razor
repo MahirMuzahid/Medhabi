@@ -44,8 +44,8 @@
 
         var barSet1 = new BarDataset<DoubleWrapper>
         {
-            Label = "Total Question" ,
-            BackgroundColor = ColorUtil.ColorHexString ( 205 , 97 , 85 ) ,
+            Label = "Total Answered" ,
+            BackgroundColor = ColorUtil.ColorHexString (  8 , 214 , 141 ) ,
             BorderWidth = 1 ,
             HoverBackgroundColor = ColorUtil.ColorString ( 0 , 0 , 0 , 0.1 ) ,
             HoverBorderColor = "#020202" ,
@@ -53,13 +53,13 @@
             BorderColor = "#ffffff" ,
         };
 
-        barSet1.AddRange ( new double [] { 4 , 3 , 2 , 1 }.Wrap () );
+        barSet1.AddRange ( new double [] { 7 , 10 , 5 , 9 }.Wrap () );
         _config.Data.Datasets.Add ( barSet1 );
 
         var barSet2 = new BarDataset<DoubleWrapper>
         {
-            Label = "Total Answered" ,
-            BackgroundColor = ColorUtil.ColorHexString ( 88 , 214 , 141 ) ,
+            Label = "Total Question" ,
+            BackgroundColor = ColorUtil.ColorHexString ( 52 , 152 , 219 ) ,
             BorderWidth = 1 ,
             HoverBackgroundColor = ColorUtil.ColorString ( 0 , 0 , 0 , 0.1 ) ,
             HoverBorderColor = "#020202" ,
@@ -67,7 +67,7 @@
             BorderColor = "#ffffff" ,
         };
 
-        barSet2.AddRange ( new double [] { 1 , 5 , 10 , 15 }.Wrap () );
+        barSet2.AddRange ( new double [] { 20 , 15, 20 , 15 }.Wrap () );
         _config.Data.Datasets.Add ( barSet2 );
 
 

@@ -9,19 +9,19 @@ namespace login.Data
     {
         List<PlayerHistory> playerHistory = new List<PlayerHistory> ();
 
-        int tqB1;
-        int tqB2;
-        int tqICT;
-        int tqPhy;
-        int tqChe;
-        int tqBIO;
+        int ttqB1;
+        int ttqB2;
+        int ttqICT;
+        int ttqPhy;
+        int ttqChe;
+        int ttqBIO;
 
-        int aqB1;
-        int aqB2;
-        int aqICT;
-        int aqPhy;
-        int aqChe;
-        int aqBIO;
+        int anqB1;
+        int anqB2;
+        int anqICT;
+        int anqPhy;
+        int anqChe;
+        int anqBIO;
 
         int accB1;
         int accB2;
@@ -36,7 +36,7 @@ namespace login.Data
         }
         public void calTotalQuestionOfEverySubject()
         {
-
+            
         }
     }
 }
