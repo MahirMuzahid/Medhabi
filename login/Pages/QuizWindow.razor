@@ -117,6 +117,7 @@
     PlayerHistory ph = new PlayerHistory ();
     MatchHistory mh = new MatchHistory ();
     bool medone, otherDone;
+    List<string> qsCode;
     //
     //ALl Veriable End----------------------------------------------------------------------------------------------------------------------
     //
@@ -164,6 +165,11 @@
             mm.forthQuestionID = await oLocalStore.GetItemAsync<int> ( "q4" );
             mm.fifthQuestionID = await oLocalStore.GetItemAsync<int> ( "q5" );
             mm.matchID = await oLocalStore.GetItemAsync<string> ( "mmid" );
+            qsCode.Add (await oLocalStore.GetItemAsync<string> ( "qcode1" ));
+            qsCode.Add ( await oLocalStore.GetItemAsync<string> ( "qcode2" ) );
+            qsCode.Add ( await oLocalStore.GetItemAsync<string> ( "qcode3" ) );
+            qsCode.Add ( await oLocalStore.GetItemAsync<string> ( "qcode4" ) );
+            qsCode.Add ( await oLocalStore.GetItemAsync<string> ( "qcode5" ) );
             QuestionMaker qm = new QuestionMaker ();
             qm.firstqsID = mm.firstQuestionID;
             qm.secondID = mm.secondQuestionID;
@@ -550,46 +556,46 @@
                 meRight++;
                 if ( qn == 0 )
                 {
-                    ph.q1 = "1 " + mm.firstQuestionID;
+                    ph.q1 = "1 " + qsCode[ 0 ];
                 }
                 if ( qn == 1 )
                 {
-                    ph.q2 = "1 " + mm.secondQuestionID;
+                    ph.q2 = "1 " + qsCode [ 1 ];
                 }
                 if ( qn == 2 )
                 {
-                    ph.q3 = "1 " + mm.thirdQuestionID;
+                    ph.q3 = "1 " + qsCode [ 2 ];
                 }
                 if ( qn == 3 )
                 {
-                    ph.q4 = "1 " + mm.forthQuestionID;
+                    ph.q4 = "1 " + qsCode [ 3 ];
                 }
                 if ( qn == 4 )
                 {
-                    ph.q5 = "1 " + mm.fifthQuestionID;
+                    ph.q5 = "1 " + qsCode [ 4 ];
                 }
             }
             else
             {
                 if ( qn == 0 )
                 {
-                    ph.q1 = "0 " + mm.firstQuestionID;
+                    ph.q1 = "0 " + qsCode [ 0 ];
                 }
                 if ( qn == 1 )
                 {
-                    ph.q2 = "0 " + mm.secondQuestionID;
+                    ph.q2 = "0 " + qsCode [ 1 ];
                 }
                 if ( qn == 2 )
                 {
-                    ph.q3 = "0 " + mm.thirdQuestionID;
+                    ph.q3 = "0 " + qsCode [ 2 ];
                 }
                 if ( qn == 3 )
                 {
-                    ph.q4 = "0 " + mm.forthQuestionID;
+                    ph.q4 = "0 " + qsCode [ 3 ];
                 }
                 if ( qn == 4 )
                 {
-                    ph.q5 = "0 " + mm.fifthQuestionID;
+                    ph.q5 = "0 " + qsCode [ 4 ];
                 }
             }
 

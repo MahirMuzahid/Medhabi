@@ -23,9 +23,12 @@ namespace login.Data
         public List<Teacher> TopTeacherList { get; set; }
         public List<MatchMaking> matchmakingList { get; set; }
         public MatchMaking ConnectedMatch { get; set; }
-        public List<Question> allqs { get; set; }
-        public ServerConnection()
+        public List<Question> allqs { get; set; } 
+
+        public void sendDataForCalculation(List<PlayerHistory> ph, int id)
         {
+            CalculateInfoForPaidStudent cl = new CalculateInfoForPaidStudent();
+            cl.getDataforCalculation ( ph , id );
         }
 
         public async Task getTotalQuestion()
@@ -318,13 +321,12 @@ namespace login.Data
         {
             string url = "https://api.shikkhanobish.com/api/Medhabi/EditPlayerHistory";
             HttpClient client = new HttpClient();
-            string jsonData = JsonConvert.SerializeObject(new { matchID = ph.matchID, playerID = ph.playerID, matchStatus = ph.matchStatus, q1 = ph.q1, q2 = ph.q2, q3 = ph.q3, questionID = ph.matchID, q4 = ph.q4, q5 = ph.q5, whatToDO = ph.whatToDO });
+            string jsonData = JsonConvert.SerializeObject(new { matchID = ph.matchID, matchStatus = ph.matchStatus, q1 = ph.q1, q2 = ph.q2, q3 = ph.q3, q4 = ph.q4, q5 = ph.q5, playerID = ph.playerID, whatToDO = ph.whatToDO });
             StringContent content = new StringContent(jsonData, Encoding.UTF8, "application/json");
             HttpResponseMessage response = await client.PostAsync(url, content).ConfigureAwait(true);
             string result = await response.Content.ReadAsStringAsync().ConfigureAwait(true);
             var r = JsonConvert.DeserializeObject<List<PlayerHistory>>(result);
             PlayerHistoryList = r;
-
         }
         public async Task EditMatchHistory(MatchHistory mh)
         {

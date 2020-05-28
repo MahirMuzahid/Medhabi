@@ -2,7 +2,6 @@
 @inject Blazored.LocalStorage.ILocalStorageService oLocalStore
 @inject NavigationManager NavigationManager
 @inject ServerConnection connect
-
 @using Microsoft.AspNetCore.SignalR.Client
 @implements IDisposable
 @page "/dashboard"
@@ -12,6 +11,7 @@
 @using ChartJs.Blazor.ChartJS.PieChart
 @using ChartJs.Blazor.ChartJS.Common.Properties
 @using ChartJs.Blazor.Util
+
 
 
 
@@ -350,7 +350,7 @@
                             <!-- ============================================================== -->
                             <!-- ============================================================== -->
                             <div class="col-xl-6 col-lg-12 col-md-6 col-sm-12 col-12 card" style="background: #ffffff; border-color:aquamarine;  border: 10px; border-radius: 10px">
-                                <login.Pages.SubjectWiseAns/>
+                                <login.Pages.SubjectWiseAns />
 
                             </div>
                             <!-- ============================================================== -->
@@ -403,7 +403,7 @@
 </div>
 
 @code {
-
+    List<string> qsCodeList = new List<string> ();
     Student student = new Student ();
     public List<Teacher> TopTeacherList = new List<Teacher> ();
     public List<Student> TopStudentList = new List<Student> ();
@@ -425,6 +425,7 @@
     string acceptedColor, textcolor, showTxt, display;
     public MatchMaking connectedMatch { get; set; }
     public bool selforNor = false;
+    List<PlayerHistory> MyplayerHistoryList = new List<PlayerHistory> ();
 
     protected override async Task OnInitializedAsync ( )
     {
@@ -457,13 +458,27 @@
         }
         else
         {
+            PlayerHistory ph = new PlayerHistory ();
+
             await Task.Run ( ( ) => connect.SignIn ( student.mail , student.password ) );
             await Task.Run ( ( ) => connect.GetTopStudent () );
             await Task.Run ( ( ) => connect.GetTopTeacher () );
 
+
             student = connect.student;
+            ph.playerID = student.studentID;
+            ph.whatToDO = 1;
+            ph.matchID = "n";
+            ph.matchStatus = "n";
+            ph.q1 = "n";
+            ph.q2 = "n";
+            ph.q3 = "n";
+            ph.q4 = "n";
+            ph.q5 = "n";
+            await Task.Run ( ( ) => connect.EditPlayerHistory ( ph ) );
             TopStudentList = connect.TopStudentList;
             TopTeacherList = connect.TopTeacherList;
+            MyplayerHistoryList = connect.PlayerHistoryList;
             if ( student.total_question_answered == 0 )
             {
                 accuracy = 0;
@@ -476,6 +491,7 @@
 
             PositionCounter ();
             AccuracyCounter ();
+            connect.sendDataForCalculation (MyplayerHistoryList,student.studentID);
         }
     }
     public void LogOut ( )
@@ -671,7 +687,7 @@
     }
     public async Task SetInMatchmaking ( )
     {
-        List<string> qsCodeList = new List<string> ();
+
         Random r = new Random ();
         int random, j = 0;
         for ( int i = 0; j >= 0; i++ )
@@ -681,7 +697,7 @@
             if ( connect.submitted == 1 )
             {
                 j++;
-                qsCodeList.Add (connect.QuestionCode);
+                qsCodeList.Add ( connect.QuestionCode );
             }
 
             if ( j == 1 )
@@ -826,6 +842,11 @@
             await oLocalStore.SetItemAsync ( "q5" , matchmaking.fifthQuestionID );
             await oLocalStore.SetItemAsync ( "myID" , student.studentID );
             await oLocalStore.SetItemAsync ( "self" , "0" );
+            await oLocalStore.SetItemAsync ( "qcode1" , qsCodeList [ 0 ] );
+            await oLocalStore.SetItemAsync ( "qcode2" , qsCodeList [ 1 ] );
+            await oLocalStore.SetItemAsync ( "qcode3" , qsCodeList [ 2 ] );
+            await oLocalStore.SetItemAsync ( "qcode4" , qsCodeList [ 3 ] );
+            await oLocalStore.SetItemAsync ( "qcode5" , qsCodeList [ 4 ] );
             send.Stop ();
         }
         if ( selforNor == true )
@@ -845,6 +866,11 @@
             await oLocalStore.SetItemAsync ( "q5" , matchmaking.fifthQuestionID );
             await oLocalStore.SetItemAsync ( "self" , "1" );
             await oLocalStore.SetItemAsync ( "myID" , student.studentID );
+            await oLocalStore.SetItemAsync ( "qcode1" , qsCodeList [ 0 ] );
+            await oLocalStore.SetItemAsync ( "qcode2" , qsCodeList [ 1 ] );
+            await oLocalStore.SetItemAsync ( "qcode3" , qsCodeList [ 2 ] );
+            await oLocalStore.SetItemAsync ( "qcode4" , qsCodeList [ 3 ] );
+            await oLocalStore.SetItemAsync ( "qcode5" , qsCodeList [ 4 ] );
             connect.ConnectWith2ndStudent ( connectedMatch.firstPlayerID , student.studentID );
             send.Stop ();
         }
