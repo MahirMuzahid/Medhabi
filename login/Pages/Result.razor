@@ -226,7 +226,7 @@
 
 @code {
     string winnestudentname,looserStudentname, lT, wT,display1, display2;
-    int wRa, lRa, wWa, lWa;
+    int wRa, lRa, wWa, lWa,mID;
     bool win;
     string wlText,className;
     protected override async Task OnInitializedAsync()
@@ -248,6 +248,7 @@
             lWa = await oLocalStore.GetItemAsync<int>("lWa");
             lT = await oLocalStore.GetItemAsync<string>("lT");
             win = await oLocalStore.GetItemAsync<bool>("win");
+            mID = await oLocalStore.GetItemAsync<int> ( "mID" );
             wWa = 5 - wRa;
             lWa = 5 - lRa;
             if (win == true)
@@ -268,25 +269,10 @@
 
     public async void go()
     {
-        await oLocalStore.SetItemAsync("lname", "");
-        await oLocalStore.SetItemAsync("wname", "");
-        await oLocalStore.SetItemAsync("lRa", 0);
-        await oLocalStore.SetItemAsync("lT", 0);
-        await oLocalStore.SetItemAsync("lID", 0);
-        await oLocalStore.SetItemAsync("wID", 0);
-        await oLocalStore.SetItemAsync("wRa", 0);
-        await oLocalStore.SetItemAsync("wT", 0);
-        await oLocalStore.SetItemAsync("mmid", 0);
-        await oLocalStore.SetItemAsync("firstPlayerID", 0);
-        await oLocalStore.SetItemAsync("secondPlayerID", 0);
-        await oLocalStore.SetItemAsync("q1", 0);
-        await oLocalStore.SetItemAsync("q2", 0);
-        await oLocalStore.SetItemAsync("q3", 0);
-        await oLocalStore.SetItemAsync("q4", 0);
-        await oLocalStore.SetItemAsync("q5", 0);
-        await oLocalStore.SetItemAsync("myID", 0);
-        await oLocalStore.SetItemAsync("self", "");
-
+        oLocalStore.ClearAsync ();
+        await Task.Run ( ( ) => connect.getInfoFromId ( mID ) );
+        await oLocalStore.SetItemAsync ( "mail" , connect.secondstudent.mail );
+        await oLocalStore.SetItemAsync ( "password" , connect.secondstudent.password );
         NavigationManager.NavigateTo("/dashboard");
     }
 }

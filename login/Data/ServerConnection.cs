@@ -28,7 +28,7 @@ namespace login.Data
         public void sendDataForCalculation(List<PlayerHistory> ph, int id)
         {
             CalculateInfoForPaidStudent cl = new CalculateInfoForPaidStudent();
-            cl.getDataforCalculation ( ph , id );
+            cl.setDataforCalculation ( ph , id );
         }
 
         public async Task getTotalQuestion()

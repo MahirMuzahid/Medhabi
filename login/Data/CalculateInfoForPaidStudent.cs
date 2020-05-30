@@ -1,105 +1,170 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices.ComTypes;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using login.Pages;
 
 namespace login.Data
 {
     public class CalculateInfoForPaidStudent
     {
+        private int ttqB1;
+        private int ttqB2;
+        private int ttqICT;
+        private int ttqPhy1;
+        private int ttqChe1;
+        private int ttqBio1;
+        private int ttqPhy2;
+        private int ttqChe2;
+        private int ttqBio2;
 
-        int ttqB1;
-        int ttqB2;
-        int ttqICT;
-        int ttqPhy1;
-        int ttqChe1;
-        int ttqBIO1;
-        int ttqPhy2;
-        int ttqChe2;
-        int ttqBIO2;
+        private int anqB1;
+        private int anqB2;
+        private int anqICT;
+        private int anqPhy1;
+        private int anqChe1;
+        private int anqBio1;
+        private int anqPhy2;
+        private int anqChe2;
+        private int anqBio2;
 
-        int anqB1;
-        int anqB2;
-        int anqICT;
-        int anqPhy1;
-        int anqChe1;
-        int anqBIO1;
-        int anqPhy2;
-        int anqChe2;
-        int anqBIO2;
+        private int accB1;
+        private int accB2;
+        private int accICT;
+        private int accPhy1;
+        private int accChe1;
+        private int accBio1;
+        private int accPhy2;
+        private int accChe2;
+        private int accBio2;
 
-        int accB1;
-        int accB2;
-        int accICT;
-        int accPhy1;
-        int accChe1;
-        int accBIO1;
-        int accPhy2;
-        int accChe2;
-        int accBIO2;
+        private int thisID;
+        private List<PlayerHistory> MyPhList = new List<PlayerHistory> ();
+        private List<string> qsCode = new List<string> ();
+        public static List<int> allqs { get; set; }
+        public static List<int> allans { get; set; }
 
-        int thisID;
-        List<PlayerHistory> alPhList = new List<PlayerHistory> ();
-        public void getDataforCalculation(List<PlayerHistory> ph, int id)
+        public void setDataforCalculation ( List<PlayerHistory> ph , int id )
         {
-            alPhList = ph;
+            MyPhList = ph;
             thisID = id;
+            for ( int i = 0; i < MyPhList.Count; i++ )
+            {
+                qsCode.Add ( MyPhList [ i ].q1 );
+                qsCode.Add ( MyPhList [ i ].q2 );
+                qsCode.Add ( MyPhList [ i ].q3 );
+                qsCode.Add ( MyPhList [ i ].q4 );
+                qsCode.Add ( MyPhList [ i ].q5 );
+            }
+            calTotalQuestionOfEverySubject ( qsCode );
         }
 
-        
-        public void calTotalQuestionOfEverySubject(List<string> qsCode)
+        public void calTotalQuestionOfEverySubject ( List<string> qsCode )
         {
-            string Sub = null ;
-            for(int i  = 0; i < qsCode.Count; i++ )
+            string Sub = null;
+            for ( int i = 0; i < qsCode.Count; i++ )
             {
-                Sub = qsCode [ i ] [ 5 ] + qsCode [ i ] [ 6 ] + qsCode [ i ] [ 7 ] + "";
-                if (Sub == "ICT")
+                Sub = qsCode [ i ] [ 5 ].ToString () + qsCode [ i ] [ 6 ].ToString () + qsCode [ i ] [ 7 ].ToString () + "";
+                if ( Sub == "ICT" )
                 {
-                    ttqICT++ ;
+                    anqICT++;
+                    if ( int.Parse ( qsCode [ i ] [ 0 ].ToString () ) == 1 )
+                    {
+                        accICT++;
+                    }
                 }
                 else
                 {
-                    Sub = qsCode [ i ] [ 5 ] + qsCode [ i ] [ 6 ] + qsCode [ i ] [ 7 ] + qsCode [ i ] [ 8 ] + qsCode [ i ] [ 9 ] + "";
+                    Sub = qsCode [ i ] [ 5 ].ToString () + qsCode [ i ] [ 6 ].ToString () + qsCode [ i ] [ 7 ].ToString () + qsCode [ i ] [ 8 ].ToString () + qsCode [ i ] [ 9 ].ToString () + "";
 
-                    for ( int j = 0; j < 6; i++ )
+                    if ( Sub == "PHY01" )
                     {
-                        if ( Sub == "PHY01" )
+                        anqPhy1++;
+                        if ( int.Parse ( qsCode [ i ] [ 0 ].ToString () ) == 1 )
                         {
-                            ttqPhy1++;
+                            accPhy1++;
                         }
-                        else if ( Sub == "PHY01" )
+                    }
+                    else if ( Sub == "PHY02" )
+                    {
+                        anqPhy2++;
+                        if ( int.Parse ( qsCode [ i ] [ 0 ].ToString () ) == 1 )
                         {
-                            ttqPhy2++;
+                            accPhy2++;
                         }
-                        else if ( Sub == "CHE01" )
+                    }
+                    else if ( Sub == "CHE01" )
+                    {
+                        anqChe1++;
+                        if ( int.Parse ( qsCode [ i ] [ 0 ].ToString () ) == 1 )
                         {
-                            ttqChe1++;
+                            accChe1++;
+                        }                       
+                    }
+                    else if ( Sub == "CHE02" )
+                    {
+                        anqChe2++;
+                        if ( int.Parse ( qsCode [ i ] [ 0 ].ToString () ) == 1 )
+                        {
+                            accChe2++;
                         }
-                        else if ( Sub == "CHE01" )
+                    }
+                    else if ( Sub == "BIO01" )
+                    {
+                        anqBio1++;
+                        if ( int.Parse ( qsCode [ i ] [ 0 ].ToString () ) == 1 )
                         {
-                            ttqChe2++;
+                            accBio1++;
                         }
-                        else if ( Sub == "BIO01" )
+                    }
+                    else if ( Sub == "BIO03" )
+                    {
+                        anqBio2++;
+                        if ( int.Parse ( qsCode [ i ] [ 0 ].ToString () ) == 1 )
                         {
-                            ttqBIO1++;
+                            accBio2++;
                         }
-                        else if ( Sub == "BIO01" )
+                    }
+                    else if ( Sub == "BAN01" )
+                    {
+                        anqB1++;
+                        if ( int.Parse ( qsCode [ i ] [ 0 ].ToString () ) == 1 )
                         {
-                            ttqBIO2++;
+                            accB1++;
                         }
-                        else if ( Sub == "BAN" )
+                    }
+                    else if ( Sub == "BAN02" )
+                    {
+                        anqB2++;
+                        if ( int.Parse ( qsCode [ i ] [ 0 ].ToString () ) == 1 )
                         {
-                            ttqB1++;
-                        }
-                        else if ( Sub == "BAN" )
-                        {
-                            ttqB2++;
+                            accB2++;
                         }
                     }
                 }
-                
             }
+            List<int> allqsForShow = new List<int> ();
+            allqsForShow.Add ( anqB1 );
+            allqsForShow.Add ( anqB2 );
+            allqsForShow.Add ( anqICT );
+            allqsForShow.Add ( anqPhy1 );
+            allqsForShow.Add ( anqPhy2 );
+            allqsForShow.Add ( anqChe1 );
+            allqsForShow.Add ( anqChe2 );
+            allqsForShow.Add ( anqBio1 );
+            allqsForShow.Add ( anqBio2 );
+
+            List<int> allansForShow = new List<int> ();
+            allansForShow.Add ( accB1 );
+            allansForShow.Add ( accB2 );
+            allansForShow.Add ( accICT );
+            allansForShow.Add ( accPhy1 );
+            allansForShow.Add ( accPhy2 );
+            allansForShow.Add ( accChe1 );
+            allansForShow.Add ( accChe2 );
+            allansForShow.Add ( accBio1 );
+            allansForShow.Add ( accBio2 );
+
+            
+            allqs = allqsForShow;
+            allans = allansForShow;
         }
 
     }

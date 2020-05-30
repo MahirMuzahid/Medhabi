@@ -1,5 +1,4 @@
-﻿
-@inject Blazored.LocalStorage.ILocalStorageService oLocalStore
+﻿@inject Blazored.LocalStorage.ILocalStorageService oLocalStore
 @inject NavigationManager NavigationManager
 @inject ServerConnection connect
 @using Microsoft.AspNetCore.SignalR.Client
@@ -7,14 +6,6 @@
 @page "/dashboard"
 @using login.Data
 @using System.Timers
-@using ChartJs.Blazor.Charts
-@using ChartJs.Blazor.ChartJS.PieChart
-@using ChartJs.Blazor.ChartJS.Common.Properties
-@using ChartJs.Blazor.Util
-
-
-
-
 
 <div class="dashboard-main-wrapper">
     <!-- ============================================================== -->
@@ -60,7 +51,7 @@
     <!-- ============================================================== -->
     <!-- wrapper  -->
     <!-- ============================================================== -->
-    @if ( @student.name == null )
+    @if ( student.name == null )
     {
         <div class="dashboard-wrapper">
 
@@ -91,7 +82,6 @@
                                 <a style="color: @textcolor">@showTxt</a>
                                 <a style="color: white; display: @display" @onclick="(async() => await sendSecondPlayer())" class="myButton1">Accept</a><br />
                                 <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width:@value%">
-
                                 </div>
                                 <br /><a style="color: crimson; text-align: center;Display: @display"> [If you don't accept in 20 second, 10 points will be didacted from you(minimum point: 10)]</a>
                             </div>
@@ -288,7 +278,6 @@
                             <!-- ============================================================== -->
                             <!-- end Top Teacher -->
 
-
                             <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12">
                                 <!-- ============================================================== -->
                                 <!-- Number of Question  -->
@@ -349,9 +338,11 @@
                             <!-- Top Teacher  -->
                             <!-- ============================================================== -->
                             <!-- ============================================================== -->
-                            <div class="col-xl-6 col-lg-12 col-md-6 col-sm-12 col-12 card" style="background: #ffffff; border-color:aquamarine;  border: 10px; border-radius: 10px">
-                                <login.Pages.SubjectWiseAns />
-
+                            <div class="col-xl-12 col-lg-12 col-md-6 col-sm-12 col-12 card" style="background: #ffffff; border-color:aquamarine;  border: 10px; border-radius: 10px">
+                                @if ( ok == true )
+                                {
+                                    <login.Pages.SubjectWiseAns />
+                                }
                             </div>
                             <!-- ============================================================== -->
                             <!-- end Top Teacher -->
@@ -403,6 +394,8 @@
 </div>
 
 @code {
+    public bool ok;
+    public Student connectedStudent = new Student ();
     List<string> qsCodeList = new List<string> ();
     Student student = new Student ();
     public List<Teacher> TopTeacherList = new List<Teacher> ();
@@ -427,24 +420,28 @@
     public bool selforNor = false;
     List<PlayerHistory> MyplayerHistoryList = new List<PlayerHistory> ();
 
+    //
+    //Initial Method----------------------------------------------------------------------------------------------------------------------
+    //
     protected override async Task OnInitializedAsync ( )
     {
+        ok = false;
         modelController = "modalClose";
         play = "Play";
         on = false;
-        await Task.Run ( ( ) => AuthenticateUser () );
         acceptedColor = "#ffffff";
         textcolor = "black";
         showTxt = "Click to accept chalange";
         display = "block";
         selforNor = false;
         value = 100;
+        await Task.Run ( ( ) => AuthenticateUser () );
 
     }
 
-    //-------------------------------------------------------------------------------------
-    //Before Connecting To Server----------------------------------------------------------
-    //-------------------------------------------------------------------------------------
+    //
+    //Authinticate user And Render Every Componenet and Get data to show (After this method initally website will be stable mode)----------------------------------------------------------------------------------------------------------------------
+    //
 
     public async Task AuthenticateUser ( )
     {
@@ -464,8 +461,11 @@
             await Task.Run ( ( ) => connect.GetTopStudent () );
             await Task.Run ( ( ) => connect.GetTopTeacher () );
 
-
             student = connect.student;
+            await InvokeAsync ( ( ) =>
+            {
+                StateHasChanged ();
+            } );
             ph.playerID = student.studentID;
             ph.whatToDO = 1;
             ph.matchID = "n";
@@ -491,14 +491,26 @@
 
             PositionCounter ();
             AccuracyCounter ();
-            connect.sendDataForCalculation (MyplayerHistoryList,student.studentID);
+            connect.sendDataForCalculation ( MyplayerHistoryList , student.studentID );
+            ok = true;
+            await InvokeAsync ( ( ) =>
+            {
+                StateHasChanged ();
+            } );
+
         }
     }
+    //
+    //Logout from dashboard----------------------------------------------------------------------------------------------------------------------
+    //
     public void LogOut ( )
     {
         oLocalStore.ClearAsync ();
         NavigationManager.NavigateTo ( "/" );
     }
+    //
+    //Count Position For This Student----------------------------------------------------------------------------------------------------------------------
+    //
     public void PositionCounter ( )
     {
         for ( int i = 0; i < TopStudentList.Count; i++ )
@@ -565,6 +577,9 @@
         }
         totalStudent = connect.allStudent.Count;
     }
+    //
+    //Count Accuracy For This Student----------------------------------------------------------------------------------------------------------------------
+    //
     public void AccuracyCounter ( )
     {
         for ( int i = 0; i < TopStudentList.Count; i++ )
@@ -582,10 +597,9 @@
 
     }
 
-    //-------------------------------------------------------------------------------------
-    //Match Timer--------------------------------------------------------------------------
-    //-------------------------------------------------------------------------------------
-
+    //
+    //Click Play Button----------------------------------------------------------------------------------------------------------------------
+    //
     public async Task Play ( )
     {
         on = !on;
@@ -615,6 +629,9 @@
         }
 
     }
+    //
+    //Timer For Play Button----------------------------------------------------------------------------------------------------------------------
+    //
     private void counter ( object sender , ElapsedEventArgs e )
     {
         sec = sec + 1;
@@ -629,11 +646,6 @@
             StateHasChanged ();
         } );
     }
-
-    //------------------------------------------------------------------------------
-    //Match Making------------------------------------------------------------------
-    //------------------------------------------------------------------------------
-
     public void Dispose ( )
     {
         if ( timer != null )
@@ -642,6 +654,42 @@
         }
     }
 
+    //
+    //Time Counter----------------------------------------------------------------------------------------------------------------------
+    //
+    private async void timecounter ( object sender , System.Timers.ElapsedEventArgs e )
+    {
+        if ( value < 0 )
+        {
+            value = 100;
+            send.Stop ();
+            timer.Stop ();
+            send.Enabled = false;
+            send.Close ();
+            timer.Enabled = false;
+            timer.Close ();
+            modelController = "modalClose";
+            on = !on;
+            sec = 0;
+            min = 0;
+            play = "Play";
+            await _connection.StopAsync ();
+            await InvokeAsync ( ( ) =>
+            {
+                StateHasChanged ();
+            } );
+
+        }
+        else
+        {
+            value = value - 5;
+        }
+
+    }
+
+    //
+    //Match Making----------------------------------------------------------------------------------------------------------------------
+    //
     public async Task MatchmakingInfo ( )
     {
         await Task.Run ( ( ) => ConnectToServer () );
@@ -667,6 +715,16 @@
                     selforNor = true;
                     modelController = "modalOpen";
                     matchmaking = connect.matchmakingList [ i ];
+                    await Task.Run ( ( ) => connect.ConfirmQs ( matchmaking.firstQuestionID ) );
+                    qsCodeList.Add ( connect.QuestionCode );
+                    await Task.Run ( ( ) => connect.ConfirmQs ( matchmaking.secondQuestionID ) );
+                    qsCodeList.Add ( connect.QuestionCode );
+                    await Task.Run ( ( ) => connect.ConfirmQs ( matchmaking.thirdQuestionID ) );
+                    qsCodeList.Add ( connect.QuestionCode );
+                    await Task.Run ( ( ) => connect.ConfirmQs ( matchmaking.forthQuestionID ) );
+                    qsCodeList.Add ( connect.QuestionCode );
+                    await Task.Run ( ( ) => connect.ConfirmQs ( matchmaking.fifthQuestionID ) );
+                    qsCodeList.Add ( connect.QuestionCode );
                     await Task.Run ( ( ) => connect.getInfoFromId ( connect.matchmakingList [ i ].firstPlayerID ) );
                     connectedStudent = connect.secondstudent;
 
@@ -685,6 +743,7 @@
         }
 
     }
+    //If I don't found match--------------------------------------------------------------------------
     public async Task SetInMatchmaking ( )
     {
 
@@ -729,10 +788,9 @@
 
     }
 
-
-    //----------------------------------------------------------------------
-    //Real Time Server Connection With 2nd Player---------------
-    //----------------------------------------------------------------------
+    //
+    //Real Time Server Connect----------------------------------------------------------------------------------------------------------------------
+    //
 
     private async Task ConnectToServer ( )
     {
@@ -752,19 +810,6 @@
             isConnected = true;
 
         };
-        _connection.On<int , int> ( "Rejected" , async ( receiverID , studentID ) =>
-        {
-            if ( receiverID == student.studentID )
-            {
-                selforNor = false;
-                otherPlayerReject = true;
-                await Task.Run ( ( ) => connect.getInfoFromId ( studentID ) );
-                connectedStudent = connect.secondstudent;
-                showTxt = connectedStudent.name + " is disconnected";
-                await Task.Run ( ( ) => close () );
-
-            }
-        } );
         _connection.On<int , int> ( "Connected" , async ( receiverID , studentID ) =>
         {
             if ( receiverID == student.studentID )
@@ -777,7 +822,10 @@
         } );
 
     }
-    public Student connectedStudent = new Student ();
+
+    //
+    //Show Model Window That Connection with second player has established----------------------------------------------------------------------------------------------------------------------
+    //
     public async Task showplayer ( )
     {
         if ( connectedStudentID > 0 )
@@ -825,6 +873,11 @@
         } );
 
     }
+    //
+    //Go To Quiz window or Send other player that u accept ----------------------------------------------------------------------------------------------------------------------
+    //selfOrNot = true Means I found the match (I didn't create) and model showed 
+    //selfOrNot = false Means I didn't found the match (I create the match), the other player accept it and thats why model showed
+    //
     public async Task sendSecondPlayer ( )
     {
 
@@ -877,35 +930,5 @@
 
         NavigationManager.NavigateTo ( "/quiz" );
     }
-
-    private async void timecounter ( object sender , System.Timers.ElapsedEventArgs e )
-    {
-        if ( value < 0 )
-        {
-            send.Stop ();
-            timer.Stop ();
-            send.Enabled = false;
-            send.Close ();
-            timer.Enabled = false;
-            timer.Close ();
-            modelController = "modalClose";
-            on = !on;
-            sec = 0;
-            min = 0;
-            play = "Play";
-            await _connection.StopAsync ();
-            await InvokeAsync ( ( ) =>
-            {
-                StateHasChanged ();
-            } );
-            value = 100;
-        }
-        else
-        {
-            value = value - 5;
-        }
-
-    }
-
 
 }

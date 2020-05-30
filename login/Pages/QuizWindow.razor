@@ -117,7 +117,7 @@
     PlayerHistory ph = new PlayerHistory ();
     MatchHistory mh = new MatchHistory ();
     bool medone, otherDone;
-    List<string> qsCode;
+    List<string> qsCode = new List<string>();
     //
     //ALl Veriable End----------------------------------------------------------------------------------------------------------------------
     //
@@ -165,11 +165,16 @@
             mm.forthQuestionID = await oLocalStore.GetItemAsync<int> ( "q4" );
             mm.fifthQuestionID = await oLocalStore.GetItemAsync<int> ( "q5" );
             mm.matchID = await oLocalStore.GetItemAsync<string> ( "mmid" );
-            qsCode.Add (await oLocalStore.GetItemAsync<string> ( "qcode1" ));
-            qsCode.Add ( await oLocalStore.GetItemAsync<string> ( "qcode2" ) );
-            qsCode.Add ( await oLocalStore.GetItemAsync<string> ( "qcode3" ) );
-            qsCode.Add ( await oLocalStore.GetItemAsync<string> ( "qcode4" ) );
-            qsCode.Add ( await oLocalStore.GetItemAsync<string> ( "qcode5" ) );
+            var a = await oLocalStore.GetItemAsync<string> ( "qcode1" );
+            qsCode.Add ( a);
+            a = await oLocalStore.GetItemAsync<string> ( "qcode2" );
+            qsCode.Add ( a );
+            a = await oLocalStore.GetItemAsync<string> ( "qcode3" );
+            qsCode.Add ( a );
+            a = await oLocalStore.GetItemAsync<string> ( "qcode4" );
+            qsCode.Add ( a );
+            a = await oLocalStore.GetItemAsync<string> ( "qcode5" );
+            qsCode.Add ( a );
             QuestionMaker qm = new QuestionMaker ();
             qm.firstqsID = mm.firstQuestionID;
             qm.secondID = mm.secondQuestionID;
@@ -556,7 +561,7 @@
                 meRight++;
                 if ( qn == 0 )
                 {
-                    ph.q1 = "1 " + qsCode[ 0 ];
+                    ph.q1 = "1 " + qsCode [ 0 ];
                 }
                 if ( qn == 1 )
                 {
@@ -696,6 +701,8 @@
         await oLocalStore.SetItemAsync ( "wID" , myid );
         await oLocalStore.SetItemAsync ( "lID" , otherplayerID );
         await oLocalStore.SetItemAsync ( "win" , true );
+        await oLocalStore.SetItemAsync ( "mID" , myid );
+
         mh.looserPlayerID = otherplayerID;
         mh.q1 = mm.firstQuestionID;
         mh.q2 = mm.secondQuestionID;
@@ -713,18 +720,14 @@
         await Task.Run ( ( ) => connect.EditMatchHistory ( mh ) );
         await Task.Run ( ( ) => connect.EditPlayerHistory ( ph ) );
         updateInfo ();
+        await Task.Run ( ( ) => connect.getInfoFromId ( myid ) );
+
 
         NavigationManager.NavigateTo ( "/result" );
     }
     //
     //Save Winner Result end----------------------------------------------------------------------------------------------------------------------
     //
-
-
-
-
-
-
 
     //
     //Save Loser Result----------------------------------------------------------------------------------------------------------------------
@@ -739,6 +742,7 @@
         await oLocalStore.SetItemAsync ( "lID" , myid );
         await oLocalStore.SetItemAsync ( "wID" , otherplayerID );
         await oLocalStore.SetItemAsync ( "win" , false );
+        await oLocalStore.SetItemAsync ( "mID" , myid );
         mh.looserPlayerID = myid;
         mh.q1 = mm.firstQuestionID;
         mh.q2 = mm.secondQuestionID;
@@ -754,6 +758,9 @@
         updateInfo ();
         medone = false;
         otherDone = false;
+        await Task.Run ( ( ) => connect.getInfoFromId ( myid ) );
+        await oLocalStore.SetItemAsync ( "mail" , connect.secondstudent.mail );
+        await oLocalStore.SetItemAsync ( "password" , connect.secondstudent.password );
         NavigationManager.NavigateTo ( "/result" );
     }
     //
