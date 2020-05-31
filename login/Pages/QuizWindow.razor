@@ -700,7 +700,7 @@
         await oLocalStore.SetItemAsync ( "wT" , qmin + " Minute " + qtimer + " Second" );
         await oLocalStore.SetItemAsync ( "wID" , myid );
         await oLocalStore.SetItemAsync ( "lID" , otherplayerID );
-        await oLocalStore.SetItemAsync ( "win" , true );
+        await oLocalStore.SetItemAsync ( "IsWin" , true );
         await oLocalStore.SetItemAsync ( "mID" , myid );
 
         mh.looserPlayerID = otherplayerID;
@@ -741,7 +741,7 @@
         await oLocalStore.SetItemAsync ( "lT" , qmin + " Minute " + qtimer + " Second " );
         await oLocalStore.SetItemAsync ( "lID" , myid );
         await oLocalStore.SetItemAsync ( "wID" , otherplayerID );
-        await oLocalStore.SetItemAsync ( "win" , false );
+        await oLocalStore.SetItemAsync ( "IsWin" , false );
         await oLocalStore.SetItemAsync ( "mID" , myid );
         mh.looserPlayerID = myid;
         mh.q1 = mm.firstQuestionID;

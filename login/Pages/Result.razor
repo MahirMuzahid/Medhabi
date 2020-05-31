@@ -194,51 +194,57 @@
         <label class="resultText" style="color: #aa0202"> Time: @lT</label>
     </div>
 
-    <svg viewBox="0 0 1000 150" style="display: @display1">
-        <symbol id="s-text">
-            <text text-anchor="middle" x="50%" y="80%">YOU WIN!!!</text>
-        </symbol>
-        <g class="g-ants">
-            <use xlink:href="#s-text" class="text-copy"></use>
-            <use xlink:href="#s-text" class="text-copy"></use>
-            <use xlink:href="#s-text" class="text-copy"></use>
-            <use xlink:href="#s-text" class="text-copy"></use>
-            <use xlink:href="#s-text" class="text-copy"></use>
-        </g>
-        
+    @if ( display == "win")
+    {
+        <svg viewBox="0 0 1000 150">
+            <symbol id="s-text">
+                <text text-anchor="middle" x="50%" y="80%">YOU WIN!!!</text>
+            </symbol>
+            <g class="g-ants">
+                <use xlink:href="#s-text" class="text-copy"></use>
+                <use xlink:href="#s-text" class="text-copy"></use>
+                <use xlink:href="#s-text" class="text-copy"></use>
+                <use xlink:href="#s-text" class="text-copy"></use>
+                <use xlink:href="#s-text" class="text-copy"></use>
+            </g>
 
-    </svg>
-    <svg viewBox="0 0 1000 150" style="display: @display2">
-        <symbol id="s-text">
-            <text text-anchor="middle" x="50%" y="80%">YOU LOSE!!!</text>
-        </symbol>
-        <g class="g-ants">
-            <use xlink:href="#s-text" class="text-copy2"></use>
-            <use xlink:href="#s-text" class="text-copy2"></use>
-            <use xlink:href="#s-text" class="text-copy2"></use>
-            <use xlink:href="#s-text" class="text-copy2"></use>
-            <use xlink:href="#s-text" class="text-copy2"></use>
-        </g>
 
-    </svg>
+        </svg>
+    }
+    else if(display == "lose")
+    {
+        <svg viewBox="0 0 1000 150">
+            <symbol id="s-text">
+                <text text-anchor="middle" x="50%" y="80%">YOU LOSE!!!</text>
+            </symbol>
+            <g class="g-ants">
+                <use xlink:href="#s-text" class="text-copy2"></use>
+                <use xlink:href="#s-text" class="text-copy2"></use>
+                <use xlink:href="#s-text" class="text-copy2"></use>
+                <use xlink:href="#s-text" class="text-copy2"></use>
+                <use xlink:href="#s-text" class="text-copy2"></use>
+            </g>
+
+        </svg>
+    }
+
     <a class="myButton" @onclick="go">Go To Dashboard</a>
 </div>
 
 @code {
-    string winnestudentname,looserStudentname, lT, wT,display1, display2;
+    string winnestudentname,looserStudentname, lT, wT,display;
     int wRa, lRa, wWa, lWa,mID;
     bool win;
     string wlText,className;
     protected override async Task OnInitializedAsync()
     {
+        display = null;
         if(await oLocalStore.GetItemAsync<string>("wname") == null)
         {
             NavigationManager.NavigateTo("/dashboard");
         }
         else
         {
-            display1 = "none";
-            display2 = "none";
             winnestudentname = await oLocalStore.GetItemAsync<string>("wname");
             looserStudentname = await oLocalStore.GetItemAsync<string>("lname");
             wRa = await oLocalStore.GetItemAsync<int>("wRa");
@@ -247,17 +253,17 @@
             lRa = await oLocalStore.GetItemAsync<int>("lRa");
             lWa = await oLocalStore.GetItemAsync<int>("lWa");
             lT = await oLocalStore.GetItemAsync<string>("lT");
-            win = await oLocalStore.GetItemAsync<bool>("win");
+            win = await oLocalStore.GetItemAsync<bool>( "IsWin" );
             mID = await oLocalStore.GetItemAsync<int> ( "mID" );
             wWa = 5 - wRa;
             lWa = 5 - lRa;
             if (win == true)
             {
-                display1 = "block";
+                display = "win" ;
             }
             else
             {
-                display2 = "block";
+                display = "lose";
             }
             await InvokeAsync(() =>
             {

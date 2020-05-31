@@ -40,23 +40,63 @@ namespace login.Data
         private List<string> qsCode = new List<string> ();
         public static List<int> allqs { get; set; }
         public static List<int> allans { get; set; }
+        public static List<string> allClass { get; set; }
+        public static List<string> allSubject { get; set; }
+        public static List<string> allPaper { get; set; }
+        public static List<string> allChapter { get; set; }
+        public static List<string> allMatchStatus { get; set; }
 
+        //Initial Call From ServerConnection Class
         public void setDataforCalculation ( List<PlayerHistory> ph , int id )
         {
+            List<string> qsCodeini = new List<string> () ;
             MyPhList = ph;
             thisID = id;
             for ( int i = 0; i < MyPhList.Count; i++ )
             {
-                qsCode.Add ( MyPhList [ i ].q1 );
-                qsCode.Add ( MyPhList [ i ].q2 );
-                qsCode.Add ( MyPhList [ i ].q3 );
-                qsCode.Add ( MyPhList [ i ].q4 );
-                qsCode.Add ( MyPhList [ i ].q5 );
+                qsCodeini.Add ( MyPhList [ i ].q1 );
+                qsCodeini.Add ( MyPhList [ i ].q2 );
+                qsCodeini.Add ( MyPhList [ i ].q3 );
+                qsCodeini.Add ( MyPhList [ i ].q4 );
+                qsCodeini.Add ( MyPhList [ i ].q5 );
             }
-            calTotalQuestionOfEverySubject ( qsCode );
+            SeparateEverySegmentOfCode ( qsCodeini );
+            calTotalQuestionOfEverySubject ();
         }
 
-        public void calTotalQuestionOfEverySubject ( List<string> qsCode )
+        //Make saparate variable for every segment
+        public void SeparateEverySegmentOfCode ( List<string> code )
+        {
+            string Class, subject, paper, chapter, matchStatus = null;
+            for ( int i = 0; i < code.Count; i++ )
+            {
+                var singleCode = code [ i ].ToUpper ();
+                qsCode.Add ( singleCode );
+                if ( singleCode [ 0 ] == '0' )
+                {
+                    matchStatus = "lose";
+                }
+                else if ( singleCode [ 0 ] == '1' )
+                {
+                    matchStatus = "win";
+                }
+
+                Class = singleCode [ 2 ].ToString () + singleCode [ 3 ].ToString () + singleCode [ 4 ].ToString () + "";
+                subject = singleCode [ 5 ].ToString () + singleCode [ 6 ].ToString () + singleCode [ 7 ].ToString () + "";
+                paper = singleCode [ 8 ].ToString () + singleCode [ 9 ].ToString () + "";
+                chapter = singleCode [ 10 ].ToString () + singleCode [ 11 ].ToString () + "";
+
+                allClass.Add ( Class );
+                allSubject.Add ( subject );
+                allPaper.Add ( paper );
+                allChapter.Add ( chapter );
+                allMatchStatus.Add ( matchStatus );
+            }
+
+        }
+
+        //Calculate Total qsestion and total right answer for every subject
+        public void calTotalQuestionOfEverySubject ( )
         {
             string Sub = null;
             for ( int i = 0; i < qsCode.Count; i++ )
@@ -166,6 +206,8 @@ namespace login.Data
             allqs = allqsForShow;
             allans = allansForShow;
         }
+
+        
 
     }
 }
