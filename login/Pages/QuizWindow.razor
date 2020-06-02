@@ -32,7 +32,8 @@
             </div>
 
             <div class="container-login100-form-btn">
-                <b style="color: @connectColor;">@waittext</b>
+                <b style="color: @connectColor; font-size: @fontSize px ">@waittext</b><br/>
+                <a class="myButton" @onclick="go" style="display:@displaybtn" >Go To Dashboard</a>
                 <br />
                 <a style="font-size: 25px; font-weight: bold; display:@display">@quizTimer </a>
             </div>
@@ -91,13 +92,13 @@
     public bool op3 { get; set; }
     public bool op4 { get; set; }
     public int oqn = 0, oan = 0, right;
-    int c = 0, self = 0, myid = 0;
+    int c = 0, self = 0, myid = 0, fontSize;
     Student firstplayer = new Student ();
     Student secondplayer = new Student ();
     HubConnection _connection = null;
     bool isConnected = false;
     string p1q1, p1q2, p1q3, p1q4, p1q5, p2q1, p2q2, p2q3, p2q4, p2q5;
-    string connectionStatus = "Closed", playerColor1, playerColor2, display;
+    string connectionStatus = "Closed", playerColor1, playerColor2, display, displaybtn;
     MatchMaking mm = new MatchMaking ();
     string url = "https://medhabiapi.shikkhanobish.com/QuizHub", waittext;
     int counter = 0;
@@ -127,6 +128,7 @@
     //
     protected override async Task OnInitializedAsync ( )
     {
+
         if ( await oLocalStore.GetItemAsync<int> ( "firstPlayerID" ) == 0 )
         {
             NavigationManager.NavigateTo ( "/dashboard" );
@@ -148,6 +150,8 @@
             p2q5 = "#D2D2D2";
             display = "none";
             value = 0 + "%";
+            fontSize = 12;
+            displaybtn = "none";
             await ConnectToServer ();
             playerColor1 = "#ADADAD";
             playerColor2 = "#ADADAD";
@@ -251,16 +255,10 @@
         }
         if ( secondplayertimer == 0 && playeron == false )
         {
-            await oLocalStore.SetItemAsync ( "mmid" , "" );
-            await oLocalStore.SetItemAsync ( "firstPlayerID" , 0 );
-            await oLocalStore.SetItemAsync ( "secondPlayerID" , 0 );
-            await oLocalStore.SetItemAsync ( "q1" , 0 );
-            await oLocalStore.SetItemAsync ( "q2" , 0 );
-            await oLocalStore.SetItemAsync ( "q3" , 0 );
-            await oLocalStore.SetItemAsync ( "q4" , 0 );
-            await oLocalStore.SetItemAsync ( "q5" , 0 );
-            await oLocalStore.SetItemAsync ( "self" , "" );
-            await oLocalStore.SetItemAsync ( "myID" , 0 );
+            await oLocalStore.ClearAsync ();
+            await Task.Run ( ( ) => connect.getInfoFromId ( myid ) );
+            await oLocalStore.SetItemAsync ( "mail" , connect.secondstudent.mail );
+            await oLocalStore.SetItemAsync ( "password" , connect.secondstudent.password );
             timer.Stop ();
             NavigationManager.NavigateTo ( "/dashboard" );
         }
@@ -415,7 +413,7 @@
     //
     //Place write or wrong in veriable for server----------------------------------------------------------------------------------------------------------------------
     //
-    public async void placewriteorwrong ( int qn , int qa , int fromwhere )
+    public void placewriteorwrong ( int qn , int qa , int fromwhere )
     {
         int go = 0;
         myTime = qmin * 60 + qtimer;
@@ -561,46 +559,46 @@
                 meRight++;
                 if ( qn == 0 )
                 {
-                    ph.q1 = "1 " + qsCode [ 0 ];
+                    ph.q1 = "1" + qsCode [ 0 ];
                 }
                 if ( qn == 1 )
                 {
-                    ph.q2 = "1 " + qsCode [ 1 ];
+                    ph.q2 = "1" + qsCode [ 1 ];
                 }
                 if ( qn == 2 )
                 {
-                    ph.q3 = "1 " + qsCode [ 2 ];
+                    ph.q3 = "1" + qsCode [ 2 ];
                 }
                 if ( qn == 3 )
                 {
-                    ph.q4 = "1 " + qsCode [ 3 ];
+                    ph.q4 = "1" + qsCode [ 3 ];
                 }
                 if ( qn == 4 )
                 {
-                    ph.q5 = "1 " + qsCode [ 4 ];
+                    ph.q5 = "1" + qsCode [ 4 ];
                 }
             }
             else
             {
                 if ( qn == 0 )
                 {
-                    ph.q1 = "0 " + qsCode [ 0 ];
+                    ph.q1 = "0" + qsCode [ 0 ];
                 }
                 if ( qn == 1 )
                 {
-                    ph.q2 = "0 " + qsCode [ 1 ];
+                    ph.q2 = "0" + qsCode [ 1 ];
                 }
                 if ( qn == 2 )
                 {
-                    ph.q3 = "0 " + qsCode [ 2 ];
+                    ph.q3 = "0" + qsCode [ 2 ];
                 }
                 if ( qn == 3 )
                 {
-                    ph.q4 = "0 " + qsCode [ 3 ];
+                    ph.q4 = "0" + qsCode [ 3 ];
                 }
                 if ( qn == 4 )
                 {
-                    ph.q5 = "0 " + qsCode [ 4 ];
+                    ph.q5 = "0" + qsCode [ 4 ];
                 }
             }
 
@@ -611,11 +609,7 @@
             myTime = qmin * 60 + qtimer;
             connect.senddone ( otherplayerID , myid , meRight , myTime );
             callALLDone ( 0 );
-            waittext = "Wait for other player to end the match";
-            await InvokeAsync ( ( ) =>
-            {
-                StateHasChanged ();
-            } );
+
 
         }
 
@@ -632,6 +626,11 @@
         if ( call == 0 )
         {
             medone = true;
+            if( otherDone == false)
+            {
+                waittext = "Wait for other player to end the match";
+            }
+
         }
         if ( call == 1 )
         {
@@ -641,6 +640,10 @@
         {
             await decideWinner ();
         }
+        await InvokeAsync ( ( ) =>
+        {
+            StateHasChanged ();
+        } );
 
     }
     //
@@ -652,6 +655,7 @@
     //
     public async Task decideWinner ( )
     {
+        displaybtn = "block";
         if ( meRight > otherRight )
         {
             await winnerSave ();
@@ -693,16 +697,7 @@
     //
     public async Task winnerSave ( )
     {
-        await oLocalStore.SetItemAsync ( "wname" , myName );
-        await oLocalStore.SetItemAsync ( "lname" , otherPlayerName );
         mh.winnerPlayerID = myid;
-        await oLocalStore.SetItemAsync ( "wRa" , meRight );
-        await oLocalStore.SetItemAsync ( "wT" , qmin + " Minute " + qtimer + " Second" );
-        await oLocalStore.SetItemAsync ( "wID" , myid );
-        await oLocalStore.SetItemAsync ( "lID" , otherplayerID );
-        await oLocalStore.SetItemAsync ( "IsWin" , true );
-        await oLocalStore.SetItemAsync ( "mID" , myid );
-
         mh.looserPlayerID = otherplayerID;
         mh.q1 = mm.firstQuestionID;
         mh.q2 = mm.secondQuestionID;
@@ -722,8 +717,14 @@
         updateInfo ();
         await Task.Run ( ( ) => connect.getInfoFromId ( myid ) );
 
+        fontSize = 20;
+        connectColor = "green";
+        waittext = "You Won!!!";
+        await InvokeAsync ( ( ) =>
+        {
+            StateHasChanged ();
+        } );
 
-        NavigationManager.NavigateTo ( "/result" );
     }
     //
     //Save Winner Result end----------------------------------------------------------------------------------------------------------------------
@@ -735,14 +736,7 @@
     public async Task loserSave ( )
     {
         mh.looserPlayerID = myid;
-        await oLocalStore.SetItemAsync ( "lname" , myName );
-        await oLocalStore.SetItemAsync ( "wname" , otherPlayerName );
-        await oLocalStore.SetItemAsync ( "lRa" , meRight );
-        await oLocalStore.SetItemAsync ( "lT" , qmin + " Minute " + qtimer + " Second " );
-        await oLocalStore.SetItemAsync ( "lID" , myid );
-        await oLocalStore.SetItemAsync ( "wID" , otherplayerID );
-        await oLocalStore.SetItemAsync ( "IsWin" , false );
-        await oLocalStore.SetItemAsync ( "mID" , myid );
+
         mh.looserPlayerID = myid;
         mh.q1 = mm.firstQuestionID;
         mh.q2 = mm.secondQuestionID;
@@ -761,7 +755,14 @@
         await Task.Run ( ( ) => connect.getInfoFromId ( myid ) );
         await oLocalStore.SetItemAsync ( "mail" , connect.secondstudent.mail );
         await oLocalStore.SetItemAsync ( "password" , connect.secondstudent.password );
-        NavigationManager.NavigateTo ( "/result" );
+
+        fontSize = 20;
+        connectColor = "red";
+        waittext = "You Lose!!!";
+        await InvokeAsync ( ( ) =>
+        {
+            StateHasChanged ();
+        } );
     }
     //
     //Save Loser Result end----------------------------------------------------------------------------------------------------------------------
@@ -855,43 +856,6 @@
             {
                 otherTime = time;
                 otherRight = ra;
-                if ( meRight > ra )
-                {
-                    await oLocalStore.SetItemAsync ( "lRa" , ra );
-                    await oLocalStore.SetItemAsync ( "lT" , time / 60 + " Minute " + time % 60 + " Second " );
-                }
-                else if ( meRight < ra )
-                {
-                    await oLocalStore.SetItemAsync ( "wRa" , ra );
-                    await oLocalStore.SetItemAsync ( "wT" , time / 60 + " Minute " + time % 60 + " Second" );
-                }
-                else if ( meRight == ra )
-                {
-                    if ( myTime > ra )
-                    {
-                        await oLocalStore.SetItemAsync ( "wRa" , ra );
-                        await oLocalStore.SetItemAsync ( "wT" , time / 60 + " Minute " + time % 60 + " Second" );
-                    }
-                    else if ( myTime < ra )
-                    {
-                        await oLocalStore.SetItemAsync ( "lRa" , ra );
-                        await oLocalStore.SetItemAsync ( "lT" , time / 60 + " Minute " + time % 60 + " Second " );
-                    }
-                    else if ( myTime == ra )
-                    {
-                        Random r = new Random ();
-                        if ( ( r.Next ( 0 , 10 ) ) % 2 == 0 )
-                        {
-                            await oLocalStore.SetItemAsync ( "wRa" , ra );
-                            await oLocalStore.SetItemAsync ( "wT" , time / 60 + " Minute " + time % 60 + " Second" );
-                        }
-                        else
-                        {
-                            await oLocalStore.SetItemAsync ( "lRa" , ra );
-                            await oLocalStore.SetItemAsync ( "lT" , time / 60 + " Minute " + time % 60 + " Second " );
-                        }
-                    }
-                }
                 callALLDone ( 1 );
 
             }
@@ -925,4 +889,9 @@
     //
     //Connect With Real Time Api server end----------------------------------------------------------------------------------------------------------------------
     //
+
+    public void go ( )
+    {
+        NavigationManager.NavigateTo ( "/dashboard" );
+    }
 }

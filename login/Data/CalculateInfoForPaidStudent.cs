@@ -46,6 +46,9 @@ namespace login.Data
         public static List<string> allChapter { get; set; }
         public static List<string> allMatchStatus { get; set; }
 
+
+
+         
         //Initial Call From ServerConnection Class
         public void setDataforCalculation ( List<PlayerHistory> ph , int id )
         {
@@ -67,6 +70,11 @@ namespace login.Data
         //Make saparate variable for every segment
         public void SeparateEverySegmentOfCode ( List<string> code )
         {
+            List<string> allClassini = new List<string> ();
+            List<string> allSubjectini = new List<string> ();
+            List<string> allPaperini = new List<string> ();
+            List<string> allChapterini = new List<string> ();
+            List<string> allMatchStatusini = new List<string> ();
             string Class, subject, paper, chapter, matchStatus = null;
             for ( int i = 0; i < code.Count; i++ )
             {
@@ -81,17 +89,23 @@ namespace login.Data
                     matchStatus = "win";
                 }
 
-                Class = singleCode [ 2 ].ToString () + singleCode [ 3 ].ToString () + singleCode [ 4 ].ToString () + "";
-                subject = singleCode [ 5 ].ToString () + singleCode [ 6 ].ToString () + singleCode [ 7 ].ToString () + "";
-                paper = singleCode [ 8 ].ToString () + singleCode [ 9 ].ToString () + "";
-                chapter = singleCode [ 10 ].ToString () + singleCode [ 11 ].ToString () + "";
+                Class = singleCode [ 1 ].ToString () + singleCode [ 2 ].ToString () + singleCode [ 3 ].ToString () + "";
+                subject = singleCode [ 4 ].ToString () + singleCode [ 5 ].ToString () + singleCode [ 6 ].ToString () + "";
+                paper = singleCode [ 7 ].ToString () + singleCode [ 8 ].ToString () + "";
+                chapter = singleCode [ 9 ].ToString () + singleCode [ 10 ].ToString () + "";
 
-                allClass.Add ( Class );
-                allSubject.Add ( subject );
-                allPaper.Add ( paper );
-                allChapter.Add ( chapter );
-                allMatchStatus.Add ( matchStatus );
+                allClassini.Add ( Class );
+                allSubjectini.Add ( subject );
+                allPaperini.Add ( paper );
+                allChapterini.Add ( chapter );
+                allMatchStatusini.Add ( matchStatus );
             }
+            allClass = allClassini;
+            allSubject = allSubjectini;
+            allPaper = allPaperini;
+            allChapter = allChapterini;
+            allMatchStatus = allMatchStatusini;
+            
 
         }
 
@@ -101,7 +115,7 @@ namespace login.Data
             string Sub = null;
             for ( int i = 0; i < qsCode.Count; i++ )
             {
-                Sub = qsCode [ i ] [ 5 ].ToString () + qsCode [ i ] [ 6 ].ToString () + qsCode [ i ] [ 7 ].ToString () + "";
+                Sub = allSubject [ i ];
                 if ( Sub == "ICT" )
                 {
                     anqICT++;
@@ -112,7 +126,7 @@ namespace login.Data
                 }
                 else
                 {
-                    Sub = qsCode [ i ] [ 5 ].ToString () + qsCode [ i ] [ 6 ].ToString () + qsCode [ i ] [ 7 ].ToString () + qsCode [ i ] [ 8 ].ToString () + qsCode [ i ] [ 9 ].ToString () + "";
+                    Sub = allSubject [ i ] + allPaper [ i ];
 
                     if ( Sub == "PHY01" )
                     {
@@ -154,7 +168,7 @@ namespace login.Data
                             accBio1++;
                         }
                     }
-                    else if ( Sub == "BIO03" )
+                    else if ( Sub == "BIO02" )
                     {
                         anqBio2++;
                         if ( int.Parse ( qsCode [ i ] [ 0 ].ToString () ) == 1 )

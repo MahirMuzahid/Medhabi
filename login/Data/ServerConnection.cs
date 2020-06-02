@@ -299,6 +299,7 @@ namespace login.Data
             if(QuestionCode != null)
             {
                 submitted = 1;
+                QuestionCode = QuestionCode.Replace ( " " , "" );
             }
             else
             {

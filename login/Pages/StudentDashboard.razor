@@ -606,11 +606,12 @@
         if ( on == true )
         {
             play = "Searching... ";
+            MatchmakingInfo ();
             timer = new Timer ();
             timer.Interval = 1000;
             timer.Elapsed += counter;
             timer.Start ();
-            await Task.Run ( ( ) => MatchmakingInfo () );
+
         }
         else
         {
@@ -629,9 +630,6 @@
         }
 
     }
-    //
-    //Timer For Play Button----------------------------------------------------------------------------------------------------------------------
-    //
     private void counter ( object sender , ElapsedEventArgs e )
     {
         sec = sec + 1;
@@ -655,7 +653,7 @@
     }
 
     //
-    //Time Counter----------------------------------------------------------------------------------------------------------------------
+    //Time Counter when math found----------------------------------------------------------------------------------------------------------------------
     //
     private async void timecounter ( object sender , System.Timers.ElapsedEventArgs e )
     {
