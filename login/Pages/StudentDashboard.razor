@@ -395,6 +395,7 @@
 
 @code {
     public bool ok;
+
     public Student connectedStudent = new Student ();
     List<string> qsCodeList = new List<string> ();
     Student student = new Student ();
@@ -402,7 +403,7 @@
     public List<Student> TopStudentList = new List<Student> ();
     int accuracy = 0, value;
     int positionCounter = 0, totalStudent = 0;
-    string color, play;
+    string color, play, qsnum;
     int min = 0, sec = 0;
     string modelController;
     Timer timer, send;
@@ -458,14 +459,10 @@
             PlayerHistory ph = new PlayerHistory ();
 
             await Task.Run ( ( ) => connect.SignIn ( student.mail , student.password ) );
+            student = connect.student;
+
             await Task.Run ( ( ) => connect.GetTopStudent () );
             await Task.Run ( ( ) => connect.GetTopTeacher () );
-
-            student = connect.student;
-            await InvokeAsync ( ( ) =>
-            {
-                StateHasChanged ();
-            } );
             ph.playerID = student.studentID;
             ph.whatToDO = 1;
             ph.matchID = "n";
@@ -606,11 +603,11 @@
         if ( on == true )
         {
             play = "Searching... ";
-            MatchmakingInfo ();
             timer = new Timer ();
             timer.Interval = 1000;
             timer.Elapsed += counter;
             timer.Start ();
+            MatchmakingInfo ();
 
         }
         else
@@ -755,30 +752,32 @@
             {
                 j++;
                 qsCodeList.Add ( connect.QuestionCode );
+
+                if ( j == 1 )
+                {
+                    matchmaking.firstQuestionID = random;
+
+                }
+                else if ( j == 2 )
+                {
+                    matchmaking.secondQuestionID = random;
+                }
+                else if ( j == 3 )
+                {
+                    matchmaking.thirdQuestionID = random;
+                }
+                else if ( j == 4 )
+                {
+                    matchmaking.forthQuestionID = random;
+                }
+                else if ( j == 5 )
+                {
+                    matchmaking.fifthQuestionID = random;
+                    break;
+                }
             }
 
-            if ( j == 1 )
-            {
-                matchmaking.firstQuestionID = random;
 
-            }
-            else if ( j == 2 )
-            {
-                matchmaking.secondQuestionID = random;
-            }
-            else if ( j == 3 )
-            {
-                matchmaking.thirdQuestionID = random;
-            }
-            else if ( j == 4 )
-            {
-                matchmaking.forthQuestionID = random;
-            }
-            else if ( j == 5 )
-            {
-                matchmaking.fifthQuestionID = random;
-                break;
-            }
         }
         matchmaking.firstPlayerID = student.studentID;
         matchmaking.matchID = Guid.NewGuid ().ToString ();

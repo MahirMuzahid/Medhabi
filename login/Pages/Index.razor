@@ -106,30 +106,40 @@
 
     private async Task login()
     {
-        Logintxt = "Wait...";
+
         if (mail != null && pass != null )
         {
+            Logintxt = "Wait...";
             await Task.Run(() => connect.SignIn(mail, pass));
             nevigate(0);
         }
         else
         {
             Error = "Can't use empty box";
+
         }
+        await InvokeAsync ( ( ) =>
+        {
+            StateHasChanged ();
+        } );
     }
     private async Task loginTeacher()
     {
-        LogintxtTeacher = "Wait...";
+
         if (mail != null && pass != null)
         {
+            LogintxtTeacher = "Wait...";
             await Task.Run(() => connect.SignInTeacher(mail, pass));
             nevigate(1);
         }
         else
         {
             Error = "Can't use empty box";
-            LogintxtTeacher = "Login";
         }
+        await InvokeAsync ( ( ) =>
+        {
+            StateHasChanged ();
+        } );
     }
 
     public async void nevigate(int n)
@@ -147,24 +157,30 @@
             else
             {
                 Error = "Wrong Username or Password";
-                LogintxtTeacher = "Login";
+                Logintxt = "Login Student";
             }
+            await InvokeAsync ( ( ) =>
+            {
+                StateHasChanged ();
+            } );
         }
         if(n == 1)
         {
             Teacher teacher = connect.teacher;
             if (connect.submitted == 0)
             {
-
                 await Task.Run(() => SaveSessionTeacher(teacher.mail, teacher.password));
-
                 NavigationManager.NavigateTo("/TeacherDashboard");
             }
             else
             {
                 Error = "Wrong Username or Password";
-                LogintxtTeacher = "Login";
+                LogintxtTeacher = "Login Teacher";
             }
+            await InvokeAsync ( ( ) =>
+            {
+                StateHasChanged ();
+            } );
         }
 
     }

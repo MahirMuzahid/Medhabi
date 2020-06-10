@@ -30,15 +30,36 @@
                 <div class="circle" style=" background: @p2q4">4</div>
                 <div class="circle" style=" background: @p2q5">5</div>
             </div>
-
             <div class="container-login100-form-btn">
-                <b style="color: @connectColor; font-size: @fontSize px ">@waittext</b><br/>
-                <a class="myButton" @onclick="go" style="display:@displaybtn" >Go To Dashboard</a>
-                <br />
-                <a style="font-size: 25px; font-weight: bold; display:@display">@quizTimer </a>
+                <a style="font-size: 25px; font-weight: bold; display:@displayTimer">@quizTimer </a>
             </div>
+            <div class="container-login100-form-btn">
+                <b style="color: @connectColor; font-size: 16px; display: @waitblock ">@waittext</b>
+                <b style="color: @connectColor; font-size: 16px; display: @waitblock ">@waittext2</b>
+            </div>
+            <div class="container-login100-form-btn" style="display:@infoText flex;">
+                <div style="padding-right: 10px">
+                    <b>@myName</b> <br>
+                    Right Answer: <b>@meRight</b><br>
+                    Time: <b>@myTime seconds</b>  <br>
+                </div>
+                <div style="padding-left: 10px">
+                    <b>@otherPlayerName</b> <br>
+                    Right Answer: <b>@otherRightFromThisPage</b> <br>
+                    Time: <b>@otherTime seconds</b>  <br>
+                </div>
+
+            </div>
+            <div class="container-login100-form-btn">
+                <b style="color: @connectColor; display:@infoText; font-size: @fontsz ">@winLooseText</b>
+            </div>
+            <div class="container-login100-form-btn">
+                <a class="myButton" @onclick="go" style="display:@displaybtn;">Go To Dashboard</a>
+            </div>
+
+
             <div class="container-login100-form-btn" style="display:@display">
-                <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width:@value">
+                <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width:@valuePercent">
                     <h5 style="margin-top: 40px">@value</h5>
                 </div>
             </div>
@@ -82,7 +103,7 @@
     //
     //ALl Veriable----------------------------------------------------------------------------------------------------------------------
     //
-    string quizTimer;
+    string quizTimer, winLooseText, infoText, fontsz, displayTimer, valuePercent, waittext2, waitblock;
     string showqs, ch1, ch2, ch3, ch4;
     List<int> ans = new List<int> ();
     public List<Question> allqs { get; set; }
@@ -92,7 +113,7 @@
     public bool op3 { get; set; }
     public bool op4 { get; set; }
     public int oqn = 0, oan = 0, right;
-    int c = 0, self = 0, myid = 0, fontSize;
+    int c = 0, self = 0, myid = 0;
     Student firstplayer = new Student ();
     Student secondplayer = new Student ();
     HubConnection _connection = null;
@@ -101,7 +122,7 @@
     string connectionStatus = "Closed", playerColor1, playerColor2, display, displaybtn;
     MatchMaking mm = new MatchMaking ();
     string url = "https://medhabiapi.shikkhanobish.com/QuizHub", waittext;
-    int counter = 0;
+    int counter = 0, otherRightFromThisPage;
     string rightans = "#3ACF85", connectColor;
     string wrongans = "#D84949";
     Timer timer;
@@ -118,7 +139,7 @@
     PlayerHistory ph = new PlayerHistory ();
     MatchHistory mh = new MatchHistory ();
     bool medone, otherDone;
-    List<string> qsCode = new List<string>();
+    List<string> qsCode = new List<string> ();
     //
     //ALl Veriable End----------------------------------------------------------------------------------------------------------------------
     //
@@ -135,6 +156,14 @@
         }
         else
         {
+            otherRightFromThisPage = 0;
+            valuePercent = 0 + "%";
+            displaybtn = "none";
+            displayTimer = "none";
+            infoText = "none";
+            waittext2 = "";
+            fontsz = "";
+            winLooseText = null;
             medone = false;
             otherDone = false;
             connectColor = "#727272";
@@ -149,12 +178,14 @@
             p2q4 = "#D2D2D2";
             p2q5 = "#D2D2D2";
             display = "none";
-            value = 0 + "%";
-            fontSize = 12;
-            displaybtn = "none";
-            await ConnectToServer ();
+            value = meRight + " Right Answer on 5 Questions";
             playerColor1 = "#ADADAD";
             playerColor2 = "#ADADAD";
+            await InvokeAsync ( ( ) =>
+            {
+                StateHasChanged ();
+            } );
+            await ConnectToServer ();
             self = await oLocalStore.GetItemAsync<int> ( "self" );
             myid = await oLocalStore.GetItemAsync<int> ( "myID" );
             mm.firstPlayerID = await oLocalStore.GetItemAsync<int> ( "firstPlayerID" );
@@ -170,7 +201,7 @@
             mm.fifthQuestionID = await oLocalStore.GetItemAsync<int> ( "q5" );
             mm.matchID = await oLocalStore.GetItemAsync<string> ( "mmid" );
             var a = await oLocalStore.GetItemAsync<string> ( "qcode1" );
-            qsCode.Add ( a);
+            qsCode.Add ( a );
             a = await oLocalStore.GetItemAsync<string> ( "qcode2" );
             qsCode.Add ( a );
             a = await oLocalStore.GetItemAsync<string> ( "qcode3" );
@@ -190,16 +221,19 @@
             mh.matchID = mm.matchID;
             if ( self == 0 )
             {
+
                 myPoint = firstplayer.point;
                 meFirstPlayer = true;
-                playerColor1 = "#3498DB";
-                playerColor2 = "#723CCB";
+                playerColor1 = "Black";
+                playerColor2 = "Black";
                 await InvokeAsync ( ( ) =>
                 {
                     StateHasChanged ();
                 } );
 
                 display = "block";
+                displayTimer = "block";
+                waitblock = "none";
                 connect.sendmatchInfo ( mm.secondPlayerID , mm.firstPlayerID , mm.matchID );
                 otherplayerID = mm.secondPlayerID;
                 otherPlayerName = secondplayer.name;
@@ -213,12 +247,13 @@
             }
             else
             {
+                waitblock = "block";
                 myPoint = secondplayer.point;
                 meFirstPlayer = false;
                 otherPlayerName = firstplayer.name;
                 myName = secondplayer.name;
                 playerColor1 = "#ADADAD";
-                playerColor2 = "#723CCB";
+                playerColor2 = "Black";
                 otherplayerID = mm.firstPlayerID;
                 timer = new Timer ();
                 timer.Interval = 1000;
@@ -251,7 +286,7 @@
         }
         else if ( playeron == true )
         {
-            waittext = null;
+            waittext = "";
         }
         if ( secondplayertimer == 0 && playeron == false )
         {
@@ -359,13 +394,13 @@
             checkWrightWrong ();
             connect.passans ( otherplayerID , counter , givnans );
             placewriteorwrong ( counter , givnans , 0 );
-
-            c = c + 20;
-            value = c + "%";
+            valuePercent = ( counter + 1 ) * 20 + "%";
+            value = meRight + " Right Answer on " + allqs.Count + " Questions";
             op1 = false;
             op2 = false;
             op3 = false;
             op4 = false;
+            givnans = 0;
             counter++;
             if ( counter < 5 )
             {
@@ -375,6 +410,7 @@
             {
                 StateHasChanged ();
             } );
+
         }
 
     }
@@ -387,24 +423,31 @@
     //
     public void checkWrightWrong ( )
     {
-
+        int c = 0;
         if ( op1 == true )
         {
             givnans = 1;
+            c++;
         }
         else if ( op2 == true )
         {
             givnans = 2;
+            c++;
         }
         else if ( op3 == true )
         {
             givnans = 3;
+            c++;
         }
         else if ( op4 == true )
         {
             givnans = 4;
+            c++;
         }
-
+        if ( c != 1 )
+        {
+            givnans = 0;
+        }
     }
     //
     //Check Write or Wrogn Answer end----------------------------------------------------------------------------------------------------------------------
@@ -413,10 +456,18 @@
     //
     //Place write or wrong in veriable for server----------------------------------------------------------------------------------------------------------------------
     //
-    public void placewriteorwrong ( int qn , int qa , int fromwhere )
+    public async void placewriteorwrong ( int qn , int qa , int fromwhere )
     {
         int go = 0;
-        myTime = qmin * 60 + qtimer;
+        if(fromwhere == 0)
+        {
+            myTime = qmin * 60 + qtimer;
+        }
+        if(fromwhere == 1)
+        {
+            otherTime = qmin * 60 + qtimer;
+        }
+
         if ( meFirstPlayer == true && fromwhere == 0 )
         {
             go = 0;
@@ -495,11 +546,13 @@
         }
         else if ( go == 1 )
         {
+
             if ( qn == 0 )
             {
                 if ( allqs [ qn ].right_answer == qa )
                 {
                     p2q1 = rightans;
+                    otherRightFromThisPage++;
                 }
                 else
                 {
@@ -511,6 +564,7 @@
                 if ( allqs [ qn ].right_answer == qa )
                 {
                     p2q2 = rightans;
+                    otherRightFromThisPage++;
                 }
                 else
                 {
@@ -522,6 +576,7 @@
                 if ( allqs [ qn ].right_answer == qa )
                 {
                     p2q3 = rightans;
+                    otherRightFromThisPage++;
                 }
                 else
                 {
@@ -533,6 +588,7 @@
                 if ( allqs [ qn ].right_answer == qa )
                 {
                     p2q4 = rightans;
+                    otherRightFromThisPage++;
                 }
                 else
                 {
@@ -544,6 +600,7 @@
                 if ( allqs [ qn ].right_answer == qa )
                 {
                     p2q5 = rightans;
+                    otherRightFromThisPage++;
                 }
                 else
                 {
@@ -605,11 +662,22 @@
         }
         if ( qn == 4 && fromwhere == 0 )
         {
+            fontsz = "16px";
             display = "none";
-            myTime = qmin * 60 + qtimer;
-            connect.senddone ( otherplayerID , myid , meRight , myTime );
-            callALLDone ( 0 );
 
+            myTime = qmin * 60 + qtimer;
+            if ( otherDone == false )
+            {
+                waitblock = "block";
+                waittext2 = "Wait for other player to end the match";
+            }
+            connect.senddone ( otherplayerID , myid , meRight , myTime );
+
+            callALLDone ( 0 );
+            await InvokeAsync ( ( ) =>
+            {
+                StateHasChanged ();
+            } );
 
         }
 
@@ -626,11 +694,6 @@
         if ( call == 0 )
         {
             medone = true;
-            if( otherDone == false)
-            {
-                waittext = "Wait for other player to end the match";
-            }
-
         }
         if ( call == 1 )
         {
@@ -640,10 +703,6 @@
         {
             await decideWinner ();
         }
-        await InvokeAsync ( ( ) =>
-        {
-            StateHasChanged ();
-        } );
 
     }
     //
@@ -655,24 +714,37 @@
     //
     public async Task decideWinner ( )
     {
+        waitblock = "none";
         displaybtn = "block";
+        displayTimer = "none";
+        fontsz = "30px";
+        infoText = "block";
+        waittext2 = "";
         if ( meRight > otherRight )
         {
             await winnerSave ();
+            connectColor = "green";
+            winLooseText = "You Won!!!";
         }
         else if ( meRight < otherRight )
         {
             await loserSave ();
+            connectColor = "red";
+            winLooseText = "You Lose!!!";
         }
         else if ( meRight == otherRight )
         {
             if ( myTime < otherTime )
             {
                 await winnerSave ();
+                connectColor = "green";
+                winLooseText = "You Won!!!";
             }
             else if ( myTime > otherTime )
             {
                 await loserSave ();
+                connectColor = "red";
+                winLooseText = "You Lose!!!";
             }
             else if ( myTime == otherTime )
             {
@@ -680,13 +752,22 @@
                 if ( ( r.Next ( 0 , 10 ) ) % 2 == 0 )
                 {
                     await winnerSave ();
+                    connectColor = "green";
+                    winLooseText = "You Won!!!";
                 }
                 else
                 {
                     await loserSave ();
+                    connectColor = "red";
+                    winLooseText = "You Lose!!!";
                 }
             }
         }
+        await InvokeAsync ( ( ) =>
+        {
+            StateHasChanged ();
+        } );
+
     }
     //
     //Decide Winner end----------------------------------------------------------------------------------------------------------------------
@@ -697,6 +778,16 @@
     //
     public async Task winnerSave ( )
     {
+        if ( meFirstPlayer == true )
+        {
+            playerColor1 = "#05C286"; // green
+            playerColor2 = "#E12121"; // red
+        }
+        else
+        {
+            playerColor2 = "#05C286";
+            playerColor1 = "#E12121";
+        }
         mh.winnerPlayerID = myid;
         mh.looserPlayerID = otherplayerID;
         mh.q1 = mm.firstQuestionID;
@@ -705,26 +796,20 @@
         mh.q4 = mm.forthQuestionID;
         mh.q5 = mm.fifthQuestionID;
         mh.whatToDO = 0;
-
         ph.matchStatus = "Win";
         ph.whatToDO = 0;
         ph.playerID = myid;
+
         medone = false;
         otherDone = false;
 
         await Task.Run ( ( ) => connect.EditMatchHistory ( mh ) );
         await Task.Run ( ( ) => connect.EditPlayerHistory ( ph ) );
-        updateInfo ();
         await Task.Run ( ( ) => connect.getInfoFromId ( myid ) );
+        await oLocalStore.SetItemAsync ( "mail" , connect.secondstudent.mail );
+        await oLocalStore.SetItemAsync ( "password" , connect.secondstudent.password );
 
-        fontSize = 20;
-        connectColor = "green";
-        waittext = "You Won!!!";
-        await InvokeAsync ( ( ) =>
-        {
-            StateHasChanged ();
-        } );
-
+        updateInfo ();
     }
     //
     //Save Winner Result end----------------------------------------------------------------------------------------------------------------------
@@ -735,8 +820,17 @@
     //
     public async Task loserSave ( )
     {
+        if ( meFirstPlayer == true )
+        {
+            playerColor2 = "#05C286";
+            playerColor1 = "#E12121";
+        }
+        else
+        {
+            playerColor1 = "#05C286";
+            playerColor2 = "#E12121";
+        }
         mh.looserPlayerID = myid;
-
         mh.looserPlayerID = myid;
         mh.q1 = mm.firstQuestionID;
         mh.q2 = mm.secondQuestionID;
@@ -744,25 +838,20 @@
         mh.q4 = mm.forthQuestionID;
         mh.q5 = mm.fifthQuestionID;
         mh.whatToDO = 0;
-
         ph.matchStatus = "Lose";
         ph.whatToDO = 0;
         ph.playerID = myid;
-        await Task.Run ( ( ) => connect.EditPlayerHistory ( ph ) );
-        updateInfo ();
+
         medone = false;
         otherDone = false;
+
+        await Task.Run ( ( ) => connect.EditPlayerHistory ( ph ) );
         await Task.Run ( ( ) => connect.getInfoFromId ( myid ) );
         await oLocalStore.SetItemAsync ( "mail" , connect.secondstudent.mail );
         await oLocalStore.SetItemAsync ( "password" , connect.secondstudent.password );
 
-        fontSize = 20;
-        connectColor = "red";
-        waittext = "You Lose!!!";
-        await InvokeAsync ( ( ) =>
-        {
-            StateHasChanged ();
-        } );
+        updateInfo ();
+
     }
     //
     //Save Loser Result end----------------------------------------------------------------------------------------------------------------------
@@ -785,7 +874,7 @@
             totalPoint = meRight + myPoint;
         }
 
-        if ( totalPoint > 0 && totalPoint <= 99 )
+        if ( totalPoint >= 0 && totalPoint <= 99 )
         {
             rank = "BEGINNER";
         }
@@ -869,8 +958,9 @@
                 playeron = true;
                 waittext = null;
                 mm.matchID = matchID;
-                playerColor1 = "#3498DB";
+                playerColor1 = "Black";
                 display = "block";
+                displayTimer = "block";
                 await Task.Run ( ( ) => showquestioninWindow ( allqs [ 0 ].question , allqs [ 0 ].first_choice , allqs [ 0 ].second_choice , allqs [ 0 ].third_choice , allqs [ 0 ].forth_choice , allqs [ 0 ].right_answer ) );
                 await InvokeAsync ( ( ) =>
                 {
@@ -892,6 +982,7 @@
 
     public void go ( )
     {
+        timer.Stop ();
         NavigationManager.NavigateTo ( "/dashboard" );
     }
 }
