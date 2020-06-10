@@ -22,12 +22,32 @@
     readonly WeatherForecastService _forecastService = new WeatherForecastService ();
     LineConfig _lineConfig;
     ChartJsLineChart _lineChartJs;
-
+    IEnumerable<Point> point;
+    List<Axis> axis = new List<Axis> ();
     private LineDataset<Point> _tempPerHourSet;
+    Axis ax;
+    List<int> accurecy;
 
-    private LineDataset<Point> _tempPerDaySet;
+    public class Axis {
+        public int t { get; set; }
+        public int a { get; set; }
 
-    private readonly Random _rnd = new Random ();
+
+    }
+
+    public void setAxisForPoint(List<int> a)
+    {
+        accurecy = a;
+
+        for (int i = 0; i < accurecy.Count; i++ )
+        {
+            ax.t = i;
+            ax.a = accurecy[0];
+            axis.Add(ax);
+        }
+    }
+
+
 
     protected override async Task OnInitializedAsync ( )
     {
@@ -102,24 +122,10 @@
             SteppedLine = SteppedLine.False ,
         };
 
-        _tempPerDaySet = new LineDataset<Point>
-        {
-            BackgroundColor = ColorUtil.RandomColorString () ,
-            BorderColor = ColorUtil.RandomColorString () ,
-            Label = "Temp (F) per Day" ,
-            Fill = false ,
-            BorderWidth = 1 ,
-            PointRadius = 2 ,
-            PointBorderWidth = 1 ,
-            SteppedLine = SteppedLine.False
-        };
 
-        var forecasts = await _forecastService.GetStaticForecastAsync ( DateTime.Now , 5 );
+        point = axis.Select ( p => new Point ( p.t , p.a ) );
 
-        var onlyDays = forecasts.GroupBy ( f => f.Date.Day ).Select ( g => g.First () );
-
-        IEnumerable<WeatherForecast> weatherForecasts = onlyDays.ToList ();
-        _tempPerHourSet.AddRange ( weatherForecasts.Select ( p => new Point ( p.Date.Hour , p.TemperatureC ) ) );
+        _tempPerHourSet.AddRange ( point );
 
         _lineConfig.Data.Datasets.Add ( _tempPerHourSet );
     }
