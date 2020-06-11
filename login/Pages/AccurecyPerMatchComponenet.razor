@@ -1,4 +1,5 @@
-﻿@using ChartJs.Blazor.Charts
+﻿@page "/LineChart"
+@using ChartJs.Blazor.Charts
 @using ChartJs.Blazor.ChartJS.Common
 @using ChartJs.Blazor.ChartJS.Common.Properties
 @using ChartJs.Blazor.ChartJS.Common.Enums
@@ -7,16 +8,14 @@
 @using ChartJs.Blazor.ChartJS.Common.Axes.Ticks
 @using ChartJs.Blazor.ChartJS.Common.Handlers
 @using ChartJs.Blazor.Util
-@using login.Data 
+@using login.Data
 @using Newtonsoft.Json.Linq;
 
 <h2>Linear Line Chart</h2>
-<Chart @ref="_lineChartJs"
+<ChartJs.Blazor.Charts.ChartJsLineChart @ref="_lineChartJs"
        Config="@_lineConfig"
-       TConfig="LineConfig"
        Width="600"
        Height="300" />
-
 @code
 {
     readonly WeatherForecastService _forecastService = new WeatherForecastService ();
@@ -25,25 +24,27 @@
     IEnumerable<Point> point;
     List<Axis> axis = new List<Axis> ();
     private LineDataset<Point> _tempPerHourSet;
-    Axis ax;
+
     List<int> accurecy;
 
-    public class Axis {
+    public class Axis
+    {
         public int t { get; set; }
         public int a { get; set; }
 
 
     }
 
-    public void setAxisForPoint(List<int> a)
+    public void setAxisForPoint ( List<int> a )
     {
         accurecy = a;
 
-        for (int i = 0; i < accurecy.Count; i++ )
+        for ( int i = 0; i < a.Count; i++ )
         {
+            Axis ax = new Axis ();
             ax.t = i;
-            ax.a = accurecy[0];
-            axis.Add(ax);
+            ax.a = a [ i ];
+            axis.Add ( ax );
         }
     }
 
@@ -51,6 +52,13 @@
 
     protected override async Task OnInitializedAsync ( )
     {
+        List<int> a = new List<int> ();
+        a.Add ( 9 );
+        a.Add ( 3 );
+        a.Add ( 6 );
+        a.Add ( 2 );
+        a.Add ( 7 );
+        setAxisForPoint ( a );
         _lineConfig = new LineConfig
         {
             Options = new LineOptions
@@ -73,7 +81,7 @@
                 Scales = new Scales
                 {
                     xAxes = new List<CartesianAxis>
-                {
+    {
                         new LinearCartesianAxis
                         {
                             ScaleLabel = new ScaleLabel
@@ -91,7 +99,7 @@
                         }
                     } ,
                     yAxes = new List<CartesianAxis>
-                {
+    {
                         new LinearCartesianAxis
                         {
                             ScaleLabel = new ScaleLabel
