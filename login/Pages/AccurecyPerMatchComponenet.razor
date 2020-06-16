@@ -1,5 +1,4 @@
-﻿@page "/LineChart"
-@using ChartJs.Blazor.Charts
+﻿@using ChartJs.Blazor.Charts
 @using ChartJs.Blazor.ChartJS.Common
 @using ChartJs.Blazor.ChartJS.Common.Properties
 @using ChartJs.Blazor.ChartJS.Common.Enums
@@ -11,7 +10,7 @@
 @using login.Data
 @using Newtonsoft.Json.Linq;
 
-<h2>Linear Line Chart</h2>
+<h3>Right Answer Per Match</h3>
 <ChartJs.Blazor.Charts.ChartJsLineChart @ref="_lineChartJs"
        Config="@_lineConfig"
        Width="600"
@@ -24,6 +23,7 @@
     IEnumerable<Point> point;
     List<Axis> axis = new List<Axis> ();
     private LineDataset<Point> _tempPerHourSet;
+    
 
     List<int> accurecy;
 
@@ -53,12 +53,13 @@
     protected override async Task OnInitializedAsync ( )
     {
         List<int> a = new List<int> ();
-        a.Add ( 9 );
+        a.Add ( 0 );
         a.Add ( 3 );
         a.Add ( 6 );
         a.Add ( 2 );
         a.Add ( 7 );
-        setAxisForPoint ( a );
+        var accuracy = CalculateInfoForPaidStudent.accuracy;
+        setAxisForPoint ( accuracy );
         _lineConfig = new LineConfig
         {
             Options = new LineOptions
@@ -67,7 +68,7 @@
                 Title = new OptionsTitle
                 {
                     Display = true ,
-                    Text = "Line Chart"
+                    Text = "Right Answer"
                 } ,
                 Legend = new Legend
                 {
@@ -86,16 +87,17 @@
                         {
                             ScaleLabel = new ScaleLabel
                             {
-                                LabelString = "Time"
+                                LabelString = "Match Number (nth)"
                             },
                             GridLines = new GridLines
                             {
-                                Display = false
+                                Display = true
                             },
                             Ticks = new LinearCartesianTicks
                             {
-                                SuggestedMin = -2
-                            }
+                                SuggestedMin = 1
+                            },
+                            
                         }
                     } ,
                     yAxes = new List<CartesianAxis>
@@ -104,8 +106,13 @@
                         {
                             ScaleLabel = new ScaleLabel
                             {
-                                LabelString = "Temp"
-                            }
+                                LabelString = "Number Of Right Answer (out of 5)"
+                            },
+                            Ticks = new LinearCartesianTicks
+                            {
+                                SuggestedMax = 5
+                            },
+                            
                         }
                     }
                 } ,
@@ -121,13 +128,12 @@
         {
             BackgroundColor = ColorUtil.ColorString ( 0 , 255 , 0 , 1.0 ) ,
             BorderColor = ColorUtil.ColorString ( 0 , 0 , 255 , 1.0 ) ,
-            Label = "Temp (C) per Hour" ,
             Fill = false ,
             PointBackgroundColor = ColorUtil.RandomColorString () ,
             BorderWidth = 1 ,
             PointRadius = 3 ,
-            PointBorderWidth = 1 ,
-            SteppedLine = SteppedLine.False ,
+            PointBorderWidth = 1,
+            SteppedLine = SteppedLine.False
         };
 
 

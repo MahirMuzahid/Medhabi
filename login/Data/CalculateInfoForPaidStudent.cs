@@ -40,11 +40,13 @@ namespace login.Data
         private List<string> qsCode = new List<string> ();
         public static List<int> allqs { get; set; }
         public static List<int> allans { get; set; }
+
+        public static List<int> accuracy = new List<int> ();
         public static List<string> allClass { get; set; }
         public static List<string> allSubject { get; set; }
         public static List<string> allPaper { get; set; }
         public static List<string> allChapter { get; set; }
-        public static List<string> allMatchStatus { get; set; }
+        public static List<string> allquestionStatus { get; set; }
 
 
 
@@ -61,7 +63,7 @@ namespace login.Data
                 qsCodeini.Add ( MyPhList [ i ].q2 );
                 qsCodeini.Add ( MyPhList [ i ].q3 );
                 qsCodeini.Add ( MyPhList [ i ].q4 );
-                qsCodeini.Add ( MyPhList [ i ].q5 );
+                qsCodeini.Add ( MyPhList [ i ].q5 ); 
             }
             SeparateEverySegmentOfCode ( qsCodeini );
             calTotalQuestionOfEverySubject ();
@@ -74,19 +76,19 @@ namespace login.Data
             List<string> allSubjectini = new List<string> ();
             List<string> allPaperini = new List<string> ();
             List<string> allChapterini = new List<string> ();
-            List<string> allMatchStatusini = new List<string> ();
-            string Class, subject, paper, chapter, matchStatus = null;
+            List<string> allquestionStatusini = new List<string> ();
+            string Class, subject, paper, chapter, questionStatus = null;
             for ( int i = 0; i < code.Count; i++ )
             {
                 var singleCode = code [ i ].ToUpper ();
                 qsCode.Add ( singleCode );
                 if ( singleCode [ 0 ] == '0' )
                 {
-                    matchStatus = "lose";
+                    questionStatus = "wrong";
                 }
                 else if ( singleCode [ 0 ] == '1' )
                 {
-                    matchStatus = "win";
+                    questionStatus = "right";
                 }
 
                 Class = singleCode [ 1 ].ToString () + singleCode [ 2 ].ToString () + singleCode [ 3 ].ToString () + "";
@@ -98,13 +100,13 @@ namespace login.Data
                 allSubjectini.Add ( subject );
                 allPaperini.Add ( paper );
                 allChapterini.Add ( chapter );
-                allMatchStatusini.Add ( matchStatus );
+                allquestionStatusini.Add ( questionStatus );
             }
             allClass = allClassini;
             allSubject = allSubjectini;
             allPaper = allPaperini;
             allChapter = allChapterini;
-            allMatchStatus = allMatchStatusini;
+            allquestionStatus = allquestionStatusini;
             
 
         }
@@ -219,9 +221,33 @@ namespace login.Data
             
             allqs = allqsForShow;
             allans = allansForShow;
+            CalculateAccuracyForEveryMatch ();
         }
 
-        
 
+        public void CalculateAccuracyForEveryMatch()
+        {
+            List<int> Accuracy = new List<int> ();
+            int save = 0;
+            for (int i = 0; i < qsCode.Count; i++ )
+            {
+                int accuracyCounter = 0;
+                if(i % 5 == 0 && i > 0)
+                {                  
+                    for(int j = i; j >= save; j-- )
+                    {
+                        var singleCode = qsCode [ j ].ToUpper ();
+                        if (singleCode[0] == '1')
+                        {
+                            accuracyCounter++;
+                        }
+                    }
+                    Accuracy.Add ( accuracyCounter );
+                    save = i;
+                }               
+            }
+            accuracy = Accuracy;
+        }
+        
     }
 }

@@ -1957,6 +1957,7 @@ Container / Wrapper
 
 .dashboard-wrapper {
     position: relative;
+    min-height: 100%;
     left: 0;
     margin-left: 264px;
     min-height: 870px !important;
@@ -3220,10 +3221,19 @@ btn-link
 .card {
     margin-bottom: 30px;
     border: none;
-    -webkit-box-shadow: 0px 1px 2px 1px rgba(154, 154, 204, 0.22);
-    -moz-box-shadow: 0px 1px 2px 1px rgba(154, 154, 204, 0.22);
-    box-shadow: 0px 1px 2px 1px rgba(154, 154, 204, 0.22);
+    -webkit-box-shadow: 9px 1px 20px 10px rgba(154, 154, 204, 0.22);
+    -moz-box-shadow: 4px 5px 6px 7px rgba(154, 154, 204, 0.22);
+    box-shadow: 3px 3px 1px 1px rgba(154, 154, 204, 0.22);
+   
 }
+.grow {
+    transition: all .2s ease-in-out;
+    background: rgba(255, 255, 255, 0.8)
+}
+
+    .grow:hover {
+        transform: scale(1.1);
+    }
 
 .card-header {
     background-color: #fff;

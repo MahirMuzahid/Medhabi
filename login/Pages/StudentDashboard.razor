@@ -7,7 +7,7 @@
 @using login.Data
 @using System.Timers
 
-<div class="dashboard-main-wrapper">
+<div class="dashboard-main-wrapper" style="background-image: url('bb.jpg'); background-attachment: fixed; height: 100%; /* Center and scale the image nicely */ background-position: center; background-repeat: no-repeat; background-size: cover; ">
     <!-- ============================================================== -->
     <!-- navbar -->
     <!-- ============================================================== -->
@@ -62,9 +62,9 @@
     }
     else
     {
-        <div class="dashboard-wrapper">
+        <div class="dashboard-wrapper" >
 
-            <div class="dashboard-ecommerce">
+            <div class="dashboard-ecommerce" >
 
                 <div class="container-fluid dashboard-content ">
                     <!-- ============================================================== -->
@@ -110,7 +110,7 @@
 
                         <div class="row">
                             <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12">
-                                <div class="card">
+                                <div class="card grow" style="box-shadow: 0 3.3px 3px -5px rgba(0, 0, 0, 0.013), 0 7.8px 7px -5px rgba(0, 0, 0, 0.019), 0 13.9px 12.6px -5px rgba(0, 0, 0, 0.023), 0 23.1px 20.9px -5px rgba(0, 0, 0, 0.027), 0 38.1px 34.4px -5px rgba(0, 0, 0, 0.031), 0 66.6px 60.1px -5px rgba(0, 0, 0, 0.037), 0 144px 130px -5px rgba(0, 0, 0, 0.05); ">
                                     <div class="card-body">
                                         <h5 class="text-muted">Total Right Answer</h5>
                                         <div class="metric-value d-inline-block">
@@ -124,7 +124,7 @@
                                 </div>
                             </div>
                             <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12">
-                                <div class="card">
+                                <div class="card grow" style="box-shadow: 0 3.3px 3px -5px rgba(0, 0, 0, 0.013), 0 7.8px 7px -5px rgba(0, 0, 0, 0.019), 0 13.9px 12.6px -5px rgba(0, 0, 0, 0.023), 0 23.1px 20.9px -5px rgba(0, 0, 0, 0.027), 0 38.1px 34.4px -5px rgba(0, 0, 0, 0.031), 0 66.6px 60.1px -5px rgba(0, 0, 0, 0.037), 0 144px 130px -5px rgba(0, 0, 0, 0.05); ">
                                     <div class="card-body">
                                         <!-------------------------------Have to changethis on api call------------------------------->
                                         <h5 class="text-muted">Position</h5>
@@ -138,7 +138,7 @@
                                 </div>
                             </div>
                             <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12">
-                                <div class="card">
+                                <div class="card grow" style="box-shadow: 0 3.3px 3px -5px rgba(0, 0, 0, 0.013), 0 7.8px 7px -5px rgba(0, 0, 0, 0.019), 0 13.9px 12.6px -5px rgba(0, 0, 0, 0.023), 0 23.1px 20.9px -5px rgba(0, 0, 0, 0.027), 0 38.1px 34.4px -5px rgba(0, 0, 0, 0.031), 0 66.6px 60.1px -5px rgba(0, 0, 0, 0.037), 0 144px 130px -5px rgba(0, 0, 0, 0.05); ">
                                     <div class="card-body">
                                         <h5 class="text-muted">Rank</h5>
                                         <div class="metric-value d-inline-block">
@@ -151,7 +151,7 @@
                                 </div>
                             </div>
                             <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12">
-                                <div class="card">
+                                <div class="card grow" style="box-shadow: 0 3.3px 3px -5px rgba(0, 0, 0, 0.013), 0 7.8px 7px -5px rgba(0, 0, 0, 0.019), 0 13.9px 12.6px -5px rgba(0, 0, 0, 0.023), 0 23.1px 20.9px -5px rgba(0, 0, 0, 0.027), 0 38.1px 34.4px -5px rgba(0, 0, 0, 0.031), 0 66.6px 60.1px -5px rgba(0, 0, 0, 0.037), 0 144px 130px -5px rgba(0, 0, 0, 0.05); ">
                                     <div class="card-body">
                                         <h5 class="text-muted">Account</h5>
                                         <div class="metric-value d-inline-block">
@@ -168,7 +168,7 @@
                             <!-- Top Students  -->
                             <!-- ============================================================== -->
                             <div class="col-xl-9 col-lg-12 col-md-6 col-sm-12 col-12">
-                                <div class="card">
+                                <div class="card ">
                                     <h5 class="card-header">Top Students</h5>
                                     <div class="card-body p-0">
                                         <div class="table-responsive">
@@ -338,10 +338,16 @@
                             <!-- Top Teacher  -->
                             <!-- ============================================================== -->
                             <!-- ============================================================== -->
-                            <div class="col-xl-12 col-lg-12 col-md-6 col-sm-12 col-12 card" style="background: #ffffff; border-color:aquamarine;  border: 10px; border-radius: 10px">
+                            <div class="col-xl-12 col-lg-12 col-md-6 col-sm-12 col-12 card" style=" border-color:aquamarine;  border: 10px; border-radius: 10px; background: rgba(255, 255, 255, 0.5)">
                                 @if ( ok == true )
                                 {
                                     <login.Pages.SubjectWiseAns />
+                                }
+                            </div>
+                            <div class="col-xl-12 col-lg-12 col-md-6 col-sm-12 col-12 card" style=" border-color:aquamarine;  border: 10px; border-radius: 10px; background: rgba(255, 255, 255, 0.5)">
+                                @if ( ok == true )
+                                {
+                                    <login.Pages.AccurecyPerMatchComponenet />
                                 }
                             </div>
                             <!-- ============================================================== -->
