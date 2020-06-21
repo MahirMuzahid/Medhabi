@@ -47,6 +47,8 @@ namespace login.Data
         public static List<string> allPaper { get; set; }
         public static List<string> allChapter { get; set; }
         public static List<string> allquestionStatus { get; set; }
+        public static int winCount;
+        public static int loseCount;
 
 
 
@@ -247,6 +249,26 @@ namespace login.Data
                 }               
             }
             accuracy = Accuracy;
+            CalculateWinLose();
+        }
+
+
+        public void CalculateWinLose()
+        {
+            int winCounter = 0, loseCounter = 0;
+            for (int i = 0; i < MyPhList.Count; i++)
+            {
+                if(MyPhList[i].matchStatus == "Win")
+                {
+                    winCounter++;
+                }
+                else
+                {
+                    loseCounter++;
+                }
+            }
+            winCount = winCounter;
+            loseCount = loseCounter;
         }
         
     }

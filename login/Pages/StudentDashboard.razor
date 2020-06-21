@@ -188,9 +188,9 @@
                                                 </thead>
                                                 <tbody>
 
-                                                    @foreach ( var studentlist in TopStudentList )
+                                                    @foreach (var studentlist in TopStudentList)
                                                     {
-                                                        if ( studentlist.position <= 10 )
+                                                        if (studentlist.position <= 10)
                                                         {
                                                             <tr style="background: @studentlist.color; color: @studentlist.txtColor">
                                                                 <td>@studentlist.position</td>
@@ -259,7 +259,7 @@
                                                 </thead>
                                                 <tbody>
 
-                                                    @foreach ( var teachertlist in TopTeacherList )
+                                                    @foreach (var teachertlist in TopTeacherList)
                                                     {
                                                         <tr style="background: @teachertlist.color; color: @teachertlist.txtColor">
                                                             <td>@teachertlist.position</td>
@@ -339,15 +339,27 @@
                             <!-- ============================================================== -->
                             <!-- ============================================================== -->
                             <div class="col-xl-12 col-lg-12 col-md-6 col-sm-12 col-12 card" style=" border-color:aquamarine;  border: 10px; border-radius: 10px; background: rgba(255, 255, 255, 0.5)">
-                                @if ( ok == true )
+                                @if (ok == true)
                                 {
                                     <login.Pages.SubjectWiseAns />
                                 }
                             </div>
                             <div class="col-xl-12 col-lg-12 col-md-6 col-sm-12 col-12 card" style=" border-color:aquamarine;  border: 10px; border-radius: 10px; background: rgba(255, 255, 255, 0.5)">
-                                @if ( ok == true )
+                                @if (ok == true)
                                 {
                                     <login.Pages.AccurecyPerMatchComponenet />
+                                }
+                            </div>
+                            <div class="col-xl-6 col-lg-12 col-md-6 col-sm-12 col-12 card" style=" border-color:aquamarine;  border: 10px; border-radius: 10px; background: rgba(255, 255, 255, 0.5)">
+                                @if (ok == true)
+                                {
+                                    <login.Pages.WinLooseCompare />
+                                }
+                            </div>
+                            <div class="col-xl-6 col-lg-12 col-md-6 col-sm-12 col-12 card" style=" border-color:aquamarine;  border: 10px; border-radius: 10px; background: rgba(255, 255, 255, 0.5)">
+                                @if (ok == true)
+                                {
+                                    <login.Pages.PerformanceInEvrySubject />
                                 }
                             </div>
                             <!-- ============================================================== -->
