@@ -4,12 +4,11 @@
 @using ChartJs.Blazor.Charts
 @using ChartJs.Blazor.Util
 
-<h1>Scatter Chart</h1>
 <ChartJs.Blazor.Charts.ChartJsRadarChart @ref="_radarChartJs"
-       Config="@_config"
-       Width="600"
-       Height="300" />
-
+                                         Config="@_config"
+                                         Width="600"
+                                         Height="300" />
+<br />
 @code {
     private RadarConfig _config;
     ChartJsRadarChart _radarChartJs;
@@ -31,9 +30,11 @@
         };
 
         _config.Data.Labels.AddRange(new[] { "Extraversion", "Agreeableness", "Conscientiousness", "Neuroticism", "Openness/Intellect" });
+
+        _config.Data.Datasets.Add(GetNewDataset());
+        _config.Data.Datasets.Add(GetNewDataset());
         _config.Data.Datasets.Add(GetNewDataset());
     }
-
     private RadarDataset GetNewDataset()
     {
         RadarDataset dataset = new RadarDataset
@@ -46,6 +47,9 @@
         wwd.Add(1);
         wwd.Add(2);
         wwd.Add(3);
+        wwd.Add(2);
+        wwd.Add(3);
+
         IEnumerable<double> sd;
         sd = wwd;
         dataset.Data = wwd;

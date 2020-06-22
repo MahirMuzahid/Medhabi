@@ -7,10 +7,8 @@
 @using ChartJs.Blazor.Util
 @using login.Data
 
-<h3>Total Question Answered vs Total Right Answer Chart</h3>
-<br />
 BAN1 = Bangla First Paper, BAN2 = Bangla First Paper, PHY1 = Physics First Paper, PHY2 = Physics Second Paper, CHE1 = Chemistry First Paper, CHE2 = Chemistry Second Paper, BIO1 = Biology Firs Paper, BIO2 = Biology 2nd Paper
-<ChartJsBarChart @ref="_barChartJs" Config="@_config" Width="600" Height="300" />
+<ChartJsBarChart @ref="_barChartJs" Config="@_config" Width="500" Height="200" />
 
 @code {
     private BarConfig _config;

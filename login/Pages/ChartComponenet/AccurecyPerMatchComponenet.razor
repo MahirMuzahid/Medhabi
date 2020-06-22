@@ -10,11 +10,11 @@
 @using login.Data
 @using Newtonsoft.Json.Linq;
 
-<h3>Right Answer Per Match</h3>
+
 <ChartJs.Blazor.Charts.ChartJsLineChart @ref="_lineChartJs"
        Config="@_lineConfig"
        Width="600"
-       Height="300" />
+       Height="200" />
 @code
 {
     readonly WeatherForecastService _forecastService = new WeatherForecastService ();

@@ -29,9 +29,8 @@ namespace login
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            services.AddSingleton<WeatherForecastService>();
             services.AddSingleton<ServerConnection>();
-            services.AddSingleton<Student>();
+            services.AddSingleton<CalculateInfoForPaidStudent>();
             services.AddBlazoredLocalStorage();
         }
 

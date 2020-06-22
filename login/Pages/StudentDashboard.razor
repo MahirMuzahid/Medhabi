@@ -338,29 +338,66 @@
                             <!-- Top Teacher  -->
                             <!-- ============================================================== -->
                             <!-- ============================================================== -->
-                            <div class="col-xl-12 col-lg-12 col-md-6 col-sm-12 col-12 card" style=" border-color:aquamarine;  border: 10px; border-radius: 10px; background: rgba(255, 255, 255, 0.5)">
-                                @if (ok == true)
-                                {
-                                    <login.Pages.SubjectWiseAns />
-                                }
+                            <div class="col-xl-12 col-lg-12 col-md-6 col-sm-12 col-12">                             
+                                <div class="card" style=" border-color:aquamarine;  border: 10px; border-radius: 10px; background: rgba(255, 255, 255, 0.5)">
+                                    <h3 class="card-header" style="background: rgba(171, 71, 188,.4);border-radius: 6px;">Total Question Answered vs Total Right Answer Chart</h3>
+                                    <div class="card-body" >
+                                        @if (ok == true)
+                                        {
+                                            <login.Pages.ChartComponenet.SubjectWiseAns />
+                                        }
+                                    </div>
+                                </div>
                             </div>
-                            <div class="col-xl-12 col-lg-12 col-md-6 col-sm-12 col-12 card" style=" border-color:aquamarine;  border: 10px; border-radius: 10px; background: rgba(255, 255, 255, 0.5)">
-                                @if (ok == true)
-                                {
-                                    <login.Pages.AccurecyPerMatchComponenet />
-                                }
+                            <div class="col-xl-12 col-lg-12 col-md-6 col-sm-12 col-12">                               
+                            <div class="card" style=" border-color:aquamarine;  border: 10px; border-radius: 10px; background: rgba(255, 255, 255, 0.5)">
+                                <h3 class="card-header" style="background: rgba(126, 87, 194 ,.4);border-radius: 6px;">Right Answer Per Match</h3>
+                                <div class="card-body">
+                                    @if (ok == true)
+                                    {
+                                        <login.Pages.ChartComponenet.AccurecyPerMatchComponenet />
+                                    }
+                                </div>
                             </div>
-                            <div class="col-xl-6 col-lg-12 col-md-6 col-sm-12 col-12 card" style=" border-color:aquamarine;  border: 10px; border-radius: 10px; background: rgba(255, 255, 255, 0.5)">
-                                @if (ok == true)
-                                {
-                                    <login.Pages.WinLooseCompare />
-                                }
                             </div>
-                            <div class="col-xl-6 col-lg-12 col-md-6 col-sm-12 col-12 card" style=" border-color:aquamarine;  border: 10px; border-radius: 10px; background: rgba(255, 255, 255, 0.5)">
-                                @if (ok == true)
-                                {
-                                    <login.Pages.PerformanceInEvrySubject />
-                                }
+                            <div class="col-xl-12 col-lg-12 col-md-6 col-sm-12 col-12">                               
+                                <div class="card" style=" border-color:aquamarine;  border: 10px; border-radius: 10px; background: rgba(255, 255, 255, 0.5)">
+                                    <h3 class="card-header" style="        background: rgba(66, 165, 245,.4);
+        border-radius: 6px;">Perfomance</h3>
+                                    <div class="card-body">
+                                        @if (ok == true)
+                                        {
+                                            <login.Pages.ChartComponenet.PerformanceInEvrySubject />
+                                            <login.Pages.ChartComponenet.PerformanceInEvrySubject />
+                                            <login.Pages.ChartComponenet.PerformanceInEvrySubject />
+
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-9 col-lg-6 col-md-6 col-sm-12 col-12" >                              
+                                <div class="card" style=" border-color:aquamarine;  border: 10px; border-radius: 10px; background: rgba(255, 255, 255, 0.5)">
+                                    <h5 class="card-header" style="background: linear-gradient(96deg, rgba(226,65,228,.4) 0%, rgba(128,55,246,.4) 53%, rgba(55,203,246,.4) 100%); border-radius: 6px;">Win and Lose</h5>
+                                    <div class="card-body">
+                                        @if (ok == true)
+                                        {
+                                            <login.Pages.ChartComponenet.WinLooseCompare />
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12" >
+                                <div class="card" style=" border-color:aquamarine;  border: 10px; border-radius: 10px; background: rgba(255, 255, 255, 0.5)">
+                                    <h3 class="card-header" style="background: rgba(253, 216, 53 ,.6);border-radius: 6px;">Overall Review</h3>
+                                    <div class="card-body">
+                                        @if (ok == true)
+                                        {
+                                            <h4>Some Review About Student Preformance</h4>
+                                        }
+                                    </div>
+                                </div>
+                                
                             </div>
                             <!-- ============================================================== -->
                             <!-- end Top Teacher -->
