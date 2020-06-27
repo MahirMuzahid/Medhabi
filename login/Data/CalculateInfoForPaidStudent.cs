@@ -18,7 +18,7 @@ namespace login.Data
         private int anqB1;
         private int anqB2;
         private int anqICT;
-        private int anqPhy1;
+        private static int anqPhy1;
         private int anqChe1;
         private int anqBio1;
         private int anqPhy2;
@@ -28,7 +28,7 @@ namespace login.Data
         private int accB1;
         private int accB2;
         private int accICT;
-        private int accPhy1;
+        private static int accPhy1;
         private int accChe1;
         private int accBio1;
         private int accPhy2;
@@ -36,23 +36,36 @@ namespace login.Data
         private int accBio2;
 
         private int thisID;
-        private List<PlayerHistory> MyPhList = new List<PlayerHistory> ();
-        private List<string> qsCode = new List<string> ();
+        private List<PlayerHistory> MyPhList = new List<PlayerHistory>();
+        private List<string> qsCode = new List<string>();
+        private static int avgPhy1;
+
+        public static List<int> RaderInfo { get; set; }
         public static List<int> allqs { get; set; }
         public static List<int> allans { get; set; }
 
-        public static List<int> accuracy = new List<int> ();
+        public static List<int> accuracy = new List<int>();
         public static List<string> allClass { get; set; }
         public static List<string> allSubject { get; set; }
         public static List<string> allPaper { get; set; }
         public static List<string> allChapter { get; set; }
         public static List<string> allquestionStatus { get; set; }
+        public static List<int> allTime  { get; set; }
+
+        public static int raderCounter { get; set; }
+
+
+        private static List<int> phy1performance = new List<int>();
+        private static List<int> phy2performance = new List<int>();
+        private static List<int> che1performance = new List<int>();
+        private static List<int> che2performance = new List<int>();
+        private static List<int> bio1performance = new List<int>();
+        private static List<int> bio2performance = new List<int>();
+
+
         public static int winCount;
         public static int loseCount;
-
-
-
-         
+        
         //Initial Call From ServerConnection Class
         public void setDataforCalculation ( List<PlayerHistory> ph , int id )
         {
@@ -69,6 +82,9 @@ namespace login.Data
             }
             SeparateEverySegmentOfCode ( qsCodeini );
             calTotalQuestionOfEverySubject ();
+            CalculateAccuracyForEveryMatch();
+            CalculateWinLose();
+            CalculatePerfomanceOfEveryCoreSubject();
         }
 
         //Make saparate variable for every segment
@@ -79,7 +95,10 @@ namespace login.Data
             List<string> allPaperini = new List<string> ();
             List<string> allChapterini = new List<string> ();
             List<string> allquestionStatusini = new List<string> ();
+            List<int> allTimeini = new List<int>();
             string Class, subject, paper, chapter, questionStatus = null;
+            int time = 0;
+            string strTime = null;
             for ( int i = 0; i < code.Count; i++ )
             {
                 var singleCode = code [ i ].ToUpper ();
@@ -97,18 +116,35 @@ namespace login.Data
                 subject = singleCode [ 4 ].ToString () + singleCode [ 5 ].ToString () + singleCode [ 6 ].ToString () + "";
                 paper = singleCode [ 7 ].ToString () + singleCode [ 8 ].ToString () + "";
                 chapter = singleCode [ 9 ].ToString () + singleCode [ 10 ].ToString () + "";
-
+                if(singleCode.Length == 12)
+                {
+                    strTime = singleCode[11].ToString() + "";
+                    time = int.Parse(strTime);
+                }
+                else if (singleCode.Length == 13)
+                {
+                    strTime = singleCode[11].ToString() + singleCode[12].ToString() + "";
+                    time = int.Parse(strTime);
+                }
+                else if (singleCode.Length == 14)
+                {                    
+                    strTime = singleCode[11].ToString() + singleCode[12].ToString() + singleCode[13].ToString() + "";
+                    time = int.Parse(strTime);
+                }
+                
                 allClassini.Add ( Class );
                 allSubjectini.Add ( subject );
                 allPaperini.Add ( paper );
                 allChapterini.Add ( chapter );
                 allquestionStatusini.Add ( questionStatus );
+                allTimeini.Add(time);
             }
             allClass = allClassini;
             allSubject = allSubjectini;
             allPaper = allPaperini;
             allChapter = allChapterini;
             allquestionStatus = allquestionStatusini;
+            allTime = allTimeini;
             
 
         }
@@ -223,7 +259,7 @@ namespace login.Data
             
             allqs = allqsForShow;
             allans = allansForShow;
-            CalculateAccuracyForEveryMatch ();
+            
         }
 
 
@@ -249,7 +285,7 @@ namespace login.Data
                 }               
             }
             accuracy = Accuracy;
-            CalculateWinLose();
+           
         }
 
 
@@ -269,7 +305,143 @@ namespace login.Data
             }
             winCount = winCounter;
             loseCount = loseCounter;
+           
         }
+
         
+        public void CalculatePerfomanceOfEveryCoreSubject ()
+        {
+            string Sub = null;
+            List<int> ph1Time = new List<int>();
+            int total = 0;
+            for (int i = 0; i < qsCode.Count; i++)
+            {                
+                Sub = allSubject[i] + allPaper[i];
+                if (Sub == "PHY01")
+                {                   
+                    ph1Time.Add(getSingleTime(i));
+                }
+                else if (Sub == "PHY02")
+                {
+                    
+                }
+                else if (Sub == "CHE01")
+                {
+                    
+                }
+                else if (Sub == "CHE02")
+                {
+                    
+                }
+                else if (Sub == "BIO01")
+                {
+                    
+                }
+                else if (Sub == "BIO02")
+                {
+                    
+                }
+            }
+            for(int j = 0; j < ph1Time.Count; j++)
+            {
+                total = ph1Time[j] + total;
+            }
+
+            var avgTime = total / ph1Time.Count;
+            avgPhy1 = avgTime;
+        }
+
+
+        public int getSingleTime(int i)
+        {
+            var singleCode = qsCode[i].ToUpper();
+            int Ftime = 0, Stime = 0;
+            string strTime = null;
+            if (singleCode.Length == 12)
+            {
+                strTime = singleCode[11].ToString() + "";
+                Stime = int.Parse(strTime);
+            }
+            else if (singleCode.Length == 13)
+            {
+                strTime = singleCode[11].ToString() + singleCode[12].ToString() + "";
+                Stime = int.Parse(strTime);
+            }
+            else if (singleCode.Length == 14)
+            {
+                strTime = singleCode[11].ToString() + singleCode[12].ToString() + singleCode[13].ToString() + "";
+                Stime = int.Parse(strTime);
+            }
+
+            var lastSingleCode = qsCode[i - 1].ToUpper();
+            if (lastSingleCode.Length == 12)
+            {
+                strTime = lastSingleCode[11].ToString() + "";
+                Ftime = int.Parse(strTime);
+            }
+            else if (lastSingleCode.Length == 13)
+            {
+                strTime = lastSingleCode[11].ToString() + lastSingleCode[12].ToString() + "";
+                Ftime = int.Parse(strTime);
+            }
+            else if (lastSingleCode.Length == 14)
+            {
+                strTime = lastSingleCode[11].ToString() + lastSingleCode[12].ToString() + lastSingleCode[13].ToString() + "";
+                Ftime = int.Parse(strTime);
+            }
+            var time = Stime - Ftime;
+            return time;
+        }
+
+  
+        public void raderinfo()
+        {
+            if(raderCounter == 6)
+            {
+                raderCounter = 1;
+            }
+            else
+            {
+                raderCounter++;
+            }        
+            var pertialTime = 0;
+            int amount, acc, time;
+            if (raderCounter == 1)
+            { 
+                acc = (int)((accPhy1 / anqPhy1)*100);
+                time = avgPhy1;
+                amount = anqPhy1;
+
+                if(avgPhy1 < 0) //this will be 30
+                {
+                    time = 100;
+                }
+                else
+                {
+                    //if 30 sec avg than 100 performence. If 150 sec avg than 0 performace
+                    pertialTime = 90 - (avgPhy1 - 30);
+                    time = ((100 / 60) * pertialTime);
+                    if(time < 30)
+                    {
+                        time = time + 5;
+                    }
+                    else if(time < 50)
+                    {
+                        time = time + 10;
+                    }
+                    else if(time < 80)
+                    {
+                        time = time + 5;
+                    }
+                }
+                amount = (int)(amount / 2);
+                List<int> ri = new List<int>();
+                ri.Add(time);
+                ri.Add(acc);
+                ri.Add(amount);
+                RaderInfo = ri;
+            }
+            
+        }
     }
 }

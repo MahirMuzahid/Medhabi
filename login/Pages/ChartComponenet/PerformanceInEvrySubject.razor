@@ -3,13 +3,22 @@
 @using ChartJs.Blazor.ChartJS.RadarChart
 @using ChartJs.Blazor.Charts
 @using ChartJs.Blazor.Util
-
+@using login.Data
+<h4>Subject Nmae</h4>
 <ChartJs.Blazor.Charts.ChartJsRadarChart @ref="_radarChartJs"
                                          Config="@_config"
                                          Width="600"
                                          Height="300" />
 <br />
 @code {
+
+
+    private List<int> phy1performance = new List<int>();
+    private List<int> phy2performance = new List<int>();
+    private List<int> che1performance = new List<int>();
+    private List<int> che2performance = new List<int>();
+    private List<int> bio1performance = new List<int>();
+    private List<int> bio2performance = new List<int>();
     private RadarConfig _config;
     ChartJsRadarChart _radarChartJs;
 
@@ -17,6 +26,8 @@
 
     protected override void OnInitialized()
     {
+        CalculateInfoForPaidStudent cal = new CalculateInfoForPaidStudent();
+        cal.raderinfo();
         _config = new RadarConfig
         {
             Options = new RadarOptions
@@ -29,10 +40,8 @@
             }
         };
 
-        _config.Data.Labels.AddRange(new[] { "Extraversion", "Agreeableness", "Conscientiousness", "Neuroticism", "Openness/Intellect" });
+        _config.Data.Labels.AddRange(new[] { "Time", "Accuracy", "Amount" });
 
-        _config.Data.Datasets.Add(GetNewDataset());
-        _config.Data.Datasets.Add(GetNewDataset());
         _config.Data.Datasets.Add(GetNewDataset());
     }
     private RadarDataset GetNewDataset()
@@ -47,11 +56,6 @@
         wwd.Add(1);
         wwd.Add(2);
         wwd.Add(3);
-        wwd.Add(2);
-        wwd.Add(3);
-
-        IEnumerable<double> sd;
-        sd = wwd;
         dataset.Data = wwd;
 
         return dataset;
