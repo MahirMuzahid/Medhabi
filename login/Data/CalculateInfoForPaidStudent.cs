@@ -19,28 +19,28 @@ namespace login.Data
         private int anqB2;
         private int anqICT;
         private static int anqPhy1;
-        private int anqChe1;
-        private int anqBio1;
-        private int anqPhy2;
-        private int anqChe2;
-        private int anqBio2;
+        private static int anqChe1;
+        private static int anqBio1;
+        private static int anqPhy2;
+        private static int anqChe2;
+        private static int anqBio2;
 
         private int accB1;
         private int accB2;
         private int accICT;
         private static int accPhy1;
-        private int accChe1;
-        private int accBio1;
-        private int accPhy2;
-        private int accChe2;
-        private int accBio2;
+        private static int accChe1;
+        private static int accBio1;
+        private static int accPhy2;
+        private static int accChe2;
+        private static int accBio2;
 
         private int thisID;
         private List<PlayerHistory> MyPhList = new List<PlayerHistory>();
         private List<string> qsCode = new List<string>();
-        private static int avgPhy1;
+        private static int avgPhy1,avgPhy2,avgChe1,avgChe2,avgBio1,avgBio2;
 
-        public static List<int> RaderInfo { get; set; }
+        public static List<double> RaderInfo { get; set; }
         public static List<int> allqs { get; set; }
         public static List<int> allans { get; set; }
 
@@ -65,7 +65,8 @@ namespace login.Data
 
         public static int winCount;
         public static int loseCount;
-        
+
+        public static string name;
         //Initial Call From ServerConnection Class
         public void setDataforCalculation ( List<PlayerHistory> ph , int id )
         {
@@ -313,7 +314,12 @@ namespace login.Data
         {
             string Sub = null;
             List<int> ph1Time = new List<int>();
-            int total = 0;
+            List<int> ph2Time = new List<int>();
+            List<int> che1Time = new List<int>();
+            List<int> che2Time = new List<int>();
+            List<int> bio1Time = new List<int>();
+            List<int> bio2Time = new List<int>();
+            int p1total = 0, p2total = 0, c1total = 0, c2total = 0, b1total = 0, b2total = 0;
             for (int i = 0; i < qsCode.Count; i++)
             {                
                 Sub = allSubject[i] + allPaper[i];
@@ -323,32 +329,111 @@ namespace login.Data
                 }
                 else if (Sub == "PHY02")
                 {
-                    
+                    ph2Time.Add(getSingleTime(i));
                 }
                 else if (Sub == "CHE01")
                 {
-                    
+                    che1Time.Add(getSingleTime(i));
                 }
                 else if (Sub == "CHE02")
                 {
-                    
+                    che2Time.Add(getSingleTime(i));
                 }
                 else if (Sub == "BIO01")
                 {
-                    
+                    bio1Time.Add(getSingleTime(i));
                 }
                 else if (Sub == "BIO02")
                 {
-                    
+                    bio2Time.Add(getSingleTime(i));
                 }
             }
             for(int j = 0; j < ph1Time.Count; j++)
             {
-                total = ph1Time[j] + total;
+                p1total = ph1Time[j] + p1total;
+            }
+            for (int j = 0; j < ph2Time.Count; j++)
+            {
+                p2total = ph2Time[j] + p2total;
+            }
+            for (int j = 0; j < che1Time.Count; j++)
+            {
+                c1total = che1Time[j] + c1total;
+            }
+            for (int j = 0; j < che2Time.Count; j++)
+
+            {
+                c2total = che2Time[j] + c2total;
+            }
+            for (int j = 0; j < bio1Time.Count; j++)
+            {
+                b1total = bio1Time[j] + b1total;
+            }
+            for (int j = 0; j < bio2Time.Count; j++)
+            {
+                b2total = bio2Time[j] + b2total;
             }
 
-            var avgTime = total / ph1Time.Count;
-            avgPhy1 = avgTime;
+            int avgTime;
+            if (ph1Time.Count == 0)
+            {
+                avgPhy1 = 0;
+            }
+            else
+            {
+                avgTime = p1total / ph1Time.Count;
+                avgPhy1 = avgTime;
+            }
+
+            if (ph2Time.Count == 0)
+            {
+                avgPhy2 = 0;
+            }
+            else
+            {
+                avgTime = p2total / ph2Time.Count;
+                avgPhy2 = avgTime;
+            }
+            
+            if (che1Time.Count == 0)
+            {
+                avgChe1 = 0;
+            }
+            else
+            {
+                avgTime = c1total / che1Time.Count;
+                avgChe1 = avgTime;
+            }
+            
+            if (che2Time.Count == 0)
+            {
+                avgChe2 = 0;
+            }
+            else
+            {
+                avgTime = c2total / che2Time.Count;
+                avgChe2 = avgTime;
+            }
+            
+            if (bio1Time.Count == 0)
+            {
+                avgBio1 = 0;
+            }
+            else
+            {
+                avgTime = b1total / bio1Time.Count;
+                avgBio1 = avgTime;
+            }           
+            if (bio2Time.Count == 0)
+            {
+                avgBio2 = 0;
+            }
+            else
+            {
+                avgTime = b2total / bio2Time.Count;
+                avgBio2 = avgTime;
+            }
+            
         }
 
 
@@ -372,25 +457,34 @@ namespace login.Data
                 strTime = singleCode[11].ToString() + singleCode[12].ToString() + singleCode[13].ToString() + "";
                 Stime = int.Parse(strTime);
             }
-
-            var lastSingleCode = qsCode[i - 1].ToUpper();
-            if (lastSingleCode.Length == 12)
+            int time;
+            if (i%5 != 0) //deviding all qs 5 per segment
             {
-                strTime = lastSingleCode[11].ToString() + "";
-                Ftime = int.Parse(strTime);
+                var lastSingleCode = qsCode[i - 1].ToUpper();
+                if (lastSingleCode.Length == 12)
+                {
+                    strTime = lastSingleCode[11].ToString() + "";
+                    Ftime = int.Parse(strTime);
+                }
+                else if (lastSingleCode.Length == 13)
+                {
+                    strTime = lastSingleCode[11].ToString() + lastSingleCode[12].ToString() + "";
+                    Ftime = int.Parse(strTime);
+                }
+                else if (lastSingleCode.Length == 14)
+                {
+                    strTime = lastSingleCode[11].ToString() + lastSingleCode[12].ToString() + lastSingleCode[13].ToString() + "";
+                    Ftime = int.Parse(strTime);
+                }
+                time = Stime - Ftime;
+                return time;
             }
-            else if (lastSingleCode.Length == 13)
+            else
             {
-                strTime = lastSingleCode[11].ToString() + lastSingleCode[12].ToString() + "";
-                Ftime = int.Parse(strTime);
+                return Stime;
             }
-            else if (lastSingleCode.Length == 14)
-            {
-                strTime = lastSingleCode[11].ToString() + lastSingleCode[12].ToString() + lastSingleCode[13].ToString() + "";
-                Ftime = int.Parse(strTime);
-            }
-            var time = Stime - Ftime;
-            return time;
+            
+            
         }
 
   
@@ -404,44 +498,285 @@ namespace login.Data
             {
                 raderCounter++;
             }        
-            var pertialTime = 0;
-            int amount, acc, time;
-            if (raderCounter == 1)
-            { 
-                acc = (int)((accPhy1 / anqPhy1)*100);
-                time = avgPhy1;
-                amount = anqPhy1;
+            if(raderCounter == 1)
+            {
+                name = "Physics First Paper";
+                var pertialTime = 0;
+                double amount, acc, time;
+                if (raderCounter == 1)
+                {
+                    if(anqPhy1 == 0)
+                    {
+                        acc = 0;
+                    }
+                    else
+                    {
+                        acc = (int)(((float)accPhy1 / (float)anqPhy1) * 100);
+                    }
+                    
+                    time = avgPhy1;
+                    amount = anqPhy1;
 
-                if(avgPhy1 < 0) //this will be 30
+                    if (avgPhy1 < 30) //this will be 30
+                    {
+                        time = 100;
+                    }
+                    else
+                    {
+                        //if 30 sec avg than 100 performence. If 150 sec avg than 0 performace
+                        pertialTime = 90 - (avgPhy1 - 30);
+                        time = ((100 / 60) * pertialTime);
+                        if (time < 30)
+                        {
+                            time = time + 5;
+                        }
+                        else if (time < 50)
+                        {
+                            time = time + 10;
+                        }
+                        else if (time < 80)
+                        {
+                            time = time + 5;
+                        }
+                    }
+                    amount = (int)(amount / 2);
+                    List<double> ri = new List<double>();
+                    ri.Add(time);
+                    ri.Add(acc);
+                    ri.Add(amount);
+                    RaderInfo = ri;
+                }
+            }
+            if (raderCounter == 2)
+            {
+                name = "Physics Second Paper";
+                var pertialTime = 0;
+                double amount, acc, time;
+                if (anqPhy2 == 0)
+                {
+                    acc = 0;
+                }
+                else
+                {
+                    acc = (int)(((float)accPhy2 / (float)anqPhy2) * 100);
+                }
+               
+                time = avgPhy2;
+                amount = anqPhy2;
+
+                if (avgPhy2 < 30) //this will be 30
                 {
                     time = 100;
                 }
                 else
                 {
                     //if 30 sec avg than 100 performence. If 150 sec avg than 0 performace
-                    pertialTime = 90 - (avgPhy1 - 30);
+                    pertialTime = 90 - (avgPhy2 - 30);
                     time = ((100 / 60) * pertialTime);
-                    if(time < 30)
+                    if (time < 30)
                     {
                         time = time + 5;
                     }
-                    else if(time < 50)
+                    else if (time < 50)
                     {
                         time = time + 10;
                     }
-                    else if(time < 80)
+                    else if (time < 80)
                     {
                         time = time + 5;
                     }
                 }
                 amount = (int)(amount / 2);
-                List<int> ri = new List<int>();
+                List<double> ri = new List<double>();
                 ri.Add(time);
                 ri.Add(acc);
                 ri.Add(amount);
                 RaderInfo = ri;
             }
-            
+            if (raderCounter == 3)
+            {
+                name = "Chemistry First Paper";
+                var pertialTime = 0;
+                double amount, acc, time;
+                if (anqChe1 == 0)
+                {
+                    acc = 0;
+                }
+                else {
+                    acc = (int)(((float)accChe1 / (float)anqChe1) * 100);
+                }
+                
+                time = avgChe1;
+                amount = anqChe1;
+
+                if (avgChe1 < 30) //this will be 30
+                {
+                    time = 100;
+                }
+                else
+                {
+                    //if 30 sec avg than 100 performence. If 150 sec avg than 0 performace
+                    pertialTime = 90 - (avgChe1 - 30);
+                    time = ((100 / 60) * pertialTime);
+                    if (time < 30)
+                    {
+                        time = time + 5;
+                    }
+                    else if (time < 50)
+                    {
+                        time = time + 10;
+                    }
+                    else if (time < 80)
+                    {
+                        time = time + 5;
+                    }
+                }
+                amount = (int)(amount / 2);
+                List<double> ri = new List<double>();
+                ri.Add(time);
+                ri.Add(acc);
+                ri.Add(amount);
+                RaderInfo = ri;
+            }
+            if (raderCounter == 4)
+            {
+                name = "Chemistry Second Paper";
+                var pertialTime = 0;
+                double amount, acc, time;
+                if (anqChe2 == 0)
+                {
+                    acc = 0;
+                }
+                else
+                {
+                    acc = (int)(((float)accChe2 / (float)anqChe2) * 100);
+                }
+               
+                time = avgChe2;
+                amount = anqChe2;
+
+                if (avgChe2 < 30) //this will be 30
+                {
+                    time = 100;
+                }
+                else
+                {
+                    //if 30 sec avg than 100 performence. If 150 sec avg than 0 performace
+                    pertialTime = 90 - (avgChe2 - 30);
+                    time = ((100 / 60) * pertialTime);
+                    if (time < 30)
+                    {
+                        time = time + 5;
+                    }
+                    else if (time < 50)
+                    {
+                        time = time + 10;
+                    }
+                    else if (time < 80)
+                    {
+                        time = time + 5;
+                    }
+                }
+                amount = (int)(amount / 2);
+                List<double> ri = new List<double>();
+                ri.Add(time);
+                ri.Add(acc);
+                ri.Add(amount);
+                RaderInfo = ri;
+            }
+            if (raderCounter == 5)
+            {
+                name = "Biology First Paper";
+                var pertialTime = 0;
+                double amount, acc, time;
+                if (anqBio1 == 0)
+                {
+                    acc = 0;
+                }
+                else
+                {
+                    acc = (int)(((float)accBio1 / (float)anqBio1) * 100);
+                }
+               
+                time = avgBio1;
+                amount = anqBio1;
+
+                if (avgBio1 < 30) //this will be 30
+                {
+                    time = 100;
+                }
+                else
+                {
+                    //if 30 sec avg than 100 performence. If 150 sec avg than 0 performace
+                    pertialTime = 90 - (avgBio1 - 30);
+                    time = ((100 / 60) * pertialTime);
+                    if (time < 30)
+                    {
+                        time = time + 5;
+                    }
+                    else if (time < 50)
+                    {
+                        time = time + 10;
+                    }
+                    else if (time < 80)
+                    {
+                        time = time + 5;
+                    }
+                }
+                amount = (int)(amount / 2);
+                List<double> ri = new List<double>();
+                ri.Add(time);
+                ri.Add(acc);
+                ri.Add(amount);
+                RaderInfo = ri;
+            }
+            if (raderCounter == 5)
+            {
+                name = "Biology Second Paper";
+                var pertialTime = 0;
+                double amount, acc, time;
+                if (anqBio2 == 0)
+                {
+                    acc = 0;
+                }
+                else
+                {
+                    acc = (int)(((float)accBio2 / (float)anqBio2) * 100);
+                }
+                time = avgBio2;
+                amount = anqBio2;
+
+                if (avgBio2 < 30) //this will be 30
+                {
+                    time = 100;
+                }
+                else
+                {
+                    //if 30 sec avg than 100 performence. If 150 sec avg than 0 performace
+                    pertialTime = 90 - (avgBio2 - 30);
+                    time = ((100 / 60) * pertialTime);
+                    if (time < 30)
+                    {
+                        time = time + 5;
+                    }
+                    else if (time < 50)
+                    {
+                        time = time + 10;
+                    }
+                    else if (time < 80)
+                    {
+                        time = time + 5;
+                    }
+                }
+                amount = (int)(amount / 2);
+                List<double> ri = new List<double>();
+                ri.Add(time);
+                ri.Add(acc);
+                ri.Add(amount);
+                RaderInfo = ri;
+            }
+
+
         }
     }
 }

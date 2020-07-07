@@ -4,7 +4,11 @@
 @using ChartJs.Blazor.Charts
 @using ChartJs.Blazor.Util
 @using login.Data
-<h4>Subject Nmae</h4>
+<h4>@Name</h4>
+<h5>Time = <a style="color: @Tc"><b>@TReview</b></a></h5>
+<h5>Accurecy = <a style="color: @Ac"><b>@AReview</b></a></h5>
+<h5>Amount = <a style="color: @Amc"><b>@AmReview</b></a></h5>
+
 <ChartJs.Blazor.Charts.ChartJsRadarChart @ref="_radarChartJs"
                                          Config="@_config"
                                          Width="600"
@@ -19,7 +23,12 @@
     private List<int> che2performance = new List<int>();
     private List<int> bio1performance = new List<int>();
     private List<int> bio2performance = new List<int>();
+    private string Name;
     private RadarConfig _config;
+    private string TReview, AReview, AmReview;
+    private string Tc, Ac, Amc;
+    List<double> Info = new List<double>();
+
     ChartJsRadarChart _radarChartJs;
 
     private Random _rand = new Random();
@@ -28,6 +37,12 @@
     {
         CalculateInfoForPaidStudent cal = new CalculateInfoForPaidStudent();
         cal.raderinfo();
+        var info = CalculateInfoForPaidStudent.RaderInfo;
+        Name = CalculateInfoForPaidStudent.name;
+        Info = info;
+        TReview = GiveReview(info[0],1);
+        AReview = GiveReview(info[1],2);
+        AmReview = GiveReview(info[2],3);
         _config = new RadarConfig
         {
             Options = new RadarOptions
@@ -43,6 +58,7 @@
         _config.Data.Labels.AddRange(new[] { "Time", "Accuracy", "Amount" });
 
         _config.Data.Datasets.Add(GetNewDataset());
+
     }
     private RadarDataset GetNewDataset()
     {
@@ -51,17 +67,66 @@
             Label = $"Participant {_config.Data.Datasets.Count + 1}",
             BorderColor = ColorUtil.RandomColorString()
         };
-
-        List<double> wwd = new List<double>();
-        wwd.Add(1);
-        wwd.Add(2);
-        wwd.Add(3);
-        dataset.Data = wwd;
+        dataset.Data = Info;
 
         return dataset;
     }
 
+    public string GiveReview(double p,int i)
+    {
+        string r = "";
+        if(p <= 40 )
+        {
+            r = "Bad";
+            if(i == 1)
+            {
+                Tc = "#ff2c2c";
+            }
+            if(i == 2)
+            {
+                Ac = "#ff2c2c";
+            }
+            if (i == 3)
+            {
+                Amc = "#ff2c2c";
+            }
+        }
+        else if(p <= 80)
+        {
+            r = "Good";
+            if (i == 1)
+            {
+                Tc = "#10f061";
+            }
+            if (i == 2)
+            {
+                Ac = "#10f061";
+            }
+            if (i == 3)
+            {
+                Amc = "#10f061";
+            }
+        }
+        else if(p <= 100)
+        {
+            r = "Excelent";
+            if (i == 1)
+            {
+                Tc = "#a010f0";
+            }
+            if (i == 2)
+            {
+                Ac = "#a010f0";
+            }
+            if (i == 3)
+            {
+                Amc = "#a010f0";
+            }
+        }
 
+
+        return r;
+    }
 
 }
 
