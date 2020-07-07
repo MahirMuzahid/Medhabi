@@ -8,12 +8,15 @@
 <h5>Time = <a style="color: @Tc"><b>@TReview</b></a></h5>
 <h5>Accurecy = <a style="color: @Ac"><b>@AReview</b></a></h5>
 <h5>Amount = <a style="color: @Amc"><b>@AmReview</b></a></h5>
+<div style="background: rgba(0, 0, 0, 0.03)">
+    <ChartJs.Blazor.Charts.ChartJsRadarChart @ref="_radarChartJs"
+                                             Config="@_config"
+                                             Width="600"
+                                             Height="300" />
+    <br />
+</div>
+    
 
-<ChartJs.Blazor.Charts.ChartJsRadarChart @ref="_radarChartJs"
-                                         Config="@_config"
-                                         Width="600"
-                                         Height="300" />
-<br />
 @code {
 
 
@@ -50,7 +53,7 @@
                 Title = new OptionsTitle
                 {
                     Display = true,
-                    Text = "Participant's scores on the big-five"
+                    Text = Name
                 }
             }
         };
