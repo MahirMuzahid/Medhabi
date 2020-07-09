@@ -1,0 +1,46 @@
+﻿<h3>OverAllReviewComponent</h3>
+@using login.Data
+This segment will show which part of your subject is lacking and which part is good and what to do.
+
+<b>Physics First Paper</b>
+<br />
+Some Text
+<br />
+<br />
+
+​<b>Physics Second Paper</b>
+<br />
+Some Text
+<br />
+<br />
+
+​<b>Chemistry First Paper</b>
+<br />
+Some Text
+<br />
+<br />
+
+​<b>Chemistry Second Paper</b>
+<br />
+Some Text
+<br />
+<br />
+
+​<b>Biology First Paper</b>
+<br />
+Some Text
+<br />
+<br />
+
+<b>Biology Second Paper</b>
+<br />
+Some Text
+<br />
+<br />
+@code {
+    string f1, f2, c1, c2, b1, b2;
+    protected override void OnInitialized()
+    {
+        var info = CalculateInfoForPaidStudent.allRaderInfo;
+    }
+}

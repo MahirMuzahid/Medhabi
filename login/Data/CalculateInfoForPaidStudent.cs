@@ -41,6 +41,8 @@ namespace login.Data
         private static int avgPhy1,avgPhy2,avgChe1,avgChe2,avgBio1,avgBio2;
 
         public static List<double> RaderInfo { get; set; }
+        public List<double> allRaderInfo { get; set; }
+        public static List<double> AllRaderInfo { get; set; }
         public static List<int> allqs { get; set; }
         public static List<int> allans { get; set; }
 
@@ -490,7 +492,7 @@ namespace login.Data
   
         public void raderinfo()
         {
-            if(raderCounter == 6)
+            if (raderCounter == 6)
             {
                 raderCounter = 1;
             }
@@ -541,10 +543,15 @@ namespace login.Data
                     }
                     amount = (int)(amount / 2);
                     List<double> ri = new List<double>();
+                    
+                   
                     ri.Add(time);
                     ri.Add(acc);
                     ri.Add(amount);
                     RaderInfo = ri;
+                    allRaderInfo.Add(time);
+                    allRaderInfo.Add(acc);
+                    allRaderInfo.Add(amount);
                 }
             }
             if (raderCounter == 2)
@@ -592,6 +599,9 @@ namespace login.Data
                 ri.Add(acc);
                 ri.Add(amount);
                 RaderInfo = ri;
+                allRaderInfo.Add(time);
+                allRaderInfo.Add(acc);
+                allRaderInfo.Add(amount);
             }
             if (raderCounter == 3)
             {
@@ -637,6 +647,9 @@ namespace login.Data
                 ri.Add(acc);
                 ri.Add(amount);
                 RaderInfo = ri;
+                allRaderInfo.Add(time);
+                allRaderInfo.Add(acc);
+                allRaderInfo.Add(amount);
             }
             if (raderCounter == 4)
             {
@@ -683,6 +696,9 @@ namespace login.Data
                 ri.Add(acc);
                 ri.Add(amount);
                 RaderInfo = ri;
+                allRaderInfo.Add(time);
+                allRaderInfo.Add(acc);
+                allRaderInfo.Add(amount);
             }
             if (raderCounter == 5)
             {
@@ -729,6 +745,9 @@ namespace login.Data
                 ri.Add(acc);
                 ri.Add(amount);
                 RaderInfo = ri;
+                allRaderInfo.Add(time);
+                allRaderInfo.Add(acc);
+                allRaderInfo.Add(amount);
             }
             if (raderCounter == 5)
             {
@@ -774,6 +793,9 @@ namespace login.Data
                 ri.Add(acc);
                 ri.Add(amount);
                 RaderInfo = ri;
+                allRaderInfo.Add(time);
+                allRaderInfo.Add(acc);
+                allRaderInfo.Add(amount);
             }
 
 
